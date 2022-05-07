@@ -21,12 +21,12 @@ file in the Materials folder, and to put "-source X" into that file.
 2. Alternatively, the user can create a subfolder of the Materials folder called
 "Source". This must contain a file called "Contents.txt" which lists the source
 files to read, one per line. For example, it might read:
-
-	\# Source is split into several files as follows
+```
+	# Source is split into several files as follows
 	Athens.i7
 	Asia Minor.i7
 	Pergamon.i7
-
+```
 (The "#" means a comment line and is, of course, optional.) inform7 then makes
 the main source text be the concatenation of the text in these files, which must
 all similarly be in the Source subfolder of the materials folder.

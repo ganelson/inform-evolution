@@ -4,12 +4,12 @@
 
 At present all Inform extensions are single files, with names ending ".i7x".
 Historically these have been stored in "nests" like so:
-
+```
 	Extensions
 		Emily Short
 			Locksmith.i7x
 			Red Fire Hydrants.i7x
-
+```
 This simple system had advantages, but causes problems as soon as the extension
 needs to contain anything other than Inform source text. It is already awkward
 to store documentation and examples inside this single file; there's certainly
@@ -105,7 +105,7 @@ it is not, Inform complains.)
 
 1.5. Here is an example of what a directory might look like, for version 1.3 of
 the hypothetical extension "Red Fire Hydrants by Emily Short":
-
+```
 	Red Fire Hydrants-v1_3
 		Source
 			Red Fire Hydrants-v1_3.i7x
@@ -124,7 +124,7 @@ the hypothetical extension "Red Fire Hydrants by Emily Short":
 				dalmatian.jpg
 			Sounds
 				gushing.mp3
-
+```
 "Red Fire Hydrants-v1_3.i7x" is the extension file as at present: no change
 to its syntax is proposed. The "Source" directory may contain further files in
 line with (IE-3); to be decided.

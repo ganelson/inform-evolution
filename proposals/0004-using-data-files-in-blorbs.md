@@ -24,13 +24,13 @@ called "file" to which they both conform. Like "external file", "internal file"
 will be an enumeration whose values are all determined at compile-time.
 
 1.2. External files are now created with sentences like:
-
+```
 	The File of Glaciers is called "ice".
-
+```
 This will not change. But we will now also read something like:
-
+```
 	The internal data file of glaciation areas is called "ice extents.usgs".
-
+```
 Note "internal data". We will also allow "internal text" and "internal form";
 these three variants correspond to the three data file formats used by Blorb,
 that is, BINA, TEXT and FORM.
@@ -78,9 +78,9 @@ with the following resource ID".
 ## Inblorb changes
 
 3.1. The following command will be added to the Blurb language:
-
+```
 	data [ID or NAME] "FILENAME" type TYPE
-
+```
 This is analogous to the existing picture command, in that either a numerical
 ID can be given for the resource ID, or if not inblorb will choose one; and
 if a NAME is given, will print out an I6 constant declaration of that. (This
