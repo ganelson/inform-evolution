@@ -1,4 +1,4 @@
-# (IE-3) Splitting the source text into multiple files
+# (IE-0003) Dividing source text into multiple files
 
 ## Motive
 
@@ -22,7 +22,7 @@ file in the Materials folder, and to put "-source X" into that file.
 "Source". This must contain a file called "Contents.txt" which lists the source
 files to read, one per line. For example, it might read:
 
-	# Source is split into several files as follows
+	\# Source is split into several files as follows
 	Athens.i7
 	Asia Minor.i7
 	Pergamon.i7

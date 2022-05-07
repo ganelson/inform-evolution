@@ -1,4 +1,4 @@
-# (IE-4) Providing access to binary file resources in blorb files
+# (IE-0004) Access to data files embedded in blorbs
 
 ## Motive
 

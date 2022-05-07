@@ -1,4 +1,4 @@
-# (IE-1) New format for extensions (rev. 1)
+# (IE-0001) Directory format for extensions with resources
 
 ## Motive
 
