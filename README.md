@@ -11,4 +11,4 @@ Proposal                                                                        
 [(IE-0002) Automatic gitignores for Inform projects](proposals/0002-inform-project-gitignores.md)        |  1 May 2022  | Comments welcome
 [(IE-0003) Dividing source text into multiple files](proposals/0003-multiple-source-files.md)            |  1 May 2022  | Comments welcome
 [(IE-0004) Access to data files embedded in blorbs](proposals/0004-using-data-files-in-blorbs.md)        |  5 May 2022  | Drafting
-[(IE-0005) Removing translates into Unicode)                                                             |  5 June 2022 | Comments welcome
+[(IE-0005) Removing translates into Unicode)](proposals/0005-removing-translates-into-unicode.md)        |  5 June 2022 | Comments welcome
