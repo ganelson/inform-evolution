@@ -107,6 +107,7 @@ it is not, Inform complains.)
 the hypothetical extension "Red Fire Hydrants by Emily Short":
 ```
 	Red Fire Hydrants-v1_3
+		extension_metadata.json
 		Source
 			Red Fire Hydrants-v1_3.i7x
 		Documentation
@@ -128,6 +129,10 @@ the hypothetical extension "Red Fire Hydrants by Emily Short":
 "Red Fire Hydrants-v1_3.i7x" is the extension file as at present: no change
 to its syntax is proposed. The "Source" directory may contain further files in
 line with (IE-3); to be decided.
+
+"extension_metadata.json" is a JSON-format metadata file analogous to the
+"kit_metadata.json" metadata for kits, and following the same schema, though
+with an "extension-details" member replacing "kit-details".
 
 Everything else (i.e. other than "Source") is optional.
 
