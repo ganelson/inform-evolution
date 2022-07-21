@@ -68,8 +68,8 @@ that is, `BINA`, `TEXT` and `FORM`.
 subdirectories of the materials directory for a project, they will store their
 internal files in the `Data` subdirectory.
 
-1.4. Directory-format extensions (see IE-1) can similarly store internal files
-in the corresponding location, `Materials/Data`.
+1.4. Directory-format extensions (see [IE-0001](0001-extensions-with-resources.md))
+can similarly store internal files in the corresponding location, `Materials/Data`.
 
 1.5. Inform does not police the filename extension or format for this data, and
 will simply trust the user.

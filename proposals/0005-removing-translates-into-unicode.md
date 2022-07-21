@@ -58,9 +58,10 @@ but very few people will be affected by that.
 names. This might even be a straight copy of [the Unicode standard name list](https://www.unicode.org/Public/14.0.0/ucd/NamesList.txt),
 though it may be sensible to continue to restrict Inform to the Basic Multilingual Plane characters from that.
 The file will be read in to the compiler only on demand, that is, when the
-compiler finds that it has to make sense of `unicode ...`:
+compiler finds that it has to make sense of `unicode ...` because of text
+such as:
 ```
-	[unicode Latin capital letter L with stroke]odz Churchyard
+	"[unicode Latin capital letter L with stroke]odz Churchyard"
 ```
 
 3. A problem message will reject any usage of `translates into Unicode`.

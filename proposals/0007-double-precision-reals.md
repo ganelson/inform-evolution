@@ -14,8 +14,8 @@ without the user needing to do anything to make this happen.
 
 ## Motivation
 
-Inform's existing "real number" kind is, in C terminology, float rather than
-double -- that is, it stores real numbers as single-precision 32-bit values.
+Inform's existing `real number` kind is, in C terminology, `float` rather than
+`double` — that is, it stores real numbers as single-precision 32-bit values.
 
 While these are fast to read and write, the lack of precision in them is a
 little painful. Single-precision provides (a little more than) 6 significant
@@ -27,9 +27,9 @@ problems accurately enough to hand in.
 
 More significantly for Inform users, probably, is that single-precision reals
 can only represent integers exactly in the range −16,777,216 to 16,777,216: thus,
-if an Inform "number" is cast to an Inform "real number" and then back again,
+if an Inform `number` is cast to an Inform `real number` and then back again,
 it will only be approximately equal to the original when outside that range.
-By contrast, a double-precision real can hold any Inform "number" exactly, and
+By contrast, a double-precision real can hold any Inform `number` exactly, and
 indeed can hold any integer up to 9,007,199,254,740,992.
 
 For example, with the present implementation of real numbers:
@@ -49,8 +49,8 @@ We can only do this if double-precision arithmetic can actually be used on the
 platforms we are compiling to. For the Z-machine it cannot, but then that was
 already true for single-precision. For Glulx, the necessary opcodes were added
 as version 3.1.3 of the Glulx specification (2022), with the corresponding
-support added to Inform 6 in version 6.40 (2022). For C, of course, "double"
-has always been available as an alternative to "float".
+support added to Inform 6 in version 6.40 (2022). For C, of course, `double`
+has always been available as an alternative to `float`.
 
 ## Components affected
 
@@ -71,31 +71,31 @@ existing projects, we do not expect any adverse impact.
 
 ## Options considered
 
-1. Make the existing "real number" kind double-precision instead of single.
+1. Make the existing `real number` kind double-precision instead of single.
 
-2. Add a new "double real number" kind, leaving the current "real number"
+2. Add a new `double real number` kind, leaving the current `real number`
 as single-precision.
 
-3. Make the existing "real number" kind double-precision, but add a new
-"single real number" kind for single-precision too.
+3. Make the existing `real number` kind double-precision, but add a new
+`single real number` kind for single-precision too.
 
 Option 3 has no real advantage over the others. Option 1 is simpler for users
 and much easier to understand, but just might skew the behaviour of existing
 projects using real numbers. Option 2 preserves existing behaviour for all
 projects, but at the cost of confusion for users (why are there two kinds for
 the same thing?) and extra compiler complexity (for promotions between the two
-real kinds, not to mention the ambiguous kind of a constant like "3.1415").
+real kinds, not to mention the ambiguous kind of a constant like `3.1415`).
 
 The proposal is therefore for Option 1.
 
 ## Proposal
 
-"real number" will become a block value. The short block will always have
+`real number` will become a block value. The short block will always have
 extent 2, providing 64 bits of data. This will be exactly the Glulx VM 3.1.3
 format of two-word array. In particular, there will be no long block, and so
 real number calculations will never use or need the heap.
 
-The Mathematics.i6t section of BasicInformKit will be rewritten to use
+The `Mathematics.i6t` section of `BasicInformKit` will be rewritten to use
 the new double opcodes. For example,
 
 	[ REAL_NUMBER_TY_Sin in out; @sin in out; return out; ];

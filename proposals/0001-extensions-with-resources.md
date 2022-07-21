@@ -37,22 +37,6 @@ be able to obtain everything necessary to use an extension in a single download.
 In this proposal, then, extensions can contain kits, language bundles or
 templates, but not other extensions or Inter compilation pipelines.
 
-## Components affected
-
-- [ ] No change to the natural-language syntax.
-- [x] Major changes to inbuild.
-- [ ] No change to inform7.
-- [ ] No change to inter.
-- [ ] No change to the Inter specification.
-- [ ] No change to runtime kits.
-- [ ] No changes to the Standard Rules and Basic Inform.
-- [x] Minor changes to documentation.
-- [x] Eventual change to the GUI apps, when downloading or installing extensions.
-
-## Impact on existing projects
-
-None.
-
 ### A note on kits
 
 Kits are libraries of Inter code, stored as binary Inter files but compiled
@@ -91,7 +75,23 @@ two extensions installed which each unwittingly have a kit called, say, `SignalK
 (ii) Making it easy for kit authors to provide documentation to users, since
 this can just be the documentation on the wrapper extension.
 
-## Proposed changes
+## Components affected
+
+- [ ] No change to the natural-language syntax.
+- [x] Major changes to inbuild.
+- [ ] No change to inform7.
+- [ ] No change to inter.
+- [ ] No change to the Inter specification.
+- [ ] No change to runtime kits.
+- [ ] No changes to the Standard Rules and Basic Inform.
+- [x] Minor changes to documentation.
+- [x] Eventual change to the GUI apps, when downloading or installing extensions.
+
+## Impact on existing projects
+
+None.
+
+## Proposal
 
 ### 1. Changing from one file to a directory of files
 
