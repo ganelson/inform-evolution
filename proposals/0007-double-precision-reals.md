@@ -1,11 +1,18 @@
 # (IE-0007) Double-precision real numbers
 
-## Author
+* Proposal: [IE-0007](0007-double-precision-reals.md)
+* Authors: Andrew Plotkin and Graham Nelson
+* Language feature name: None
+* Status: Draft
+* Related proposals: None
+* Implementation: None
 
-Credit for this proposal should really go to Andrew Plotkin, who worked through
-the necessary Glulx and Inform 6 issues in order to facilitate it.
+## Summary
 
-## Motive
+Quietly double the precision of real-number arithmetic used in Inform projects,
+without the user needing to do anything to make this happen.
+
+## Motivation
 
 Inform's existing "real number" kind is, in C terminology, float rather than
 double -- that is, it stores real numbers as single-precision 32-bit values.
@@ -45,7 +52,24 @@ as version 3.1.3 of the Glulx specification (2022), with the corresponding
 support added to Inform 6 in version 6.40 (2022). For C, of course, "double"
 has always been available as an alternative to "float".
 
-## Options
+## Components affected
+
+- [ ] No change to the natural-language syntax.
+- [ ] No change to inbuild.
+- [x] Minor changes to inform7.
+- [ ] No change to inter.
+- [ ] No change to the Inter specification.
+- [x] Major changes to BasicInformKit; no change to other runtime kits.
+- [x] Major changes to Basic Inform; no change to the Standard Rules.
+- [ ] No change to documentation.
+- [ ] No change to the GUI apps.
+
+## Impact on existing projects
+
+Except that more accurate calculations may slightly change the output of
+existing projects, we do not expect any adverse impact.
+
+## Options considered
 
 1. Make the existing "real number" kind double-precision instead of single.
 
@@ -64,7 +88,7 @@ real kinds, not to mention the ambiguous kind of a constant like "3.1415").
 
 The proposal is therefore for Option 1.
 
-## Proposed changes
+## Proposal
 
 "real number" will become a block value. The short block will always have
 extent 2, providing 64 bits of data. This will be exactly the Glulx VM 3.1.3
