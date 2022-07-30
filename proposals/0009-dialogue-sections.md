@@ -277,7 +277,16 @@ a name. For example:
 	(This is the Marcellus gets anxious beat.)
 
 The name here is `Marcellus gets anxious beat`. The name has to end with
-`beat`, in English at least, for namespace reasons.
+`beat`, in English at least, for namespace reasons, and has to be unique:
+two different beats cannot have the same name.
+
+The name `starting beat` is reserved. If a beat is given this name, then
+it is performed at the start of play. This is especially useful for non-command
+parser stories, but can be used in any story. In command-parser IF, the starting
+beat is performed before the player's first command.
+
+There is no analogous `ending beat`: stories can have multiple endings. But see
+`ending the story...` in the description of lines below.
 
 #### (2) About sentences in cues
 
@@ -679,6 +688,11 @@ if the user has created the style `spoken with asperity`, then:
 
 This will set the activity variable `style` to `spoken with asperity` when the
 line is performed (see below), rather than its default value, `spoken normally`.
+
+(9) `ending the story` or `ending the story in ...` work like the existing
+Inform phrases `end the story` and `end the story in ...`. The story ends
+after the line is performed. Note that if the is conditional and is not
+performed, the story does not end.
 
 #### The line performed
 
