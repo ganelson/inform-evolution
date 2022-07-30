@@ -1,7 +1,7 @@
 # inform-evolution
 
 A repository for proposals for changes to the Inform programming language
-(see (ganelson/inform)[https://github.com/ganelson/inform]).
+(see [ganelson/inform](https://github.com/ganelson/inform)).
 
 - Proposals are numbered IE-0001, IE-0002, ...
 - The baseline design is Inform version 10.1.0.
@@ -10,7 +10,7 @@ major version number bump) should be related to a proposal here.
 - For now, proposals are made by the Inform team.
 
 Inform users are warmly encouraged to comment on these proposals. A good place
-to do that would be (the Inform area of the intfiction.org forum)[https://intfiction.org/c/authoring/inform-7/].
+to do that would be [the Inform area of the intfiction.org forum](https://intfiction.org/c/authoring/inform-7/).
 
 For now, we ask users not to file pull requests or Issues against this repository,
 which will probably itself evolve to be more participatory, but is just getting
