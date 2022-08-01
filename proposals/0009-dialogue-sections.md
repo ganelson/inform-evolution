@@ -1,6 +1,7 @@
 # (IE-0009) Dialogue Sections
 
 * Proposal: [IE-0009](0009-dialogue-sections.md)
+* Reference link: [#9](https://github.com/ganelson/inform-evolution/pull/9)
 * Authors: Emily Short and Graham Nelson
 * Language feature name: `dialogue`
 * Status: Draft
