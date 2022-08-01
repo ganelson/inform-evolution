@@ -1,6 +1,7 @@
 # (IE-0005) Removing translates into Unicode
 
 * Proposal: [IE-0005](0005-removing-translates-into-unicode.md)
+* Reference link: [#5](https://github.com/ganelson/inform-evolution/pull/5)
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
