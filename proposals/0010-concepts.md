@@ -1,7 +1,7 @@
 # (IE-0010) Concepts
 
 * Proposal: [IE-0010](0010-concepts.md)
-* Reference link: [#10](https://github.com/ganelson/inform-evolution/pull/10)
+* Discussion PR link: [#10](https://github.com/ganelson/inform-evolution/pull/10)
 * Authors: Emily Short and Graham Nelson
 * Language feature name: `concepts`
 * Status: Draft

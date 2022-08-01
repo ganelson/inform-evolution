@@ -9,14 +9,15 @@ A repository for proposals for changes to the Inform programming language
 major version number bump) should be related to a proposal here.
 - For now, proposals are made by the Inform team.
 
-Inform users are warmly encouraged to comment on these proposals. A good place
-to do that would be [the Inform area of the intfiction.org forum](https://intfiction.org/c/authoring/inform-7/).
+Inform users are warmly encouraged to comment on these proposals. One place
+to do that would be [the Inform area of the intfiction.org forum](https://intfiction.org/c/authoring/inform-7/);
+or for Github users, a push request has been created for each proposal which exists
+as a place to make and read comments.
 
 For now, we ask users not to file pull requests or Issues against this repository,
 which will probably itself evolve to be more participatory, but is just getting
 started for now. This repository was made public on 30 July 2022, as part of
-the Inform talk at the Narrascope III conference. The text of that talk will
-be available shortly.
+[the Inform talk at the Narrascope III conference](https://ganelson.github.io/inform-website/talks/2022/07/31/narrascope-iii.html).
 
 ## List of proposals
 

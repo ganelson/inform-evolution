@@ -1,7 +1,7 @@
 # (IE-0006) New annotations for I6 syntax
 
 * Proposal: [IE-0006](0006-i6-syntax-annotations.md)
-* Reference link: [#6](https://github.com/ganelson/inform-evolution/pull/6)
+* Discussion PR link: [#6](https://github.com/ganelson/inform-evolution/pull/6)
 * Authors: Graham Nelson, David Kinder, and Andrew Plotkin
 * Language feature name: None
 * Status: Draft
