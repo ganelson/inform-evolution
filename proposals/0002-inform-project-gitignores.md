@@ -1,6 +1,7 @@
 # (IE-0002) Automatic gitignores for Inform projects
 
 * Proposal: [IE-0002](0002-inform-project-gitignores.md)
+* Reference link: [#2](https://github.com/ganelson/inform-evolution/pull/2)
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
