@@ -1,6 +1,7 @@
 # (IE-0001) Directory format for extensions with resources
 
 * Proposal: [IE-0001](0001-extensions-with-resources.md)
+* Reference link: [#1](https://github.com/ganelson/inform-evolution/pull/1)
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
