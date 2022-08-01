@@ -1,6 +1,7 @@
 # (IE-0008) Faster memory allocation
 
 * Proposal: [IE-0008](0008-faster-memory-allocation.md)
+* Reference link: [#8](https://github.com/ganelson/inform-evolution/pull/8)
 * Authors: Dannii Willis
 * Language feature name: None
 * Status: Draft
