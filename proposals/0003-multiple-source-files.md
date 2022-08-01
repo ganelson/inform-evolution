@@ -1,6 +1,7 @@
 # (IE-0003) Dividing source text into multiple files
 
 * Proposal: [IE-0003](0003-multiple-source-files.md)
+* Reference link: [#3](https://github.com/ganelson/inform-evolution/pull/3)
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
