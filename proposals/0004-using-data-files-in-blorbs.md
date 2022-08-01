@@ -1,6 +1,7 @@
 # (IE-0004) Access to data files embedded in blorbs
 
 * Proposal: [IE-0004](0004-using-data-files-in-blorbs.md)
+* Reference link: [#4](https://github.com/ganelson/inform-evolution/pull/4)
 * Authors: Andrew Plotkin and Graham Nelson
 * Language feature name: None
 * Status: Draft
