@@ -21,6 +21,18 @@ It is proposed that these kinds be brought into the core of Inform for these rea
 1. They are of general usefulness, and installing an extension/kit like this can be complicated. (Though hopefully much less so once [IE-0001](https://github.com/ganelson/inform-evolution/pull/1) is implemented.)
 2. At least in 6M62, it was not possible to specify how a new kind was to have its `constant-compilation-method:special` be implemented. This meant that most of these new kinds needed to be constructed with long blocks, when they could possibly be more efficient as short-block-only kinds.
 3. A function like `ANY_TY_Print_Kind_Name` can be constructed by the compiler rather than manually written.
+4. The Data Structures extension had to misuse loops in order to construct `if` statements with block scoped variables:
+    ```
+    [ We declare this as a loop, even though it isn't, because nonexisting variables don't seem to be unassigned at the end of conditionals. ]
+    To if (O - value of kind K option) is some let (V - nonexisting K variable) be the value begin -- end loop:
+    	(- if (BlkValueRead({-by-reference:O}, OPTION_TY_KOV) && (
+    		(KOVIsBlockValue({-strong-kind:K})
+    			&& BlkValueCopy({-lvalue-by-reference:V}, OPTION_TY_Get({-by-reference:O}))
+    			|| ({-lvalue-by-reference:V} = OPTION_TY_Get({-by-reference:O}))
+    		)
+    	, 1)) -).
+    ```
+    If these kinds was brought into core then we could implemented them properly so hacks like this wouldn't be needed.
 
 ## Components affected
 
