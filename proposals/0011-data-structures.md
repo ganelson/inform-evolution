@@ -36,19 +36,19 @@ It is proposed that these kinds be brought into the core of Inform for these rea
 
 ## Components affected
 
-- [ ] No change to the natural-language syntax.
+- [x] Minor changes to the natural-language syntax (see point 4 above.)
 - [ ] Major changes to inbuild.
 - [x] Change to inform7.
-- [?] No change to inter.
+- [ ] No change to inter.
 - [ ] No change to the Inter specification.
 - [x] Change to runtime kits.
-- [?] No changes to the Standard Rules and Basic Inform.
+- [x] Changes to the Standard Rules and Basic Inform.
 - [x] Minor changes to documentation.
 - [ ] No change to the GUI apps, when downloading or installing extensions.
 
 ## Impact on existing projects
 
-None.
+Could cause issues with any projects that use the new kind names as existing values, for example, many games might have a "map" thing or even a map kind. So should probably be part of a semver-major update.
 
 ## Proposal
 
@@ -139,6 +139,6 @@ When play begins:
 
 2. How should Maps be implemented for efficient searching? Particularly string searching.
 
-3. Would it be feasible to have general purpose [sum types](https://en.wikipedia.org/wiki/Algebraic_data_type) added to Inform, in which case Options and Results would not need any special handling, but could just be kinds supported by default?
+3. Would it be feasible to have general purpose [sum types](https://en.wikipedia.org/wiki/Algebraic_data_type) added to Inform, in which case Options and Results would not need any special handling, but could just be kinds supported by default? And Results could return errors other than texts if that was the case.
 
 4. Should the unchecked phrases actually be included, or should only the safe phrases be supported? (If someone needed unsafe phrases they could perhaps be provided by a separate extension.)
