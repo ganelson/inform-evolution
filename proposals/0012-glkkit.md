@@ -101,4 +101,4 @@ These could be brought into the Standard Rules, or perhaps into Basic Screen Eff
 
     For example, command replacement currently sets the I6 array `buffer`. But an extension could in theory call `glk_request_line_event` with a different array (I don't know if any do). We could make command replacement more rigourous by intercepting calls to `glk_request_line_event` and saving the buffer it was used with, and then use that buffer in the command replacement extension.
 
-5. Does the following actually allow for UGI to be used at the same time as some formerly GEP-based extensions? If not, what would need to change?
+5. Would this proposal actually allow for UGI to be used at the same time as some formerly GEP-based extensions? If not, what would need to change?
