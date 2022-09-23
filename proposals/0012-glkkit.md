@@ -1,4 +1,4 @@
-# (IE-0012) Additional data structures
+# (IE-0012) A new GlkKit
 
 * Proposal: IE-0012
 * Reference link: [#12](https://github.com/ganelson/inform-evolution/pull/12)
