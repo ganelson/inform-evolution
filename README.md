@@ -41,5 +41,5 @@ Proposal                                                                        
 [(IE-0006) New annotations for I6 syntax](proposals/0006-i6-syntax-annotations.md)                       | 16 June 2022 | Accepted | [PR#6](https://github.com/ganelson/inform-evolution/pull/6)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022  | Accepted | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022 | Accepted | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
-[(IE-0009) Dialogue sections](proposals/0009-dialogue-sections.md)                                       | 21 July 2022 | Accepted | [PR#9](https://github.com/ganelson/inform-evolution/pull/9)
+[(IE-0009) Dialogue sections](proposals/0009-dialogue-sections.md)                                       | 21 July 2022 | Implemented in draft | [PR#9](https://github.com/ganelson/inform-evolution/pull/9)
 [(IE-0010) Concepts](proposals/0010-concepts.md)                                                         | 21 July 2022 | Accepted | [PR#10](https://github.com/ganelson/inform-evolution/pull/10)

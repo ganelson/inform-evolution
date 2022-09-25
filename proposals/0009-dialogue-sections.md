@@ -4,15 +4,19 @@
 * Discussion PR link: [#9](https://github.com/ganelson/inform-evolution/pull/9)
 * Authors: Emily Short and Graham Nelson
 * Language feature name: `dialogue`
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0010](0010-concepts.md)
-* Implementation: None
+* Implementation: Implemented but unreleased
 
 ## Summary
 
 An extensible system for dialogue, combining natural-language playtext in
 "dialogue sections" of the source text with an active runtime component,
 the "director", implemented with a new kit, `DialogueKit`.
+
+This proposal was redrafted at the end of September 2022 in the light of
+experience. All functionality here is implemented in draft on the `master`
+branch of the repository, unless otherwise noted.
 
 ## Motivation
 
@@ -76,121 +80,582 @@ linked into the compiled Inter code).
 
 Because this proposal builds new kinds and adds a few new activies and rules,
 the names of those novelties could cause namespace collisions with existing
-projects. For example, an existing project using the term "dialogue beat"
-might no longer compile.
+projects. For example, an existing project using the term `dialogue beat` might no
+longer compile.
 
-However, the changes made by this proposal are almost all gated by a named
-language feature, `dialogue`. This will be on by default but will be possible
-to turn off in a project's JSON metadata, so that existing source texts
-which do not want the new features but do want to keep compiling can easily
-be configured to do so.
+However, most of the changes below take effect only in Inform projects which
+contain at least one dialogue section, or where the `dialogue` feature is
+explicitly activated by project (or kit) metadata. Since this will not be
+true for any existing projects, very little of IE-0009 will affect them.
 
 Runtime support will be delivered by a new Inter kit, `DialogueKit`, in the
-standard Inform distribution. This is included in a build only if the "dialogue"
-language feature is active and only if the project actually contains dialogue
-sections.
+standard Inform distribution. This is included in a build only if the `dialogue`
+feature is active and only if the project actually contains dialogue sections.
+Note that `DialogueKit` requires `WorldModelKit`.
 
-It follows that inbuild will need to look for dialogue sections when parsing
-source text to work out whether a project depends on `DialogueKit` or not.
-`DialogueKit` in turn requires `WorldModelKit`.
+An exception to the above is that there is a new relation in the world model:
+`audibility`, which can be tested with the verb `to be able to hear`. This
+relation is added whether or not dialogue is present. For the moment, the
+definition of `audibility` is the same as that for `visibility` except that
+there is no need for light.
 
-## Overview
+## Dialogue sections
 
 Most Inform source text imitates prose writing: it's intended to look like
 a novel or a short story, and is divided up by headings into chapters,
-sections and so on. Under this proposal, sections will now be allowed to
-consist of "playtext" instead of prose: that is, will look like the printed
-script of a play. For example, this is a modest dialogue section:
+sections and so on. A section whose heading is annotated `(dialogue)` has
+a special syntax, unlike all other section in an Inform story, which means
+that it holds "playtext" instead of prose: that is, it will look like the
+printed script of a play. For example, here is a modest dialogue Inform
+story containing some setup in a regular section, and then a dialogue section:
+
+	Section 1 - Elsinore
+	
+	Elsinore is a room. Marcellus and Bernardo are men in Elsinore.
+	The ghost is a man.
 
 	Section 2 - On the Battlements (dialogue)
 
-	(About the paranormal.)
+	(This is the starting beat.)
 
 	Marcellus: "What, has this thing appear'd again to-night?"
 
 	Bernardo: "I have seen naught but [list of things in the Battlements]."
 	
-	Marcellus: "Horatio says 'tis but our fantasy."
+	-- "Ask Bernardo what he saw."
+	
+		Bernardo (mentioning the ghost): "A ghastly apparition, my lord."
+		
+		<-
+		
+	-- "Dismiss this nonsense."
+	
+		Narration (mentioning Fortinbras): "You sternly tell the guards
+		to watch for Fortinbras, not their shadows."
 
-This dialogue is made up of "dialogue beats", or "beats" for short, which
-are brief conversational exchanges on a given subject. Here, there's just
-one beat. The individual speeches are called "dialogue lines", or "lines"
-for short: in this example there are three.
+The US spelling "dialog" would also be accepted as the annotation:
 
-The Inform compiler will parse playtext like the above, and convert it into
-data structures which it will compile into the story file. At runtime, a
-subsystem called the "director" will decide when somebody speaks, who that
-person is, and what they say. (`DialogueKit` is essentially the implementation
-of the director.)
+	Section 2 - On the Battlements (dialog)
+
+This annotation throws a problem if used on other levels of heading, such as
+chapters. Since sections are the lowest-level headings in Inform source text,
+it follows that a dialogue section cannot be interrupted by a subheading.
+
+Dialogue sections are not allowed to contain any of the usual ingredients of
+Inform source text (assertion sentences, rules, tables, equations). Instead
+they must contain only the following ingredients, used over and over, each one
+a paragraph of its own.
+
+- "Dialogue beats", or "beats" for short, are conversational exchanges arising
+from a given subject, and can be vary in length from one-liners to elaborate
+discussions. Beats are introduced by cues in round brackets: there's just one
+cue in the above example, `(This is the starting beat.)`, and so `Section 2`
+above contains only one beat.
+
+- "Dialogue lines", or "lines" for short, are mostly single speeches each
+performed by an individual person, who is usually explicitly named. Marcellus
+speaks one line above, Bernardo two, and there is also a line of `Narration`,
+which is special in that nobody in-story is speaking it, but otherwise behaves
+just like other lines. Lines broadly have the syntax `Speaker: "Speech."`
+
+- "Dialogue choices", or "choices" for short, are different options which the
+player might take at this point in the conversation. There are two here, and
+they offer the two possible options at what amounts to a single decision for
+the player to make. Choices are introduced with a double-dash `--`.
+
+- "Flow markers", which are special notations to control the flow of the
+conversation. Here there is just one, `<-`, which means "go back to the last
+decision point and ask again".
+
+## Indentation
+
+Note the use of indentation. Beat cues cannot be indented: there is no sense
+in which they belong to each other. But all lines, choices and flow markers
+can be. They can go at most one tab deeper than the previous paragraph.
+
+For example, because Bernardo's line "A ghastly apparition, my lord."
+is indented from the choice above it, it will be performed only if that
+choice is taken. And suppose we have this:
+
+	Bernardo (to Marcellus): "What say you, brother?"
+	
+		Marcellus: "Horatio says 'tis naught but their fantasy."
+
+The first line here will be performed only if the player can hear Bernardo,
+and Bernardo can hear Marcellus. The second will be performed only if the
+first line has been (and also if the player can hear Marcellus). This is
+better than writing just:
+
+	Bernardo: "What say you, brother?"
+	
+	Marcellus: "Horatio says 'tis naught but their fantasy."
+
+because it ensures that if Bernardo is present but Marcellus is not, or vice
+versa, then the we don't see just half of a failed conversation. In general,
+then, if one line is a direct reply to another one, and there is any uncertainty
+about who might or might not be present, indentation should be used:
+
+	Speaker One: "A speech."
+	
+		Speaker Two: "A reply."
+		
+		Speaker One: "A rebuttal."
+		
+			Speaker Three: "An intervention."
+
+			Speaker Two: "A cross response."
+
+### Nested choices
+
+Indentation can go quite deep, though eventually it becomes bad style and
+flow markers like `-> perform the duel beat` can be used instead (see below).
+It certainly allows scope for nested choices. For example:
+
+	Bernardo (now Bernardo is scared): "Yikes! Ghost!"
+
+	-- "Pretend everything is fine"
+	
+		Marcellus: "It's just Scotch mist, blown east from old Aberdeen."
+		
+		Bernardo: "Nay, sire, it's magical!"
+		
+		-- (if the shortbread is carried) "Assuage his night terrors"
+		
+			Marcellus (before Bernardo eating the shortbread): "Here, take this old Highlands cure."
+
+			Bernardo (now Bernardo is not scared): "Hoots mon, that's better."
+
+		-- "Reprimand Bernardo"
+
+			Marcellus: "I don't care if it's haunted, guard the Battlements."
+		
+		Polonius (now Polonius is in the Battlements): "I never come up here."
+
+Polonius's line of dialogue is interesting as an example here: this is where
+the beat continues after going through either one of the two previous choices.
+(This point is what would, in Ink, be called a "gather".) That happens
+with no need for special syntax because the indentation makes it clear, since
+it's a dialogue line occurring at an indentation showing that it cannot be
+part of the "Reprimand Bernardo" thread.
+
+## Active versus passive
+
+The playtext in dialogue sections is compiled into the story file as a fairly
+elaborate data structure, and a runtime component called the "director" makes
+use of this data, deciding when and how to perform it. `DialogueKit`, a new
+Inter kit linked only into stories which have dialogue, implements the
+director, but it works through activities and is therefore customisable.
 
 The director is sometimes "active", sometimes "passive". By default it is
 passive, which means that it only begins dialogue when the author specifies
 this. In active mode, it can also fill conversational lulls by trying to
 find relevant things to talk about, and people to talk about them. To do
-this, the director is constantly managing a list of topics ("conversational
-subjects") which it might be interesting to talk about.
+this, the director tracks a list of "live conversational subjects" which
+it might be interesting to talk about. The idea is that if somebody has
+just mentioned visiting Barcelona, then Barcelona might become a live
+subject.
 
-In this proposal, we will call such subjects "live". The idea is that if
-somebody has just mentioned visiting Barcelona, then Barcelona might become
-a live subject. At other times, it would just be an odd thing to bring up,
-so it would be a subject but not a live one.
+The mode can be switched with these phrases:
+
+- `make the dialogue/dialog director active`
+- `make the dialogue/dialog director passive/inactive`
+
+When the director is passive, beats are performed only as follows:
+
+- if there is a beat called the `starting beat`, it is performed at the
+start of play, after the initial room description but before the player
+has been asked for a command;
+- in response to the phrase `perform B`, where `B` is a named beat;
+- in response to the phrase `if dialogue about X intervenes`, where `X` is
+a potential conversational subject;
+- when a beat which is already being performed calls explicitly for another
+beat to be performed with a `->` marker.
+
+A new rule in the startup rulebook, `performing opening dialogue beat rule`,
+handles the first of these.
+
+An example of using `if dialogue about X intervenes` would be a rule like so:
+
+	Before examining a thing (called T):
+		if dialogue about T intervenes, stop the action.
+
+When the director is active, beats are also performed:
+
+- if there is a lull in conversation (in that no other dialogue has been
+performed this turn), and if the director can find a beat to perform which
+is both available and relevant, and either has not been performed before
+or is recurring.
+
+A new rule in the turn sequence rulebook, `dialogue direction rule`,
+handles this.
+
+The director sometimes has to manage quite a complex situation, especially
+if dialogue beats are causing each other to be performed. The new debugging
+command DIALOGUE causes the director to print out explanation of what it is
+doing; DIALOGUE ALL causes even fuller ones.
+
+## Live conversational subjects
+
+The director is always tracking the list of live subjects, even though it
+only makes use of this list in active mode. So if it is switched into
+active mode having been passive up to now, it may be starting with some
+subjects already live.
+
+As values, subjects have to be objects of some kind: rooms, people, things.
+As a convenience for representing abstract ideas such as "philosophy", which
+may still be talked about, see the proposal [IE-0010](0010-concepts.md) on
+Concepts.
+
+This is a list best thought of as pretty ephemeral, and with a rapid turnover.
+Newly raised subjects appear at the beginning, and less fresh ones at the end.
+The list is truncated so that it can never exceed 20 subjects: if it does, the
+oldest is silently forgotten. If the director (in active mode) starts a
+spontaneous dialogue beat - in effect, changing the subject altogether - the
+list is wiped altogether.
+
+Subjects automatically become live when a line `mentioning` them is performed:
+
+	Bernardo (mentioning Barcelona): "The castles in Barcelona are warmer at night."
+
+In addition, the following phrases allow story authors to intervene:
+
+- `make (T - an object) a live conversational subject`. Adds `T` to the list.
+- `make (T - an object) a dead conversational subject`. Removes `T` if present.
+No error is produced if `T` was already not there.
+- `clear conversational subjects`. Empties the list. May be useful for a
+story making a drastic change of subject.
+- `live conversational subject list`. Produces the current list. 
+- `alter the live conversational subject list to (L - list of objects)`
+
+This could be used for devious tricks such as:
+
+	After printing the name of (T - an object) when performing a dialogue line:
+		make T a live conversational subject.
+
+With such a rule in force, performing this line:
+
+	Bernardo: "The castles in [Barcelona] are warmer at night."
+
+would automatically add Barcelona to the list.
+
+Emptying the list regularly is one way to be especially sure that no residual
+topics linger impossibly long (e.g. if the story jumps from the night before to
+next morning). For example, an author may want to write a rule like:
+
+	When a scene begins:
+		clear conversational subjects.
+
+But this is not done by default: some authors like to use scenes as big wodges
+of time, and others as fleeting ones, so we leave this up to authors.
+
+One way to track the list, for debugging purposes, is to add a rule like so:
+
+	Every turn:
+		showme the live conversational subject list.
+
+which prints this out at runtime.
 
 ## New kinds
 
-Several new kinds are built in. Most users will never need to refer to
-these and will be blissfully unaware of the implementation under the surface,
-but they do have names, and expert users will be able to play with them.
+`DialogueKit` builds several new kinds into Inform, in order to make it
+possible to describe what's going on in playtext.
 
-### Dialogue beat, dialogue line, dialogue choice
+### Dialogue beat
 
-`dialogue beat` is an enumerated kind. Each value represents a single beat
-(see below). Most beats are nameless in the source text; internally, those
-will be given intentionally obscure names such as `nameless beat 13`, which
-can be printed at runtime for debugging purposes but not referred to in the
-source text as constants.
+`dialogue beat` is an enumerated kind. Each value represents a single beat.
+Most beats are nameless in the source text; internally, those are given
+intentionally obscure names such as `beat-13`, which can be printed at
+runtime for debugging purposes.
 
-`dialogue line` and `dialogue choice` are similarly enumerated kinds.
+Note that the British English spelling "dialogue beat" must be used, not
+the US English "dialog beat".
 
-The containment relation can be tested for dialogue lines, so that `L is in B`
-is a meaningful condition for any dialogue line `L` and dialogue beat `B`; however,
-it cannot be asserted with `now`. Beats and the lines in them are all set at
-compile time.
+Values of `dialogue beat` cannot be created with assertions, and only come
+into being when cues are written in a dialogue sections. So an assertion
+such as `The welcome beat is a dialogue beat` produces a problem message.
+There is exactly one dialogue beat value at runtime for every cue written
+in the source text; their enumeration sequence corresponds to the order in
+which the source text declares them.
 
-The either/or property `recurring/non-recurring` exists for dialogue beats
-just as it does for scenes, and has a similar meaning: see below.
+`dialogue beat` comes with the following either-or properties built in:
 
-The either/or property `performed/unperformed` exists for all of dialogue
-beats, dialogue lines and dialogue choices. `performed` means that the line
-has been spoken in the course of the current game; so at the start of play,
-all beats, lines and choices are `unperformed`.
+- `performed` or `unperformed`. Has this been performed yet?
+- `recurring` or `non-recurring`. Can the director choose this beat more
+than once in the same play-through? (Note that this same property has the
+same name, and a similar meaning, for scenes and lines.) By default, no.
+- `spontaneous` or `unspontaneous`. Can the director bring this up out of
+nowhere to fill a gap in the conversation? By default, no.
 
-The either/or property `elaborated/unelaborated` exists for dialogue lines
-only: see below. The value property `content` also exists for dialogue lines,
-and has the kind `text`.
+Being properties, these can be changed during play using `now`:
 
-Values of `dialogue beat` and `dialogue line` cannot be created with assertions,
-but only by using the dialogue section syntax described below. This is an
-error:
+	When the conference scene begins:
+		now the fire alarm beat is spontaneous.
 
-	The Marcellus gets anxious beat is a dialogue beat.
+In addition, the following adjectives can be tested at run-time:
 
-Note that `recurring` and `performed` can be modified in play using `now`:
-so, for example, `now the Marcellus gets anxious beat is performed` is legal.
-This is intended only for expert users wanting to tweak conversational
-behaviour in unusual ways.
+- `available` rather than `unavailable` if the beat currently meets its
+preconditions for being performed - its after or before, if and unless conditions.
+- `relevant` rather than `irrelevant` if the beat is about a topic in the
+current list of live conversational subjects.
+- `being performed` if the beat is currently in mid-performance.
+
+The following phrases are available:
+
+- `perform (B - a dialogue beat)`. Immediately performs the beat, regardless
+of what subjects are live. Works whatever mode the director is in (i.e., whether
+it is active or passive), and regardless of whether the beat has been performed
+before, even if it is non-recurring.
+- `list of speakers required by (B - dialogue beat)`. Results in a list of
+objects, which is the set of speakers of lines of dialogue in `B`.
+- `showme the beat structure of (B - dialogue beat)`. For debugging. In effect,
+beats are miniature programs, but can be quite intricate: this prints a listing.
+
+Note that the command parser is able to recognise dialogue beat names, and of
+course actions can be set up for them. For example:
+
+	Performing is an action out of world applying to one dialogue beat.
+
+	Carry out performing:
+		say "[the dialogue beat understood] requires [list of speakers required by the dialogue beat understood].";
+		perform the dialogue beat understood.
+
+	Understand "perform [dialogue beat]" as performing.
+
+Which creates a debugging command PERFORM.
+
+### Dialogue line
+
+`dialogue line` is an enumerated kind. Each value represents a single line.
+Most lines are nameless in the source text; internally, those are given
+intentionally obscure names such as `line-13`, which can be printed at
+runtime for debugging purposes.
+
+Values of `dialogue line` cannot be created with assertions: see the similar
+discussion for beats above.
+
+`dialogue line` comes with the following either-or properties built in:
+
+- `narrated` or `unnarrated`. Is this a `Narration:` line?
+- `performed` or `unperformed`. Has this been performed yet?
+- `recurring` or `non-recurring`. Can the director perform this line more
+than once in the same play-through? (Note that this same property has the
+same name, and a similar meaning, for scenes and beats.) By default, no.
+- `elaborated` or `unelaborated`. Is the speech more than a simple piece
+of reported speech?
+
+The `elaborated` property is initially set by the Inform compiler. For
+example:
+
+	Katie: "I suppose."
+	
+	Katie: "Your daughter gives her most grown-up pout. 'Whatever.'"
+
+The first line there is unelaborated, the second elaborated - because it
+contains internal quotation marks, so it's read as being a mixture of
+narration and speech, rather than purely being speech. It affects only how
+the line is performed. An unelaborated line is printed as `Speaker: "Speech."`,
+whereas an elaborated line is printed exactly as written, the assumption
+being that it will contain its own indication of who's speaking and which
+words are actually said. So we see:
+
+	Katie: "I suppose."
+	
+	Your daughter gives her most grown-up pout. "Whatever."
+	
+To qualify as elaborated, a speech must have at least two quotation marks `'`
+at word boundaries. The source text can override this:
+
+	Katie (unelaborated): "You call this 'peanut butter' but it's really icky."
+
+Or, of course, the properties could be changed during play, or indeed the way
+that lines are performed could be changed using the activity (see below) so
+that elaboration is never taken into account.
+
+In addition, the following adjectives can be tested at run-time:
+
+- `available` rather than `unavailable` if the line currently meets its
+preconditions for being performed - its if and unless conditions.
+- `non-verbal` rather than `verbal` if it is a non-verbal communication,
+written as being performed `without speaking`.
+- `story-ending` if its performance would end the story.
+
+The following phrases are available:
+
+- `textual content of (L - dialogue line)`. Produces a `text` of the speech.
+It is only really safe to use this, in general, in a rule belonging to the
+performing activity rulebooks, because the text may make reference to the
+current `speaker` and `interlocutor`, for example - variables which exist
+only inside of those activities.
+
+Note that there is no phrase to produce the speaker or interlocutor of a
+dialogue line, because not all lines give these in any explicit way. For
+example, a line could be written:
+
+	A woman other than Katie (to an animal): "Do you need feeding now?"
+
+The following relation is available:
+
+- `L is in B` if the dialogue line `L` (see below) is part of the beat `B`.
+The existence of this relation makes it possible to iterate over the contents
+of `B` (`repeat with L running through dialogue lines in B`), or extract, say,
+`the list of dialogue lines in B` or `the number of dialogue lines in B`.
+Of course a flat list cannot convey the full richness of structure in `B`,
+but might still be useful:
+
+	repeat with L running through dialogue lines in the opening beat:
+		now L is unperformed.
+
+### The performing activity for dialogue lines
+
+The `performing` activity has the following definition:
+
+	Performing something is an activity on dialogue lines.
+
+and has three activity variables: `speaker`, `interlocutor` and `style`.
+For narration, the `speaker` will be nobody, but otherwise it will be a
+definite person. (By the time this activity is running, a definite choice
+has been made about who is speaking.) The `interlocutor` is by default
+nobody, unless the line is marked as spoken `to` somebody. The `style`
+is a `performance style` value (see below), and by default is `spoken normally`.
+
+The actual performance is carried out by the following rule:
+
+	For performing a dialogue line (called L)
+		(this is the default dialogue performance rule):
+		if L is narrated or L is elaborated or L is non-verbal:
+			say "[textual content of L][line break]";
+		otherwise:
+			say "[The speaker]";
+			if the interlocutor is something:
+				say " (to [the interlocutor])";
+			say ": '[textual content of L]'[line break]".
+
+Note that this ignores the `style`, by default: see below. The existence
+of this activity makes it easy to customise how dialogue looks on screen:
+for example, it could display little pictures of the speakers, or do more
+elaborate JavaScript trickery when presented as a website. As a very
+simple example:
+
+	For performing a narrated dialogue line (called L):
+		say "[italic type][textual content of L][roman type][line break]".
+
+Note that the `speaker` and `interlocutor` might be inanimate objects:
+people do sometimes talk to microphones, and phones talk to people. So
+the above rule is careful not to refer to them using `somebody` rather
+than `something`, as that might exclude these.
+
+### Dialogue choice
+
+`dialogue choice` is an enumerated kind. Each value represents a single choice.
+Most lines are nameless in the source text; internally, those are given
+intentionally obscure names such as `choice-13` or `flow-21`, which can be
+printed at runtime for debugging purposes.
+
+Values of `dialogue choice` cannot be created with assertions: see the similar
+discussion for beats above.
+
+`dialogue choice` comes with the following either-or properties built in:
+
+- `performed` or `unperformed`. Has this been chosen yet?
+- `recurring` or `non-recurring`. Can the director offer this choice more
+than once in the same play-through? By default, no.
+
+Note that flow markers such as `<-` and `-> perform the broken window beat`
+are internally represented as dialogue choices too, even though they are
+mandatorily taken and are not offered to the player to think about. This
+can actually be useful, since it means flow markers can have names, and
+conditions attached to them, and so on.
+
+In addition, the following adjective can be tested at run-time:
+
+- `flowing` rather than `offered` if the choice is a `->` or `<-` flow
+control marker rather than an option offered to the player.
+
+### Textual decisions and the current choice list
+
+A "decision" is needed when the director is performing a beat and comes to
+a run of choices. (Offered choices, that is: flow markers it will act on
+without the player's intervention.)
+
+For example:
+
+	Border agent: "Business or pleasure?"
+	
+	-- "Business."
+	
+		Agent: "Then where is your C-34d section (xciii) visa exemption waiver proffer certificate D?"
+
+	-- "Pleasure."
+	
+		Agent: "Fill out the address of your hotel and the name of your vessel, like it's the 1930s still."
+
+After performing the border agent's first line, the director sees that there
+are two possible options to choose from. These options are inspected one at
+a time to see if they are actually available: if an option has been performed
+before (and is non-recurring) then it won't be, for example. As they are found
+to be available, they are accumulated into the "current choice list".
+
+This can be accessed with the phrase `current choice list`, in fact, and that
+enables options to be dependent on what previous options have already been
+found. For example:
+
+	-- "Hurl myself at the window."
+
+	-- "Tunnel through the wall."
+
+	-- (if the current choice list is empty) "Admit to being out of ideas."
+
+The first time this decision is performed, two options will be available -
+the first two. The player will choose one. If the decision is performed
+again, the player will be offered the one not chosen earlier. Should the
+decision come up a third time, the new option "Admit to being out of ideas."
+will be offered instead.
+
+If the choice list does end up empty, the director will skip the decision
+entirely, printing nothing. Otherwise, it must ask the player what to do,
+and for that it uses:
+
+	Offering something is an activity on lists of dialogue choices.
+
+The default behaviour is:
+
+	For offering a list of dialogue choices (called L)
+		(this is the default offering dialogue choices rule):
+		let N be 1;
+		repeat with C running through L:
+			say "([N]) [textual content of C][line break]";
+			increase N by 1.
+
+which produces a simple numbered list.
 
 ### Performance styles
 
-`performance style` is a simple enumerated kind of value. By default, it
+`performance style` is another enumerated kind of value. By default, it
 has just one value: `spoken normally`. But the user can create additional
-styles with assertions like so:
+styles with assertions in the usual way, like so:
 
 	Spoken angrily and spoken softly are performance styles.
 
 Performance styles exist as a hook for ambitious systems which, for example,
 change character art or pose for speakers who become angry, or which apply
 emotional parameters to autogenerated voice performance, in the event the game
-is using a text-to-speech.
+is using a text-to-speech engine.
+
+So by default they do nothing. Here is a very simple use:
+
+	Spoken furiously is a performance style.
+
+	Before performing a dialogue line (called L):
+		if the style is spoken furiously, say "[bold type]".
+
+	After performing a dialogue line (called L) :
+		if the style is spoken furiously, say "[roman type]".
+
+And then, say:
+
+	Elizabeth: "We had to pay the ransom, you know."
+
+	James (spoken furiously): "Even I wouldn't pay fifty thousand pounds for me!"
 
 Inform will not allow the following words to be used after "spoken" in the
 names of instances of this kind:
@@ -203,53 +668,7 @@ So for example it will reject:
 
 This is to prevent ambiguity: see below.
 
-## Dialogue sections
-
-Inform already has annotations, in brackets, attached to heading names. The
-new annotation "dialogue" marks that a section contains dialogue. For example:
-
-	Section 2 - On the Battlements (dialogue)
-
-The US spelling "dialog" will also be accepted:
-
-	Section 2 - On the Battlements (dialog)
-
-This is a point of difference with the names of the kinds `dialogue beat`
-and `dialogue line`, where British English spellings must be used, but reflects
-that hardly any users will ever see or type the names of those kinds, whereas
-all users of dialogue will need to type the above annotation quite often.
-
-Note that the annotation will throw a problem if used on other levels of
-heading, such as chapters. Since sections are the lowest-level headings in
-Inform source text, it follows that a dialogue section cannot be interrupted
-by a subheading.
-
-Dialogue sections contain a very different syntax from other parts of the
-source text. Rules, tables, equations and assertions are all forbidden here,
-and in their place are beats, lines and choices.
-
-Formally: other than commentary, a dialogue section must consist only of a
-sequence of 0 or more "dialogue beats", or "beats" for short. Each beat
-occupies one or more paragraphs, of which the first must be in round brackets
-and is called the "cue", and all others must be "dialogue lines" or "choices".
-For example, this is a complete dialogue section:
-
-	Section 2 - On the Battlements (dialogue)
-
-	(About the paranormal.)
-
-	Marcellus: "What, has this thing appear'd again to-night?"
-
-	Bernardo: "I have seen naught but [list of things in the Battlements]."
-	
-	Marcellus: "Horatio says 'tis but our fantasy."
-
-This dialogue section contains one beat, which contains one cue and three lines.
-
-### Cues
-
-The purpose of the cue is to specify when the beat of dialogue should be played,
-though that may depend also on information elsewhere in the source text.
+### The complete syntax for a cue to a dialogue beat
 
 The cue sentence(s) must be placed in round brackets, and should end with its
 full stop inside the brackets. This is an error:
@@ -257,19 +676,20 @@ full stop inside the brackets. This is an error:
 	(About the paranormal).
 
 The cue must contain at least one sentence, but must not contain a paragraph
-break. Each sentence must be one of the types outlined below in (1) to (8),
-with each type used at most once. An extensive example:
+break. Each sentence must be one of the "clauses" outlined below. An extensive
+example:
 
-	(About the paranormal. After the haunting beat. If the Ghost is in Elsinore.
+	(About the Ghost. After the haunting beat. If the Ghost is in Elsinore.
 	Recurring. This is the Marcellus gets anxious beat.)
 
-As syntactic sugar, these sentences can also be combined with the use of commas
-or `and` to divide them. For example:
+As syntactic sugar, semicolons can be used instead of full stops. For example:
 
-	(After the haunting beat and if the Ghost is in Elsinore, about the
-	paranormal. Recurring. This is the Marcellus gets anxious beat.)
+	(After the haunting beat; about the paranormal; recurring.)
 
-#### (1) Naming sentences in cues
+In the initial draft of this proposal, commas were also allowed as syntactic
+sugar to divide clauses, but this led to too much ambiguity in practice.
+
+#### The name clause for a cue
 
 Each beat provides a value for the kind `dialogue beat` (see above), but most
 beats are nameless. By providing a sentence like this, the value is given
@@ -278,96 +698,59 @@ a name. For example:
 	(This is the Marcellus gets anxious beat.)
 
 The name here is `Marcellus gets anxious beat`. The name has to end with
-`beat`, in English at least, for namespace reasons, and has to be unique:
-two different beats cannot have the same name.
+`beat` or `scene`, in English at least, for namespace reasons, and has to be
+unique: two different beats cannot have the same name.
+
+If the name ends in `scene`, Inform creates both a beat and a scene. For
+example,
+
+	(This is the fire drill scene.)
+
+creates both a beat called `fire drill beat` and also a scene called `fire drill scene`.
+The two are different values (of kinds `dialogue beat` and `scene` respectively),
+but their fates are tied together. The scene automatically starts and ends when
+the beat begins and ends its performance, and vice versa. (If some other
+condition causes the scene to end while the performance is mid-way, then the
+performance stops right there.)
 
 The name `starting beat` is reserved. If a beat is given this name, then
-it is performed at the start of play. This is especially useful for non-command
-parser stories, but can be used in any story. In command-parser IF, the starting
-beat is performed before the player's first command.
+it is performed at the start of play, as noted above.
 
 There is no analogous `ending beat`: stories can have multiple endings. But see
-`ending the story...` in the description of lines below.
+`ending the story...` in the description of line syntax below.
 
-#### (2) About sentences in cues
+#### The about clause for a cue
 
-`About` sentences tell the director what a beat of dialogue is talking about.
-This does two things: first, it tells the director which beat to select if
-a given topic comes up in conversation; and second, it tells the director
-when new topics have been brought up by one beat which might then flow into
-future beats.
+`About` clauses tell the director what a beat of dialogue is talking about.
 
-For example, in a command parser game, **ASK HORATIO ABOUT THE GHOST** might
-cause the director to be asked for dialogue to appear next. The director might
-then perform this:
+For example:
 
-	(About the paranormal.)
+	(About the ghost and Elsinore.)
 
-	Player: "Do you really think ghosts exist?"
-
-	Horatio: "They're not dreamt of in my philosophy, unlike [list of
-	scientific concepts]."
+	Horatio: "The battlements of Elsinore have been lately haunted, 'tis true."
 
 At its simplest, an about sentence consists of the word `about`, followed by
-a list of one or more conversation subjects:
+a list of one or more conversation subjects -- in this example, two. Subjects
+can be any kind of object; see the discussion of the current list of live
+subjects above.
 
-	(About the paranormal.)
-	(About Marcellus and the paranormal.)
-
-`About X, Y and Z` means that the beat involves all of the subjects
-`X`, `Y` and `Z`. This means that it can be performed when any of those subjects
+`About X, Y and Z` means that the beat involves all of the subjects `X`, `Y`
+and `Z`. This means that it can be performed when any of those subjects
 are live, and that once it has been performed, the others all become live.
 This enables conversation to flow, by allowing those other subjects to
 be talked about in subsequent beats. For example, the first beat below
 is `about Velma and the robbery`. As we begin, Velma is live, but the
 robbery is not. Performance of the first beat changes that:
 
-	> ASK ABOUT VELMA
+	(about Velma and the robbery)
+
 	Fred: "Velma totally hasn't been the same since that bullion robbery."
-	> ASK ABOUT BULLION
+
+	(about the robbery)
+
 	Fred: "Velma used to work the Lufthansa cargo desk at Stuttgart, and..."
 
-Using `about either ... or ...`, though, we can instead say that the beat
-is a suitable response to the subjects named, but does not make any of them
-live. For example, this beat might be `about either Daphne, Scooby or Scraggy`:
-
-	> ASK ABOUT DAPHNE
-	Fred: "Just another loser I used to drive around with."
-
-This dialogue can appear because Daphne is a live subject, but does not
-make either Scooby or Scraggy live.
-
-If a general description is used rather than a single explicit name, then
-this is taken as an `either... or...` situation unless the keyword `every`
-is used. For example, this beat might be `about every dwarf`:
-
-	> ASK ABOUT SLEEPY
-	Snow White: "I have eight? no, seven indentured miners right now. No
-	point remembering their names, they die so quickly. I just go by
-	appearances. The present lot are Doc, Grumpy, Happy, Sleepy, Bashful,
-	Sneezy, and Dopey. Might let Sneezy go, actually, don't want a sudden
-	cave-in to knock out all seven at once. You can only buy fresh dwarfs
-	on Wednesdays, you see, so one bad sneeze on a Thursday and..."
-
-And this might be `about any dwarf` or just `about a dwarf`:
-
-	> ASK ABOUT SLEEPY
-	Snow White: "He's a varmint like all the rest of them."
-
-For a beat which responds to a set of different subjects but then _also_
-mentions new subjects, the `mentioning` clause can be used (see below).
-Thus `about any dwarf and mentioning diamonds and pageants` might do for:
-
-	> ASK ABOUT SLEEPY
-	Snow White: "He's a varmint like all the rest, but the diamonds are in
-	these crazy low tunnels, and I can't afford to muss my hair. I'm still
-	super-active on the pageanting circuit, you know."
-
-In this context, a "conversation subject" is nothing more than a description
-of an object. In practice that will want to be a concept, a thing or just
-possibly a room, but probably not a region or scene. Note that a subject is
-a description, which can be vaguer than a name. For example, if the source
-text contained, say,
+Note that `About` clauses can also give vague descriptions. For example:
 
 	A concept can be frightening or safe.
 	The paranormal is a frightening concept.
@@ -382,35 +765,62 @@ garden design. Similarly:
 
 	(About any woman in the Dining Room.)
 
-One might, for example, create a `discrediting` relation from concepts to
+Or one might, for example, create a `discrediting` relation from concepts to
 people, and then have:
 
 	(About any concept which discredits Gordon.)
 	
 	Douglas (to Carolyn): And you say the marriage wasn't a success?
 
-For clarity, a conversation subject is not allowed to contain a comma, or
-the words `and` or `or`. If the user wants a description so complex that it
-needs these, she should set up some adjective and then describe with that.
+Descriptions like this will match the current live subject list, for purposes
+of choosing relevant beats, but will not add to the live list when the beat
+is performed. For example:
 
-Still to be determined: can callings be used in descriptions of subjects
-used in "about" sentences? If so, where would the variables they create be
-in scope?
+	(About a dwarf.)
+	
+	Snow White: "I have eight? no, seven indentured miners right now. No
+	point remembering their names, they die so quickly. I just go by
+	appearances. The present lot are Doc, Grumpy, Happy, Sleepy, Bashful,
+	Sneezy, and Dopey. Might let Sneezy go, actually, don't want a sudden
+	cave-in to knock out all seven at once. You can only buy fresh dwarfs
+	on Wednesdays, you see, so one bad sneeze on a Thursday and..."
 
-#### (3) Condition sentences in cues
+...would match any of the dwarfs for purposes of relevance, but not make
+any of them live topics when the beat is performed. Writing it this way, on
+the other hand, would do:
+
+	(About Doc, Grumpy, Happy, Sleepy, Bashful, Sneezy, and Dopey.)
+
+And then, for example:
+
+	(About Bashful.)
+
+	Snow White: "He's a varmint like all the rest of them."
+
+If a beat is bringing up unexpected new information, which should not be
+matched for relevance purposes when the beat is being chosen, `mentioning`
+should instead be used on the dialogue itself. For example:
+
+	(About a dwarf.)
+
+	Snow White (mentioning diamonds): "He's a varmint like all the rest, but
+	the diamonds are in these crazy low tunnels, and I can't afford to muss
+	my hair. I'm still super-active on the pageanting circuit, you know."
+
+The original draft of this proposal had a more convoluted syntax here which
+allowed `about either ... or ...`, had a keyword `any`, and so on, but that
+now seems fussy. (An eighth dwarf in waiting.)
+
+#### The if and unless clauses for a cue
 
 These restrict the availability of dialogue beats, making them only available
 when the given condition is met (or not met):
 
 	(If Denmark is rotten.)
+
 	(Unless Hamlet has the skull.)
 
-Arbitrary conditions can be slow to test, so the condition will be tested only
-when the beat is being seriously considered for use. (That is, if an `about`
-sentence restricts it, then the `if` condition would be checked only when the
-conversational subjects for the beat actually arose.)
-
-#### (4) Chaining sentences in cues
+#### The after, before, later, next, and immediately after clauses for a cue
 
 These say that the new beat can be performed only when another beat has already
 been performed at some point in the past; or, has not. For example:
@@ -451,8 +861,7 @@ For example:
 
 	(About Pygmalion and mentioning Cyprus.)
 
-	Galatea: "I haven't seen him around since I left
-	Cyprus."
+	Galatea: "I haven't seen him around since I left Cyprus."
 
 	(Next, about Cyprus.)
 
@@ -478,22 +887,59 @@ The effect here is that we'd see
 	Galatea: Maybe! I don't yet have a good understanding of
 	object permanence!
 
-`Immediately before` is, of course, impossible, and is rejected with a
-problem.
+(`Immediately before` is, of course, impossible.)
 
-#### (5) Supplying properties for beats
+#### The requiring clause for a cue
+
+Consider this beat:
+
+	(about the Zeppelin)
+	
+	Hans: "See our prodigious rate of climb, Ludwig!"
+	
+	Ludwig: "Jawohl, Hans."
+
+There would not be much point in performing this beat unless Ludwig and Hans
+were within earshot of the player, because none of the lines could actually
+be spoken, and so it would complete silently.
+
+Because of that, each beat has a list of "required speakers", and the director
+when in active mode will only select a beat for performance if all of those
+speakers are present (more exactly, if the player can hear them).
+
+By default, the required speakers are all those whose names explicitly appear
+as speakers of lines within the beat. But if that is not what the author
+wants, the cue can be more explicit:
+
+	(about the Zeppelin; requiring Hans)
+	
+	Hans: "See our prodigious rate of climb, Ludwig!"
+	
+		Ludwig: "Jawohl, Hans."
+
+This beat can now play even if Hans is not there, though of course he would
+then receive no reply.
+
+When the director is in passive mode, this list is ignored, though it can still
+be accessed using the phrase `list of speakers required by (B - dialogue beat)`
+(see above).
+
+The original draft of this proposal had a more complicated algorithm for
+determining the required speaker list, but it seems better for the author
+to have to write explicitly what's wanted in any case of possible doubt.
+
+#### Supplying properties as clauses for a cue
 
 The name of a property which a `dialogue beat` can have (an either-or
 property, or conceivably a value of an enumerated property) can be a
 cue sentence all by itself. In particular, this means that:
 
 - The cue `(Recurring.)` gives the beat the `recurring` property. This means
-that it can be performed only once, or rather, that it will not be considered
-for performance if it has the `performed` property.
+that it can be performed more than once.
 
 - The cue `(Spontaneous.)` gives the beat the `spontaneous` property. A spontaneous
 beat can be chosen by the director, when the director is active and looking
-for conversations to start, even if it has no `about` subjects. (See below.)
+for conversations to start, even if it has no `about` subjects.
 
 But note that new properties for dialogue beats can also be created with
 regular Inform sentences like:
@@ -506,60 +952,18 @@ And this enables beats to be tagged in arbitrary ways:
 	
 	Horatio: "Sorry to break the fourth wall, but will this program ever work?"		
 
-#### (6) Requiring sentences in cues
+### The complete syntax for a dialogue line
 
-Dialogue cannot be performed if the speakers are out of the player's earshot:
-for example, the player is in a Zeppelin flying over Antwerp in 1921 while the
-two speakers are in 16th-century Denmark.
-
-The director therefore needs to test whether person A can hear dialogue by
-person B. This is very like visibility, already determined in the existing
-role model, and in indeed most of the time audibility and visibility will be
-the same thing for our purposes. But we will probably want to build out
-the customisability of this concept as part of this work. For now, that's
-not specified, but we will somehow implement the verb `A can hear B`.
-
-Given that, we could force dialogue to be performed by people actually present
-with something like:
-
-	(about the duel, if the player can hear Bernardo)
-
-But that's clumsy. Instead, the director makes a _guess_ at who needs to be
-present. Consider this beat:
-
-	(about the duel)
-
-	Bernardo: "Yo!"
-	
-	Marcellus: "Eh?"
-
-	Horatio (now Fortinbras is in Elsinore): "Aha!"
-	
-	Fortinbras: "Yikes!"
-
-The guess here is that Bernardo, Marcellus and Horatio are required but that
-Fortinbras is not, because he only speaks after the first time that something
-potentially happens. (And that's right in this case.)
-
-There will be times when this guess is wrong. In any case, when speakers are
-named only vaguely (see below), even these guesses will be difficult. As a
-fallback, then, authors can write
-
-	(about the duel, requiring Horatio and Bernardo)
-
-And this sets the list of speakers required to be audible in order for the beat
-to begin. (When the beat is being performed, any speaker not in fact audible has
-their lines unperformed, but the others continue to speak. If that causes weird
-non-sequiturs, well, the `requiring` list should have been better made.)
-
-### Lines
-
-After the cue paragraph, a beat consists of lines. Each line occupies a
-single paragraph, and takes one of these forms:
+A dialogue line occupies a single complete paragraph, and takes one of these forms:
 
 	SPEAKER: "TEXT."
 
 	SPEAKER (PERFORMANCE DETAILS): "TEXT."
+
+If given, the performance details are one or more clauses, divided by full stops
+or semicolons, and placed in round brackets after the speaker name. Thus:
+
+	SPEAKER (CLAUSE1; CLAUSE2; ..., CLAUSEn): "TEXT."
 
 #### The speaker
 
@@ -581,41 +985,71 @@ it need not be a literal name of a person, though it usually will be.
 	Marcellus:
 	A woman:
 	Somebody who is not Marcellus: 
-	Th0e tallest person in the Dining Room:
+	The tallest person in the Dining Room:
 
-If multiple objects (which are not out of play) would match the description,
-the object maximimising the following score is chosen:
+If multiple objects would match the description, the object maximising the
+following score is chosen:
 
+	+16 for being on-stage (i.e. in play)
 	+8 for being audible to the player
-	+4 for being the interlocutor (see below) of the previous speaker in the beat
+	+4 for being the interlocutor of the previous speech in the beat
 	+2 for being of the kind "person"
 	+1 for being different to the previous speaker in the beat
 
-If multiple objects still have equal scores, a random choice is made.
+If multiple objects still have equal scores, a random choice is made from
+those objects. If none at all match, the line of dialogue is skipped and not
+performed at all, but no run-time problem is thrown. Because it was not
+actually said, it is not given the `performed` property.
 
-If no person (who is not out of play) matches, the line of dialogue is skipped,
-but no run-time problem is thrown.
+#### The name clause for a line
 
-#### Performance details
+Each line provides a value for the kind `dialogue line` (see above), but most
+lines are nameless. By providing a clause like this, the value is given
+a name. For example:
 
-If given, the performance details are one or more clauses, divided by commas,
-and placed in round brackets after the speaker name. Thus:
+	Marcellus (this is the reluctant admission line): "Something is rotten."
 
-	SPEAKER (CLAUSE1, CLAUSE2, ..., CLAUSEn): "TEXT."
+The name has to end with `line`, in English at least, for namespace reasons,
+and has to be unique: two different lines cannot have the same name.
 
-Clauses can be any of the following: note that, in English at any rate, the
-first word of the clause determines which of the following is parsed.
+Most lines never need naming, of course, but this can be useful for testing,
+say, `if the reluctant admission line is unperformed`.
 
-(1) `if` or `unless` plus an Inform condition. The line is skipped (simply
-omitted: no run-time problem is thrown) if the condition fails. In testing
-the condition, the local variable "speaker" is set to the speaker. Thus:
+#### The to clause for a line
 
-	A random guard (if the speaker can see Hamlet): "Yo, Prince!"
+`to` plus a description of an object specifies the "interlocutor" for the
+speech - the person to whom it's specifically addressed. Most lines are
+delivered to the whole room in general, and have no interlocutor, so this
+clause is optional. It's useful for lines which make sense only in the
+presence of somebody else. For example:
 
-(2) `before` or `after` plus an Inform action constant. If it's `before ACTION`,
-then `ACTION` is tried after the line is performed. If it's `after ACTION`, the
-`ACTION` is tried before the line is performed - and in that case, if the action
-fails, the line is silently not performed (and no run-time problem is thrown).
+	Marcellus (to Horatio): "The Prince looks moody tonight, i'faith."
+
+The line will not be performed unless Marcellus can hear Horatio.
+
+#### The mentioning clause for a line
+
+`mentioning ...` says that the line makes a conversation subject live
+when it is performed. For example:
+
+	Marcellus (mentioning the ghost): "I be mighty afear'd of the Ghost."
+
+A whole list of subjects can be given: `mentioning the Ghost and Denmark`
+would give two, for example.
+
+#### The if and unless clauses for a line
+
+`if` or `unless` plus any Inform condition. The line is omitted as being
+unavailable if these conditions fail. It is then skipped and not performed
+at all, but no run-time problem is thrown. Because it was not actually said,
+it is not given the `performed` property.
+
+#### The before and after clauses for a line
+
+These clauses say that an Inform action should be tried along with the
+performance of the line. Note that `before` means the line is performed
+before the action, and `after` means it is performed after.
+
 Unless otherwise specified, the actor of the action is the speaker, so this
 is an exception to the general rule of Inform that the default actor is the
 player. For example:
@@ -628,20 +1062,10 @@ would be performed as:
 	
 	Gravedigger: "Here goes another shallow one."
 
-As with `try`, the keyword `silently` can also be used. Given the following:
-
-	Gravedigger (after silently taking the shovel): 
-		"'Here goes another shallow one,' says the thin man lugubiously, picking up the shovel."
-
-possible outcomes might be:
-
-	"Here goes another shallow one," says the thin man lugubiously, picking up the shovel.
-
-if he succeeds in taking it, or text printed by some rule failing the action:
-
-	The gravedigger reaches for the shovel, but Horatio grabs it first.
-
-if he does not.
+In the case of `after`, the action must succeed, or else the line is not
+performed after all. For example, if some rule made it impossible for any
+person to take the shovel, the Gravedigger would not in fact get it, and
+therefore his line would make no sense: so it would not be performed.
 
 The actor need not be the speaker, but the action has to succeed whoever the
 actor may be:
@@ -649,241 +1073,195 @@ actor may be:
 	Gravedigger (to Hamlet, after Hamlet silently taking the shovel):
 		"Hey, I saw you picking up that shovel! That's a union job, sweet Prince!"
 
-(3) `now` plus a condition, which is asserted before the line is spoken.
-For example, suppose the source text elsewhere says `A person can be scared.`
-Then:
+As with `try`, the keyword `silently` can also be used:
 
-	Marcellus (now Marcellus is scared): "Oh my."
+	Gravedigger (after silently taking the shovel): 
+		"'Here goes another shallow one,' says the thin man, picking up the shovel."
 
-(4) `to` plus a named object, who is considered the "interlocutor", that is,
-the person addressed. For example:
+This would suppress the uninteresting text "The gravedigger takes the shovel.".
 
-	Marcellus (to Horatio): "The Prince looks moody tonight, i'faith."
+#### The now clause for a line
 
-The line will not be performed unless Marcellus can hear Horatio.
+`now` plus a condition allows the world model to be changed immediately after
+the line is performed. For example:
 
-(5) `without speaking` makes the line essentially narration. Thus:
+	Marcellus (now Marcellus is in the Banqueting Hall): "Oh my. I'm running for it!"
+
+#### The ending the story clause for a line
+
+There are four variants of this:
+
+	ending the story          
+	ending the story finally
+	ending the story saying "TEXT"
+	ending the story finally
+	ending the story finally saying "TEXT"
+
+These correspond exactly to the phrases which `end the story`. Like `now`,
+they are effects which take place immediately after the line is performed.
+In particular the story does not end if for some reason the line is not
+performed - if a condition for it fails, or somebody necessary is out of
+earshot, or an action running before it fails, and so on.
+
+It's legal to pile up multiple `after`, `before`, `now` and `ending` clauses
+on the same line, at your own risk:
+
+	Marcellus (after taking the ghost detector; after examing the ghost; now
+	Marcellus is in the Banqueting Hall; before jumping):
+		"Marcellus grabs the equipment, takes a quick reading, and panics.
+		'Oh my. I'm running for it!' And he makes a running jump."
+
+The sequence is: `after` actions first, in declaration order; then actual
+performance of the line; then `now` effects and `ending`; then `before` actions,
+in declaration order. If any of the `after` actions should fail, the process
+stops there.
+
+#### The without speaking clause for a line
+
+`without speaking` makes the line non-verbal: something like a gesture, which
+is still performed by somebody.
+
+	Marcellus (without speaking): "Marcellus throws up his hands, appalled."
+
+The difference between this and `Narration:` is that there is a speaker,
+`Marcellus`. Because this is non-verbal, he needs to be visible, not audible.
+Similarly there can be an interlocutor, who must be visible to the speaker
+rather than audible to him. For example:
 
 	Marcellus (without speaking, to Bernardo): "Marcellus points a horrified finger, and nudges Bernardo."
 
-The advantage of this over the simpler:
+In the event that you need audibility after all, you can still finagle things:
 
-	Narration: "Marcellus points a horrified finger, and nudges Bernardo."
+	Marcellus (elaborated, to Bernardo): "Marcellus points a horrified finger, and nudges Bernardo."
 
-is that it sets the speaker and interlocutor variables: this may be useful
-when state is being built on top of conversations by augmenting the director's
-activity rules.
+But this is not an elegant device.
 
-(6) `this is the ... line` provides a name for the value used at run-time to
-represent this line of dialogue: they are ordinarily nameless.
+#### The style clause for a line
 
-(7) `mentioning ...` says that the line makes a conversation subject live
-when it is performed. For example:
+Using just the name of a `performance style`, but with the word `spoken` removed,
+indicates that the line is performed this way. By default it is performed in
+the style `spoken normally`, as if the clause `normally` had been written. A line
+must have a single style.
 
-	Marcellus (mentioning the paranormal): "I be mighty afear'd of the paranormal."
-
-(8) The name of a performance style, but with the word `spoken` removed. Thus,
-if the user has created the style `spoken with asperity`, then:
+Thus, if the user has created the style `spoken with asperity`, then:
 
 	Marcellus (with asperity): "I've had it with these goddam ghosts."
 
 This will set the activity variable `style` to `spoken with asperity` when the
-line is performed (see below), rather than its default value, `spoken normally`.
+line is performed: see above.
 
-(9) `ending the story` or `ending the story in ...` work like the existing
-Inform phrases `end the story` and `end the story in ...`. The story ends
-after the line is performed. Note that if the is conditional and is not
-performed, the story does not end.
+#### Supplying properties as clauses for a line
 
-#### The line performed
+The name of a property which a `dialogue line` can have (an either-or
+property, or conceivably a value of an enumerated property) can be a
+clause all by itself. In particular, this means that:
 
-The performed line is an Inform text, in double-quotes. It can come in two
-forms, "unelaborated" and "elaborated". As examples of these:
+- `Marcellus (recurring): ...` gives the line the `recurring` property. This means
+that it can be performed more than once.
 
-	Marcellus: "What, has this thing appear'd again to-night?"
+#### The speech text for a line
 
-	Marcellus: "Marcellus gives a shiver. 'What,' he exclaims, 'has this thing appear'd again to-night?'"
+The performed line is an Inform text, in double-quotes.
 
-Inform determines at compile-time whether the line is plain or fancy by looking
-for at least one pair of single quotation marks at word boundaries. (Note that
-the apostrophe in "appear'd" is not at a word boundary.) At runtime, the
-either/or property "elaborated" for the dialogue line holds the value of this.
+This can contain text substitutions in square brackets, in the usual way for
+Inform text, giving access to an enormous range of effects.
 
-There is one exception to this: if the speaker is given as `Narration`, then
-the line is always elaborated.
-
-Elaboration affects how the line is performed, that is, what text is shown
-to the player when the line has been spoken. This is done with the new
-`performing dialogue` activity, which has three activity variables, `speaker`,
-`interlocutor`, `style` and `line` (of kinds `thing`, `thing`, `performance
-style` and `text` respectively). The default is:
-
-	For performing dialogue with an elaborated dialogue line:
-		say the content of the line.
-
-	For performing dialogue with an unelaborated dialogue line:
-		if the speaker is the player:
-			say "'[content of the line]'";
-		otherwise:
-			say "[The speaker]: '[content of the line]'".
-
-	After performing dialogue:
-		now the line is performed.
-
-Unless the user has meddled with this activity in some way, then, the line
-examples above would be performed as:
-
-	Marcellus: "What, has this thing appear'd again to-night?"
-
-	Marcellus gives a shiver. "What," he exclaims, "has this thing appear'd again to-night?"
-
-This can contain text substitutions in square brackets, in the usual way.
 When such text is printed, the activity variable `speaker` will exist for it,
 and will hold the identity of the speaker performing the line. (If the line
-is narration, it will still exist, but will be equal to `nothing`.) This will
-also be the value of `self` internally, i.e., references to properties which
-do not specify an owner will be taken as properties of the speaker. Thus:
+is narration, it will still exist, but will be equal to `nothing`.) Similarly
+for `interlocutor` and `style`. So for example:
 
 	A person in the Lounge:
 		"[The speaker] self-importantly [declare]: 'The greatest TV show of all
-		time is [if female]Gilmore Girls[if not]24[end if].'"
+		time is [if the speaker is female]Gilmore Girls[if not]24[end if].'"
 
 might be performed as:
 
 	Henry self-importantly declared: "The greatest TV show of all time is 24."
 
-Note that the default rules for performing dialogue ignore the performance
-style, i.e., the current value of `style`. Performance styles exist to allow
-the user to build more state on top of the dialogue engine: for example, the
-user could give characters numerical scores for their current levels of anger,
-and increase these when a character says something "angrily". Such changes
-should be made in `After performing dialogue` rules.
-
-We haven't reached agreement on whether the concept of elaboration should be
-used by default. These views have both been argued:
-
-(a) That authors would prefer or find easier to understand a system where
-everything is elaborated, or else everything is unelaborated, so that the
-decision is made for all of the dialogue in a project at once - use one format
-throughout, or use the other throughout. In production games, especially
-for interesting web or app presentations, consistency here is important.
-
-(b) That the elaborated/unelaborated system gets things right automatically,
-and allows users to write thousands of simple lines with just a handful
-of elaborated ones mixed in; it also allows for the possibility that an
-extension might contain dialogue which the author has not written herself.
-
-A compromise may be for the compiler to silently track elaborated/unelaborated,
-but for the default rules in the `performing dialogue with` activity to make
-no use of it; Examples in the documentation can then show how to get the effect.
-
-### Choices
+### The complete syntax for a dialogue line
 
 During a beat, dialogue ordinarily flows without stopping (see "continuity
-of performance" below), but will pause for the player to exercise choices
-at "choice" sentences, if there are any.
+of performance" below), but will pause at points where a decision from the
+player is called for.
 
-These begin with a double hyphen and often a run of them is presented together,
-making a set of options. For example:
-
-	-- (perform bluffing it out beat) "Pretend everything is fine"
-	
-	-- (perform facing them down beat) "React with horror"
-
-This goes to the player and asks for a choice between the options available.
-The syntax here, then, is one of:
+Decisions consist of a run of one or more choices written `-- ...`. There
+are two forms of choice: textual and action-based.
 
 	-- (DETAILS) "TEXT"
 
-	-- (DETAILS) ACTION-PATTERN
+	-- (DETAILS) after ACTION-DESCRIPTION
+
+	-- (DETAILS) before ACTION-DESCRIPTION
+
+	-- (DETAILS) instead of ACTION-DESCRIPTION
 
 	-- (DETAILS) otherwise
 
-	-- (DETAILS) again
+A decision cannot have a mixture of the two sorts of option. In the first
+sort, there's a run of textually presented options, like this:
 
-	-- (DETAILS) stop
-
-	-- (DETAILS)
-
-where in each case the `(DETAILS)` are optional.
-
-Once again, the details can affect both whether a choice is offered at all and
-what will happen if it is both offered and then chosen. Details can be given
-in any order and are divided with commas, once again:
-
-(1) `if ...` and `unless ...` apply conditions on whether the choice is offered.
-When a run of choices is being looked at, the variable `choice count` keeps
-a running tally of those found acceptable to be offered so far (compare the
-function `CHOICE_COUNT()` in Ink). Thus `if the choice count is less than 3`
-would check whether less than three choices had so far been found possible.
-
-`if` and `unless` are illegal for an `-- otherwise` choice, which must always
-be possible.
-
-(2) `perform ...` followed by a beat name means two things. If the beat has been
-performed and is not recurring, then the option is not offered. Otherwise,
-the option is offered, and if chosen then the current beat ends and the named
-new beat immediately begins. In this process, beats are not nested.
-
-(3) `perform ... and continue` is similar, but continues the current beat after
-the named new beat finishes. In this process, beats are nested.
-
-(4) `this is the ... choice`  provides a name for the value used at run-time to
-represent this choice point in the dialogue: they are ordinarily nameless.
-
-Now for the "selector", that is, what the player does to indicate that this
-choice should be taken. Inform requires that the run of choices offered at
-any point must either consist entirely of choices selected by texts:
-
-	-- "Launch into a complicated excuse."
-	-- "Run for it!"
-
-or entirely of choices selected by actions, which can be but need not be
-actions to do with talking:
-
-	-- examining a door
-	-- asking Clark about "ticket [even number]"
-
-In either case, an `-- otherwise` choice can also be offered, but if so it
-must appear last and must not be the only choice in the run.
-
-`-- again` always forms a run on its own, always being the only choice
-available - it is in fact an unconditional branch, and returns to the
-previously offered choice position, re-offering the choices. (That's to
-say, the narrator works out which choices are available - which may have
-changed in the intervening time - and then offers those which are.)
-
-What the director does to find out the player's next intention depends on
-whether we have a run of text choices, or a run of action choices.
-
-#### Text choices
-
-Here the director essentially needs to print out the possibilities and ask
-the player to choose one, though this is very customisable.
-
-Since choices can be only sometimes available (e.g. having `if` conditions),
-the director first determines which choices in the run are actually on offer.
-If the result is an empty list - they are ruled out for one reason or another,
-and there isn't an `-- otherwise` option - then the director offers no
-choice at all. The beat continues from after the run of choices.
-
-Otherwise, the list of possibilities is passed as a value of kind `list of
-dialogue choices` to the activity `offering a dialogue choice`. The default
-implementation in a command-parser game expecting keyboard input would
-probably print something like:
-
-	(1) Pretend everything is fine...
+	-- "Pretend everything is fine"
 	
-	(2) React with horror...
-	
-	(Press 1 or 2)
+	-- "React with horror"
 
-and wait for keyboard input. In a Vorple game, something more point-and-click
-is likely, and the choices may be erased from the screen when made, say.
+This is the sort of choice offered by the "offering activity" (see above).
 
-#### Action choices
+In the second sort, there's a run of action-matching options, like so:
 
-This is only suitable for interactive fiction which has some sort of interface
+	-- after examining something
+
+	-- before taking or pushing the ball
+
+	-- otherwise
+
+With this second sort, there's no offer as such: the player can type a command
+in traditional command-parsing form, and then we see what she has done and
+react accordingly. An `-- otherwise` clause matches only if none of the others
+do, and is optional.
+
+In each case the `(DETAILS)` are optional, and consist of one or more clauses.
+As with beats and lines, these can be divided by full stops or semicolons.
+
+#### The if and unless clauses for a choice
+
+`if` or `unless` plus any Inform condition. The choice is omitted as being
+unavailable if these conditions fail.
+
+When such conditions are being tested, the phrase `current choice list` produces
+the list of those found to be available so far. (See above.) This allows for
+decisions to reshape themselves with the circumstances: compare the function
+`CHOICE_COUNT()` in Ink, which is often used for similar reasons. `CHOICE_COUNT()`
+would be equivalent to taking the length of the `current choice list`.
+
+#### The name clause for a choice
+
+Each choice provides a value for the kind `dialogue choice` (see above), but most
+choices are nameless. By providing a clause like this, the value is given
+a name. For example:
+
+	-- (this is the desperate choice) "Run for it in blind hope"
+
+The name has to end with `choice`, in English at least, for namespace reasons,
+and has to be unique: two different choices cannot have the same name.
+
+Most choices never need naming, of course, but this can be useful for testing,
+say, `if the desperate choice is unperformed`.
+
+#### Supplying properties as clauses for a choice
+
+Exactly as for beats and lines, the name of a property which a `dialogue choice`
+can have (an either-or property, or conceivably a value of an enumerated
+property) can be a clause all by itself. For example,
+
+	-- (recurring) "Go back to the visitor centre"
+
+would be offered every time this decision came up, rather than being offered
+only until the player had chosen it for the first time.
+
+#### Action decisions
+
+These are only suitable for interactive fiction which has some sort of interface
 allowing the player to choose actions: the traditional example, of course,
 being keyboard input run through a command parser.
 
@@ -896,7 +1274,7 @@ continues.
 Note that the action is indeed processed, so if the player's command called
 for things to happen, then they will indeed happen. For example:
 
-	-- examining a door
+	-- after examining a door
 	
 		Horatio: "The river's out of the window, Ophelia. Not the doors."
 
@@ -919,7 +1297,7 @@ or
 	Horatio looks annoyed not to make a snarky remark.
 
 But in both cases the player made an action happen. To avoid this, use
-`instead of`. Thus:
+either `before` or `instead of`. Thus:
 
 	-- instead of examining a door
 	
@@ -944,8 +1322,9 @@ if the actions referred to are conversational ones, where we would otherwise
 get odd clashes between the parser's usual handling of ASK X ABOUT Y and
 our new one.
 
-With a run of action choices, an `-- otherwise` is used if none of the
-other choices matched.
+With a run of action choices, an `-- otherwise` is chosen if none of the
+other choices matched. If there is no `-- otherwise`, and none of the choices
+match, then the decision is left hanging for another turn and reconsidered then.
 
 For example:
 
@@ -979,106 +1358,102 @@ For example:
 		you're not interested.[or]I'm really regretting proposing during
 		this baseball game.[stopping]"
 		
-		-- again
+		<-
 
-Note the position of the `-- again`, indented underneath the `-- otherwise`.
+Note the position of the `<-` flow marker, indented underneath the `-- otherwise`.
 This little conversational predicament continues until the player puts
-Clark out of his misery, one way or another. Had the `-- again` been
-unindented, the result would be that the whole thing goes on forever.
+Clark out of his misery, one way or another. Had the `<-` been unindented,
+the result would be that the whole thing goes on forever.
 
-`-- stop` halts the whole beat when reached, breaking out right to the
-top level. So the above would be equivalent to:
+### Flow markers
 
-	(this is the proposal beat)
+Flow markers are written `<-` or `->`. These are simple but very useful.
 
-	Clark: "Will you marry me, Kate?"
+`<-` on its own goes back to either the most recent decision point in the
+same beat, or (if there hasn't been a decision) to the start of the beat.
 
-	-- instead of saying yes
+As with control mechanisms in all programming languages, that makes it
+possible to get into endless loops:
+
+	(This is the ill-advised beat.)
 	
-		Player: "Yes, Clark! I adore you!"
-
-		Clark: "I'm so glad!"
-		
-		-- stop
-
-	-- instead of saying no
+	Fatboy Slim (recurring): "Right about now, the funk soul brother."
 	
-		Player: "No. Not a chance. You're always pushing wheelbarrows
-		about and I don't think you really love me."
+	Fatboy Slim (recurring): "Check it out now, the funk soul brother."
 
-		Clark: "Bummer."
-		
-		-- stop
+	<-
 
-	-- instead of asking Clark about "hat"
+But it is extremely useful for situations like this one:
 
-		Player: "I'll consider it if you stop wearing that hideous hat."
-
-		Clark (after taking off the hideous hat): "Done!
-		Darling, we'll be so happy!"
-		
-		-- stop
-		
-	-- otherwise
-
-		Clark: "[one of]Don't change the subject...[or]I'm starting to think
-		you're not interested.[or]I'm really regretting proposing during
-		this baseball game.[stopping]"
-		
-	-- again
-
-Here, that final `-- again` makes it look as if the loop goes on forever,
-but the three `-- stop` choices mean that in fact it works as before.
-
-Nothing can follow an `-- again` or `-- stop` at the same indentation level,
-and nothing can appear beneath it: either results in problem messages.
-
-### Nested choices
-
-As has already appeared in several examples, indentation can be used to
-avoid having to construct elaborate conversation trees out of named beats.
-For example:
-
-	Bernardo (now Bernardo is scared): "Yikes! Ghost!"
-
-	-- "Pretend everything is fine"
+	-- "Option which turns out not to work."
 	
-		Player: "It's just Scotch mist, blown east from old Aberdeen."
+		Recording angel: "That didn't work. Try again."
 		
-		Bernardo: "Nay, sire, it's magical!"
-		
-		-- (if the shortbread is carried) "Assuage his night terrors"
-		
-			Player (before Bernardo eating the shortbread): "Here, take this old Highlands cure."
+		<-
 
-			Bernardo (now Bernardo is not scared): "Hoots mon, that's better."
-
-		-- "Reprimand Bernardo"
-
-			Player: "I don't care if it's haunted, guard the Battlements."
-		
-		Polonius (now Polonius is in the Battlements): "I never come up here."
-
-	-- "React with horror"
+	-- "Another option which turns out not to work."
 	
-		Narration (before going north): "You panic and run for the woods."
+		Recording angel: "No, try again."
+		
+		<-
 
-This is actually five different beats, since the dependent parts under each
-choice are all beats in their own right.
+	-- "The one option which works."
+	
+		Recording angel: "Well done."
 
-The obvious rules apply: speeches and choices can occur only at the current
-indentation level or at a level 1 deeper than the previous speech or choice.
+In effect this repeats the decision up to three times until the player heads
+down the track we want.
 
-Polonius's line of dialogue is interesting as an example here: this is where
-the beat continues after going through either one of the two previous choices.
-(This point is what would, in Ink, be called a "gather".) That happens
-with no need for special syntax because the indentation makes it clear, since
-it's a dialogue line occurring at an indentation showing that it cannot be
-part of the "Reprimand Bernardo" thread.
+`-> perform B`, where `B` is the name of a beat, causes the director to
+perform that beat at this point. Note that after `B` finishes, the original
+beat continues where it left over. This nesting can go up to 20 beats deep.
 
-Note that if two runs of choices are to follow each other with no intervening
-dialogue or narration, there would be no way to convey that with indentation
-alone. The special choice line `--` alone provides the necessary division. Thus:
+Again, it's a bad idea to do this:
+
+	(This is the equally ill-advised beat.)
+	
+	Fatboy Slim (recurring): "Right here, right now."
+	
+	-> perform the equally ill-advised beat
+
+Instead, it's good to use `-> perform ...` as a way of incorporating what
+amounts to a complicated sub-scene which is only needed in some situations.
+
+	-- "Climb the chimney"
+	
+		Narration: "You get only a few feet, and covered in soot."
+		
+		<-
+		
+	-- "Get into the wardrobe."
+	
+		Narration: "Hmm, there seems no end to these fur coats."
+		
+		-> perform the Narnia visit beat
+
+		Narration: "Goodness, back at that wardrobe you only dimly remember."
+
+`-> stop` causes the current beat to finish right here, and is convenient
+when a drastic choice short-circuits what might otherwise have been a
+lengthy conversation.
+
+	-- "Run for the Numidian desert and live off locusts and honey"
+	
+		-> stop
+
+	-- "Ask if the eternal fate of the soul is determined at death"
+	
+		Augustine: "The purgatorial fires purify only those who die in communion."
+		
+		-- "But ..."
+
+		...
+
+Note that it stops only the current beat. If one beat is performing another one,
+and the second one stops, the first one then resumes.
+
+Finally, and only seldom needed, `-> another choice` can be used to clear
+up an occasional ambiguity. For example:
 
 	Narration: "What is your favourite colour?"
 
@@ -1090,361 +1465,29 @@ alone. The special choice line `--` alone provides the necessary division. Thus:
 	
 		Narration: "You are a Republican or a Labour voter."
 
-	--
+	-> another choice
 	
 	-- "Accept this verdict"
 
-		...
+		Narration: "You should. I am the infallible author."
 	
 	-- "Dispute this verdict"
 	
-		...
-
-Here, the bare `--` line divides this into two two-choice questions in
-a row, with nothing coming in between. This is rarely likely to be useful,
-but should be possible.
-
-### Branches and subroutines, of a sort
-
-A bare `--` line which has bracketed `perform` instructions is, however,
-very useful. For example:
-
-	Marcellus: "What, has this thing appear'd again to-night?"
-
-	-- (perform the spectral reappearance beat)
-
-This effectively ends the current beat and starts another one; no choice
-is presented to the player, of course. In effect, this is GOTO for beats.
-And this is GOSUB:
-
-	Marcellus: "What, has this thing appear'd again to-night?"
-
-	-- (perform the spectral reappearance beat and continue)
-
-	Horatio: "Thank the Lord that's over."
-
-### Dependent dialogue
-
-Lastly, dialogue can conditionally lead to other dialogue without the need
-for explicit player choices. Again, this is done with indentation:
-
-	Bernardo (now Bernardo is scared): "Yikes! Ghost!"
-	
-	Hamlet (if Hamlet is not scared): "It's just Scotch mist, blown east from old Aberdeen."
-		
-		Bernardo: "Nay, sire, it's magical!"
-
-	Hamlet (if Hamlet is scared, without speaking, before going north):
-		"Hamlet panics and flees for the woods."
-	
-		Ghost: "Where is my son anyway?"
-
-There are no player choices here. Instead, the dialogue can play out in
-different ways, depending on which conditions are true. As it happens,
-in this example the two conditions on Hamlet's lines are mutually exclusive,
-so there are two possibilities: either this...
-
-	Bernardo: "Yikes! Ghost!"
-	
-	Hamlet: "It's just Scotch mist, blown east from old Aberdeen."
-		
-	Bernardo: "Nay, sire, it's magical!"
-
-or this...
-
-	Bernardo: "Yikes! Ghost!"
-	
-	Hamlet panics and flees for the woods.
-		
-	Ghost: "Where is my son anyway?"
-
-## The role of the director
-
-As noted above, the "director" is the subsystem at runtime which chooses when
-dialogue is performed and does the necessary business to implement the
-behaviour described above. The director will be implemented in Inter, and
-provided as a kit called `DialogueKit`, rather than in Inform source text
-provided by an extension.
-
-The above sections describe how the director chooses speakers and performs
-lines, but not when, and this is the question we now take up.
-
-### Continuity of performance
-
-When a beat is performed, its lines are normally all performed in sequence.
-Individual lines may be omitted if they fail their conditions (see above),
-but the usual effect is that all lines are performed. So the performance of
-the beat:
-
-	(About the paranormal. This is the Marcellus gets anxious beat.)
-
-	Marcellus: "What, has this thing appear'd again to-night?"
-
-	Bernardo: "I have seen naught but [list of things in the Battlements]."
-	
-	Narration (now Marcellus is in Dunsinane):
-		"Marcellus panics and runs for the safety of the woods."
-
-would be something like:
-
-	Marcellus: "What, has this thing appear'd again to-night?"
-
-	Bernardo: "I have seen naught but Hamlet, that funky shield and the Moon."
-	
-	Marcellus panics and runs for the safety of the woods.
-
-In other words, action is continuous within a beat. So the choice made by
-the director is not so much when to produce a single line of dialogue
-as it is when to produce a beat.
-
-Note that `DialogueKit` must correctly handle the performance of one beat
-within the performance of another, returning where it left off. Though it
-is unlikely that such nested beats will occur often or deeply, they need to
-work in order to handle situations where one conversation involves somebody
-doing something in the middle of an anecdote, and where that action triggers
-off further dialogue about what has just happened.
-
-### Using phrases to begin beats
-
-Three new phrases are provided by the Standard Rules to ask the director to
-perform a beat.
-
-(1) Rules written by the author can explicitly call for it, using the phrase:
-
-	To perform (B - a dialogue beat): ...
-
-For example:
-
-	After the player examining Marcellus in the Battlements:
-		perform the Marcellus gets anxious beat.
-
-Note that unless the beat is recurring, it will only be performed once, and
-subsequent uses of `perform` on it will silently do nothing.
-
-If the beat has `if` or `after` conditions attached, and these conditions are
-not met, then `perform` will silently do nothing. But there is no need for any
-of the `about ...` subjects to be relevant to the dialogue manager.
-
-(2) More obliquely, the director can also be invited to perform dialogue related
-to a given room, thing or concept, in which case it must choose a suitable beat
-(or decide that nothing is suitable, and perform nothing).
-
-	To decide whether or not dialogue/dialog about (O - an object) intervenes: ...
-
-asks the director to find an unperformed (or recurring) beat which is `about`
-the object O. If the director finds one, it performs this beat, and
-returns `true`; if not, it does nothing and returns `false`. For example:
-
-	Before examining (T - a thing):
-		if dialogue about T intervenes, stop the action.
-
-In particular, this phrase is used in the default implementation of the
-action `asking somebody about`, in such a way that **ASK MARCELLUS ABOUT THE
-PARANORMAL** would cause the above beat to be performed, since it is marked
-as being "about the paranormal".
-
-This phrase provides a useful implementation for handling **ASK X ABOUT Y**,
-where X is a person and Y is a concept, as outlined nearer the top of this
-proposal.
-
-Note that if the project contains no dialogue sections, and therefore will
-not use `DialogueKit` and will not have a director, the two phrases above will
-still both compile (unless the `dialogue` language feature has been turned
-off altogether), but will do nothing (return `false` in case (2)). The
-example rule:
-
-	Before examining (T - a thing):
-		if dialogue about T intervenes, stop the action.
-
-will therefore happily compile in a dialogue-free story, but do nothing.
-
-### The director acting autonomously
-
-The director has two modes, "active" and "passive". When "passive",
-the director begins beats only in response to other beats already playing
-(when choices are taken), or in response to the phrases just described.
-This makes the director rather like a conversation-handler in a traditional
-command parser IF game, and gives all control to the author.
-
-In "active" mode, however, the director has additional autonomy to try to keep a
-conversation flowing whenever there are people around to talk, and things of
-interest for them to talk about. This is arguably a better simulation of real
-life.
-
-As in real life, though, incessant conversation is not always what you
-want, so we provide controls:
-
-	To make the dialogue/dialog director active: ...
-
-	To make the dialogue/dialog director passive: ...
-
-By default, at the start of play, the director is passive.
-
-A new `dialogue direction rule` will be present towards the end of the
-turn processing rulebook. One task of this rule will be to keep multi-turn
-beats running (see above). Another, but only in active mode, will be to
-look around for possible beats to begin, but this will only be done if
-in the current turn no beat has been, or is currently being, performed. 
-Even in active mode, the director will give up and hope for better times
-if no good conversational gambit presents itself. Active mode does not
-mean a guarantee that somebody will speak in every turn.
-
-When the director is active and there is such a lull, the dialogue
-direction rule will run the new dialogue selection activity to choose
-a beat to perform. (This is an activity based on nothing which produces
-a dialogue beat.) By default this activity will contain only a single
-`for` rule, providing the default choice algorithm.
-
-This in turn tries, as efficiently as it can, to find:
-
-(i) a live subject, and
-
-(ii) a dialogue beat which is either unproduced or else recurring and
-which is about that beat (for more on exactly what that means, see
-the discussion of `about` above), such that
-
-(iii) the speakers required for that beat to be performed (see the
-discussion of `requiring` above) are all audible.
-
-A typical story may contain thousands of beats, so an efficient method
-must be used to select from them, but note that many beats are choice
-branches from other beats and are not themselves `about` anything,
-so are not dialogue entry points of the sort looked at here.
-
-Different selection strategies could be used, depending on the level
-of sophistication of knowledge modelling: we could try to measure salience
-with some scoring system, or try to bring forward beats which we want to
-make happen for plot reasons (where some pirate leans forward and tells
-a story in a tavern, say), or making a graph of related concepts and
-route-finding through it to make the conversation lead to a goal. But
-the default is likely to be simple so that users can get started without
-creating elaborate plots or knowledge models.
-
-#### How subjects become live
-
-Subjects can become live in the following ways:
-
-(a) By being in the `about` or `mentioning` lists of dialogue beats or lines
-which are performed. Thus, if somebody says something about perfume, then the
-`perfume` subject (if there is one) becomes live.
-
-(b) By the following phrase being used:
-
-	To make (T - a thing) a live conversational subject: ...
-
-This adds T to the director's current list of active topics. For example,
-
-	After pressing the button:
-		now the pyramid is in the location;
-		make the pyramid a live conversational subject;
-		"A platinum pyramid appears out of nowhere!"
-
-Or indeed:
-
-	After printing the name of a concept (called the notion):
-		make the notion a live conversational subject.
-
-Or again:
-
-	When Railway Encounter begins:
-		make the steam train a live conversational subject.
-
-It's tempting to do this with an either/or property for being "live",
-but that would not enable an efficient list to be kept by the director.
-
-#### How subjects cease to be live
-
-Two ways. First, the author can do it by phrase:
-
-	To make (T - a thing) a dead conversational subject: ...
-
-Thus:
-
-	When Railway Encounter ends:
-		make the steam train a dead conversational subject.
-
-Similarly:
-
-	To clear conversational subjects: ...
-
-makes everything dead, and wipes the slate clean. This may be useful at the
-end of scenes.
-
-Second, the director itself performs a `clear conversational subjects` whenever
-it starts a spontaneous beat (see below).
-
-There may in practice be other times when it does this: the general idea is
-that the number of live subjects should be low at all times. They really
-reflect only fleeting conversational states, not long-term knowledge.
-
-#### Spontaneous beats
-
-If the director is active, and has tried to run the dialogue selection activity
-but this has come back with nothing, then it next looks for beats marked as
-spontaneous. For example:
-
-	(spontaneous, mentioning Corsica)
-	
-	Napoleon: "'You know,' the Emperor says abruptly, 'I was born in Corsica.'"
-
-The only difference between spontaneous beats and others is that the director
-can select them without needing any subject to be live. They are still subject
-to other constraints: this one, for example, requires Napoleon to be audible.
-
-Or for example:
-
-	(This is the interrogation dialogue beat.)
-	
-	Interrogator: "We have a number of questions for you, [player]."
-	
-	Interrogator: "Shall we start with the matter of how you broke in?"
-	
-	-- (perform the break-in detail beat) Describe how you broke in
-
-	-- (perform the secret testing beat) Distract him with questions
-	
-	(Spontaneous, after the interrogation dialogue beat, if the break-in
-	detail beat is not performed.)
-	
-	Interrogator: "I notice you didn't explain your method of entry."
-
-## Relationship to Scenes
-
-Scenes are mentioned surprisingly little in this proposal - surprisingly,
-that is, considering that scenes are on the face of it an obvious way to
-group and organise dialogue.
-
-In fact, we strongly agree with this, but the features above dovetail well
-with existing scene support in Inform. For example, the following all seem
-natural possibilities:
-
-	When the Confrontation scene begins:
-		perform the Cyrano brags about his nose beat;
-		make the Gallic nose a live conversational topic.
-
-	The Confrontation scene ends in dueling when the glove slap
-	beat is performed.
-	
-	When the Confrontation scene ends in dueling:
-		perform the Cyrano draws his sword beat.
-	
-	When the Confrontation scene ends in dueling:
-		clear conversational subjects.
-
-All the same, we might contemplate allowing a scene to be identified with
-a beat. For example, if a beat opens with the cue `this is the ... scene`
-instead of `this is the ... beat`, then _both_ a scene and a beat are
-created. Beginning the scene automatically starts the beat performing;
-the scene ends when the beat finishes performing. (If the scene ends for
-some other reason during the performance, the director halts the beat.)
-
-	(this is the duel scene)
-	
-	Osric: "A palpable hit!"
-
-	...
+		Narration: "You shouldn't. I am the infallible author."
+
+This makes clear that there are two decisions of two options each. Without
+it, we would have one decision of four options. In practice, this very seldom
+arises, because normally there is some narration or dialogue in between the
+two decisions anyway.
+
+Inform issues problem messages in response to various nonsensical ways of
+using flow markers: for example, using `-> another choice` somewhere other
+than immediately sandwiched between decisions, or placing material which
+follows `<-` or `-> stop` at the same indentation level.
 
 ## Exporting dialogue for voice performers or localisation
+
+(This feature is currently unimplemented.)
 
 Commercial games authors frequently need to export all of the dialogue
 in a game to a simple, flat file (often, this is a CSV file which Excel
