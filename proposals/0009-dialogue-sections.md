@@ -668,7 +668,7 @@ So for example it will reject:
 
 This is to prevent ambiguity: see below.
 
-### The complete syntax for a cue to a dialogue beat
+## The complete syntax for a cue to a dialogue beat
 
 The cue sentence(s) must be placed in round brackets, and should end with its
 full stop inside the brackets. This is an error:
@@ -689,7 +689,7 @@ As syntactic sugar, semicolons can be used instead of full stops. For example:
 In the initial draft of this proposal, commas were also allowed as syntactic
 sugar to divide clauses, but this led to too much ambiguity in practice.
 
-#### The name clause for a cue
+### The name clause for a cue
 
 Each beat provides a value for the kind `dialogue beat` (see above), but most
 beats are nameless. By providing a sentence like this, the value is given
@@ -719,7 +719,7 @@ it is performed at the start of play, as noted above.
 There is no analogous `ending beat`: stories can have multiple endings. But see
 `ending the story...` in the description of line syntax below.
 
-#### The about clause for a cue
+### The about clause for a cue
 
 `About` clauses tell the director what a beat of dialogue is talking about.
 
@@ -811,7 +811,7 @@ The original draft of this proposal had a more convoluted syntax here which
 allowed `about either ... or ...`, had a keyword `any`, and so on, but that
 now seems fussy. (An eighth dwarf in waiting.)
 
-#### The if and unless clauses for a cue
+### The if and unless clauses for a cue
 
 These restrict the availability of dialogue beats, making them only available
 when the given condition is met (or not met):
@@ -820,7 +820,7 @@ when the given condition is met (or not met):
 
 	(Unless Hamlet has the skull.)
 
-#### The after, before, later, next, and immediately after clauses for a cue
+### The after, before, later, next, and immediately after clauses for a cue
 
 These say that the new beat can be performed only when another beat has already
 been performed at some point in the past; or, has not. For example:
@@ -842,7 +842,7 @@ to the previous beat in that section. Thus
 	(About fish.)
 	...
 	
-	(Later, about chips.)
+	(Later; about chips.)
 	...
 
 means the same thing as
@@ -850,7 +850,7 @@ means the same thing as
 	(About fish. This is the fishmonger beat.)
 	...
 	
-	(After the fishmonger beat, about chips.)
+	(After the fishmonger beat; about chips.)
 	...
 
 `Immediately after` is equivalent to `after`, except that it allows the
@@ -889,7 +889,7 @@ The effect here is that we'd see
 
 (`Immediately before` is, of course, impossible.)
 
-#### The requiring clause for a cue
+### The requiring clause for a cue
 
 Consider this beat:
 
@@ -928,7 +928,7 @@ The original draft of this proposal had a more complicated algorithm for
 determining the required speaker list, but it seems better for the author
 to have to write explicitly what's wanted in any case of possible doubt.
 
-#### Supplying properties as clauses for a cue
+### Supplying properties as clauses for a cue
 
 The name of a property which a `dialogue beat` can have (an either-or
 property, or conceivably a value of an enumerated property) can be a
@@ -952,7 +952,7 @@ And this enables beats to be tagged in arbitrary ways:
 	
 	Horatio: "Sorry to break the fourth wall, but will this program ever work?"		
 
-### The complete syntax for a dialogue line
+## The complete syntax for a dialogue line
 
 A dialogue line occupies a single complete paragraph, and takes one of these forms:
 
@@ -965,7 +965,7 @@ or semicolons, and placed in round brackets after the speaker name. Thus:
 
 	SPEAKER (CLAUSE1; CLAUSE2; ..., CLAUSEn): "TEXT."
 
-#### The speaker
+### The speaker
 
 `SPEAKER` must be one of two possibilities.
 
@@ -1001,7 +1001,7 @@ those objects. If none at all match, the line of dialogue is skipped and not
 performed at all, but no run-time problem is thrown. Because it was not
 actually said, it is not given the `performed` property.
 
-#### The name clause for a line
+### The name clause for a line
 
 Each line provides a value for the kind `dialogue line` (see above), but most
 lines are nameless. By providing a clause like this, the value is given
@@ -1015,7 +1015,7 @@ and has to be unique: two different lines cannot have the same name.
 Most lines never need naming, of course, but this can be useful for testing,
 say, `if the reluctant admission line is unperformed`.
 
-#### The to clause for a line
+### The to clause for a line
 
 `to` plus a description of an object specifies the "interlocutor" for the
 speech - the person to whom it's specifically addressed. Most lines are
@@ -1027,7 +1027,7 @@ presence of somebody else. For example:
 
 The line will not be performed unless Marcellus can hear Horatio.
 
-#### The mentioning clause for a line
+### The mentioning clause for a line
 
 `mentioning ...` says that the line makes a conversation subject live
 when it is performed. For example:
@@ -1037,14 +1037,14 @@ when it is performed. For example:
 A whole list of subjects can be given: `mentioning the Ghost and Denmark`
 would give two, for example.
 
-#### The if and unless clauses for a line
+### The if and unless clauses for a line
 
 `if` or `unless` plus any Inform condition. The line is omitted as being
 unavailable if these conditions fail. It is then skipped and not performed
 at all, but no run-time problem is thrown. Because it was not actually said,
 it is not given the `performed` property.
 
-#### The before and after clauses for a line
+### The before and after clauses for a line
 
 These clauses say that an Inform action should be tried along with the
 performance of the line. Note that `before` means the line is performed
@@ -1080,14 +1080,14 @@ As with `try`, the keyword `silently` can also be used:
 
 This would suppress the uninteresting text "The gravedigger takes the shovel.".
 
-#### The now clause for a line
+### The now clause for a line
 
 `now` plus a condition allows the world model to be changed immediately after
 the line is performed. For example:
 
 	Marcellus (now Marcellus is in the Banqueting Hall): "Oh my. I'm running for it!"
 
-#### The ending the story clause for a line
+### The ending the story clause for a line
 
 There are four variants of this:
 
@@ -1116,7 +1116,7 @@ performance of the line; then `now` effects and `ending`; then `before` actions,
 in declaration order. If any of the `after` actions should fail, the process
 stops there.
 
-#### The without speaking clause for a line
+### The without speaking clause for a line
 
 `without speaking` makes the line non-verbal: something like a gesture, which
 is still performed by somebody.
@@ -1136,7 +1136,7 @@ In the event that you need audibility after all, you can still finagle things:
 
 But this is not an elegant device.
 
-#### The style clause for a line
+### The style clause for a line
 
 Using just the name of a `performance style`, but with the word `spoken` removed,
 indicates that the line is performed this way. By default it is performed in
@@ -1150,7 +1150,7 @@ Thus, if the user has created the style `spoken with asperity`, then:
 This will set the activity variable `style` to `spoken with asperity` when the
 line is performed: see above.
 
-#### Supplying properties as clauses for a line
+### Supplying properties as clauses for a line
 
 The name of a property which a `dialogue line` can have (an either-or
 property, or conceivably a value of an enumerated property) can be a
@@ -1159,7 +1159,7 @@ clause all by itself. In particular, this means that:
 - `Marcellus (recurring): ...` gives the line the `recurring` property. This means
 that it can be performed more than once.
 
-#### The speech text for a line
+### The speech text for a line
 
 The performed line is an Inform text, in double-quotes.
 
@@ -1179,7 +1179,7 @@ might be performed as:
 
 	Henry self-importantly declared: "The greatest TV show of all time is 24."
 
-### The complete syntax for a dialogue line
+## The complete syntax for a dialogue line
 
 During a beat, dialogue ordinarily flows without stopping (see "continuity
 of performance" below), but will pause at points where a decision from the
@@ -1223,7 +1223,7 @@ do, and is optional.
 In each case the `(DETAILS)` are optional, and consist of one or more clauses.
 As with beats and lines, these can be divided by full stops or semicolons.
 
-#### The if and unless clauses for a choice
+### The if and unless clauses for a choice
 
 `if` or `unless` plus any Inform condition. The choice is omitted as being
 unavailable if these conditions fail.
@@ -1234,7 +1234,7 @@ decisions to reshape themselves with the circumstances: compare the function
 `CHOICE_COUNT()` in Ink, which is often used for similar reasons. `CHOICE_COUNT()`
 would be equivalent to taking the length of the `current choice list`.
 
-#### The name clause for a choice
+### The name clause for a choice
 
 Each choice provides a value for the kind `dialogue choice` (see above), but most
 choices are nameless. By providing a clause like this, the value is given
@@ -1248,7 +1248,7 @@ and has to be unique: two different choices cannot have the same name.
 Most choices never need naming, of course, but this can be useful for testing,
 say, `if the desperate choice is unperformed`.
 
-#### Supplying properties as clauses for a choice
+### Supplying properties as clauses for a choice
 
 Exactly as for beats and lines, the name of a property which a `dialogue choice`
 can have (an either-or property, or conceivably a value of an enumerated
@@ -1259,7 +1259,7 @@ property) can be a clause all by itself. For example,
 would be offered every time this decision came up, rather than being offered
 only until the player had chosen it for the first time.
 
-#### Action decisions
+### Action decisions
 
 These are only suitable for interactive fiction which has some sort of interface
 allowing the player to choose actions: the traditional example, of course,
@@ -1365,9 +1365,25 @@ This little conversational predicament continues until the player puts
 Clark out of his misery, one way or another. Had the `<-` been unindented,
 the result would be that the whole thing goes on forever.
 
-### Flow markers
+## Flow markers
 
 Flow markers are written `<-` or `->`. These are simple but very useful.
+They also support all of the clauses which dialogue choices can take: in
+particular, they can be conditional. For example,
+
+	<- (unless Polonius is in Elsinore)
+
+	-> (if Hamlet is not in the Graveyard) stop
+
+There are intentionally few forms of flow marker: it's important for users
+of dialogue to find them easy to understand. 
+
+Inform issues problem messages in response to various nonsensical ways of
+using flow markers: for example, using `-> another choice` somewhere other
+than immediately sandwiched between decisions, or placing material which
+follows `<-` or `-> stop` at the same indentation level.
+
+### Flow back
 
 `<-` on its own goes back to either the most recent decision point in the
 same beat, or (if there hasn't been a decision) to the start of the beat.
@@ -1404,6 +1420,8 @@ But it is extremely useful for situations like this one:
 In effect this repeats the decision up to three times until the player heads
 down the track we want.
 
+### Flow through another beat
+
 `-> perform B`, where `B` is the name of a beat, causes the director to
 perform that beat at this point. Note that after `B` finishes, the original
 beat continues where it left over. This nesting can go up to 20 beats deep.
@@ -1433,6 +1451,8 @@ amounts to a complicated sub-scene which is only needed in some situations.
 
 		Narration: "Goodness, back at that wardrobe you only dimly remember."
 
+### Flow to a stop
+
 `-> stop` causes the current beat to finish right here, and is convenient
 when a drastic choice short-circuits what might otherwise have been a
 lengthy conversation.
@@ -1451,6 +1471,8 @@ lengthy conversation.
 
 Note that it stops only the current beat. If one beat is performing another one,
 and the second one stops, the first one then resumes.
+
+### Flow to another choice
 
 Finally, and only seldom needed, `-> another choice` can be used to clear
 up an occasional ambiguity. For example:
@@ -1479,11 +1501,6 @@ This makes clear that there are two decisions of two options each. Without
 it, we would have one decision of four options. In practice, this very seldom
 arises, because normally there is some narration or dialogue in between the
 two decisions anyway.
-
-Inform issues problem messages in response to various nonsensical ways of
-using flow markers: for example, using `-> another choice` somewhere other
-than immediately sandwiched between decisions, or placing material which
-follows `<-` or `-> stop` at the same indentation level.
 
 ## Exporting dialogue for voice performers or localisation
 
