@@ -477,7 +477,6 @@ In addition, the following adjectives can be tested at run-time:
 preconditions for being performed - its if and unless conditions.
 - `non-verbal` rather than `verbal` if it is a non-verbal communication,
 written as being performed `without speaking`.
-- `story-ending` if its performance would end the story.
 
 The following phrases are available:
 
@@ -566,10 +565,17 @@ mandatorily taken and are not offered to the player to think about. This
 can actually be useful, since it means flow markers can have names, and
 conditions attached to them, and so on.
 
-In addition, the following adjective can be tested at run-time:
+In addition, the following adjectives can be tested at run-time:
 
 - `flowing` rather than `offered` if the choice is a `->` or `<-` flow
 control marker rather than an option offered to the player.
+- `story-ending` if the choice is an `-> end the story ...`.
+
+The following relation is available:
+
+- `C is in B` if the dialogue choice `C` is part of the beat `B`.
+The existence of this relation makes it possible to extract, say,
+`the list of unperformed dialogue choices in B`.
 
 ### Textual decisions and the current choice list
 
@@ -717,7 +723,7 @@ The name `starting beat` is reserved. If a beat is given this name, then
 it is performed at the start of play, as noted above.
 
 There is no analogous `ending beat`: stories can have multiple endings. But see
-`ending the story...` in the description of line syntax below.
+`-> end the story...` in the description of flow markers below.
 
 ### The about clause for a cue
 
@@ -1087,24 +1093,8 @@ the line is performed. For example:
 
 	Marcellus (now Marcellus is in the Banqueting Hall): "Oh my. I'm running for it!"
 
-### The ending the story clause for a line
-
-There are four variants of this:
-
-	ending the story          
-	ending the story finally
-	ending the story saying "TEXT"
-	ending the story finally
-	ending the story finally saying "TEXT"
-
-These correspond exactly to the phrases which `end the story`. Like `now`,
-they are effects which take place immediately after the line is performed.
-In particular the story does not end if for some reason the line is not
-performed - if a condition for it fails, or somebody necessary is out of
-earshot, or an action running before it fails, and so on.
-
-It's legal to pile up multiple `after`, `before`, `now` and `ending` clauses
-on the same line, at your own risk:
+It's legal to pile up multiple `after`, `before` and `now` clauses on the
+same line, at your own risk:
 
 	Marcellus (after taking the ghost detector; after examing the ghost; now
 	Marcellus is in the Banqueting Hall; before jumping):
@@ -1112,8 +1102,8 @@ on the same line, at your own risk:
 		'Oh my. I'm running for it!' And he makes a running jump."
 
 The sequence is: `after` actions first, in declaration order; then actual
-performance of the line; then `now` effects and `ending`; then `before` actions,
-in declaration order. If any of the `after` actions should fail, the process
+performance of the line; then `now` effects; then `before` actions, in
+declaration order. If any of the `after` actions should fail, the process
 stops there.
 
 ### The without speaking clause for a line
@@ -1471,6 +1461,19 @@ lengthy conversation.
 
 Note that it stops only the current beat. If one beat is performing another one,
 and the second one stops, the first one then resumes.
+
+### Flow to the end of the story
+
+There are four variants of this:
+
+	-> end the story          
+	-> end the story finally
+	-> end the story saying "TEXT"
+	-> end the story finally saying "TEXT"
+
+These correspond exactly to the Inform phrases which `end the story`. All
+beats are abandoned at this point, of course, so this is even more drastic
+than `-> stop`.
 
 ### Flow to another choice
 
