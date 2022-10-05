@@ -6,13 +6,17 @@
 * Language feature name: `concepts`
 * Status: Draft
 * Related proposals: [IE-0009](0009-dialogue-sections.md)
-* Implementation: None
+* Implementation: Implemented but unreleased
 
 ## Summary
 
 A new top-level kind of object, `concept`, useful for representing abstract
 concepts like "forgiveness" or "Italian cookery" which have no physical
 existence in the world model.
+
+This proposal was redrafted in early October 2022 in the light of
+experience. All functionality here is implemented in draft on the `master`
+branch of the repository, but not in any release branch as yet.
 
 ## Motivation
 
@@ -66,8 +70,7 @@ switching off the language feature `concepts` in a project's JSON metadata.
 ## Proposed changes
 
 `concept` is a new top-level kind of object. (That is, its superkind
-is `object` itself: it thus joins the existing quartet of `thing`, `room`, `scene`
-and `region`.) Concepts are created with assertions in the usual way, and can
+is `object` itself.) Concepts are created with assertions in the usual way, and can
 have names recognised by the command parser as usual, too. So, for example:
 
 	The paranormal is a concept. Understand "supernatural" as the paranormal.
@@ -101,7 +104,7 @@ produces:
 And our dialogue system in this proposal could then make good use of such
 concepts:
 
-	(about an idea known by the player)
+	(about an idea)
 
 	Bohr (now the player knows about quantum physics): "You see, it's all
 	a matter of complementarity."
@@ -117,9 +120,9 @@ In choice-based interactive fiction, in particular, concepts are useful to
 represent things the player might want to talk about or act upon. We might
 imagine them arising in a variety of ways:
 
-(a) In a command parser-based game, commands like **ASK BOB ABOUT CONCEPT**,
-**TELL BOB ABOUT CONCEPT**, **TALK ABOUT CONCEPT**, etc., could be parsed as
-asking for conversation about a given concept object.
+(a) In a command parser-based game, commands like **TALK ABOUT CONCEPT**,
+could be parsed as asking for conversation about a given concept object.
+See the `talking about` action provided in [IE-0009](0009-dialogue-sections.md).
 
 (b) In a parser game augmented with embedded menus, we might see options 1-3
 of things to say next, but also be able to freely type **ASK ABOUT CONCEPT**
@@ -141,28 +144,22 @@ all of the usual `Understand` machinery works as expected:
 
 	Wetness is a concept. Understand "dampness" as wetness.
 
-And with a little care, we can set up actions on concepts:
+And we can set up actions on concepts:
 
-	Pondering is an action applying to one object.
+	Pondering is an action applying to one concept.
 
 	Carry out pondering a concept (called X):
 		say "You think deeply about [X]."
 
-	Understand "ponder [any concept]" as pondering.
-
-Note that (i) the action must be written as applying to `one object`, not `one
-thing` - a concept is not a thing, and not subject to visibility/touchability
-rules - and that (ii) the token `[any concept]` rather than `[concept]` must
-be used so that the command parser doesn't try to look only at names of concepts
-in the current vicinity, which of course makes no sense.
+	Understand "ponder [concept]" as pondering.
 
 ## Minor supporting changes in the Inform language
 
-It would tidy the Inform language slightly to make these two changes:
+The above example action required two small changes to the Inform language:
 
 1. Allow `applying to` in action definitions to name kinds of object which are
 not kinds of thing. Thus, `applying to one region`, `applying to one concept`.
-These currently throw problem messages.
+These previously threw problem messages.
 
 2. Make the token `[D]`, where `D` is a description of a kind of object which is
 not a kind of thing, automatically infer `any`. In particular, `[concept]` would
@@ -170,41 +167,3 @@ always mean `[any concept]`, i.e., there would never be any attempt to apply
 touchability or visibility to concepts.
 
 Neither change affects the meaning of existing source code.
-
-### New action "talking to ... about ..."
-
-The Standard Rules provide a new action, `talking to it about`, together with
-`Understand` grammar to intercept commands like **ASK X ABOUT C** and
-**TELL X ABOUT C**, though only if C is a concept. The implementation might be
-roughly like so:
-
-	Talking to it about is an action applying to one thing and one object.
-
-	Check talking to something (called P) about an object:
-		if P cannot hear the actor:
-			(some response here)
-
-	Carry out talking to something (called P) about an object (called X):
-		convert to asking P about "[X]".
-
-	Understand "ask [somebody] about [any concept]" as talking to it about.
-	Understand "ask [somebody] about [visible thing]" as talking to it about.
-	Understand "tell [somebody] about [any concept]" as talking to it about.
-	Understand "tell [somebody] about [visible thing]" as talking to it about.
-
-**ASK BOHR ABOUT PHYSICS** then generates the action `talking to Bohr about
-quantum physics`, whereas **ASK BOHR ABOUT ICE CREAM SANDWICHES** generates the
-action `asking Bohr about "ice cream sandwiches"`, because **ICE CREAM SANDWICHES**
-is not the name of a concept and is, in fact, some random text which Inform
-can only parse as a snippet.
-
-The above default implementation makes this action do nothing, and always
-fall back to the existing `asking it about` action. But the idea is that the
-user could supply rules to intervene.
-
-In particular, given dialogue in the sense of [IE-0009](0009-dialogue-sections.md),
-the rule might become this:
-
-	Carry out talking to something (called P) about an object (called X):
-		if dialogue about T intervenes, stop the action;
-		convert to asking P about "[X]".

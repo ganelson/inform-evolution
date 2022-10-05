@@ -14,9 +14,9 @@ An extensible system for dialogue, combining natural-language playtext in
 "dialogue sections" of the source text with an active runtime component,
 the "director", implemented with a new kit, `DialogueKit`.
 
-This proposal was redrafted at the end of September 2022 in the light of
-experience. All functionality here is implemented in draft on the `master`
-branch of the repository, unless otherwise noted.
+This proposal was redrafted in early October 2022 in the light of experience.
+Unless otherwise noted, all functionality here is implemented in draft on
+the `master` branch of the repository, but not in any release branch as yet.
 
 ## Motivation
 
@@ -407,8 +407,21 @@ it is active or passive), and regardless of whether the beat has been performed
 before, even if it is non-recurring.
 - `list of speakers required by (B - dialogue beat)`. Results in a list of
 objects, which is the set of speakers of lines of dialogue in `B`.
+- `first speaker of (B - dialogue beat)`. The first specific person who speaks
+a line in `B`.
+- `opening line of (B - dialogue beat)`. The first `dialogue line` in `B`. Use
+this with care: it's unlikely but just possible that `B` contains no lines.
 - `showme the beat structure of (B - dialogue beat)`. For debugging. In effect,
 beats are miniature programs, but can be quite intricate: this prints a listing.
+
+The following relations are available:
+
+- `B is about S` is true if `S` matches something in the `about` list for `B`.
+Note that this can be true for multiple values of `S`. This relation is called
+`topicality`.
+- `B is performable to S` is true if `B` is either `recurring` or `unperformed`,
+and if all of the speakers on the `requiring` list for `B` can be heard by `S`.
+This relation is called `performability`.
 
 Note that the command parser is able to recognise dialogue beat names, and of
 course actions can be set up for them. For example:
@@ -1504,6 +1517,91 @@ This makes clear that there are two decisions of two options each. Without
 it, we would have one decision of four options. In practice, this very seldom
 arises, because normally there is some narration or dialogue in between the
 two decisions anyway.
+
+## The talking about action
+
+A new action, `talking about`, represents speakers attempting to make
+conversation about a given topic. The actor is the speaker, and this need
+not be the player. The topic has to be an object, but this can be, for example,
+a room or a concept (in the sense of [IE-0010](0010-concepts.md)) instead of
+something tangible.
+
+The best way to document this is probably just to show its implementation:
+
+	Talking about is an action applying to one object.
+
+	The talking about action has a list of dialogue beats called the leading beats.
+
+	The talking about action has a list of dialogue beats called the other beats.
+
+	Before an actor talking about an object (called T):
+		repeat with B running through available dialogue beats about T:
+			if B is performable to the actor:
+				if the first speaker of B is the actor:
+					add B to the leading beats;
+				otherwise:
+					add B to the other beats;
+
+	Carry out an actor talking about an object (called T)
+		(this is the first-declared beat rule):
+		if the leading beats is not empty:
+			perform entry 1 of the leading beats;
+			continue the action;
+		if the other beats is not empty:
+			perform entry 1 of the other beats;
+			continue the action;
+		if the player is the actor:
+			say "There is no reply.";
+			stop the action;
+		otherwise:
+			say "[The actor] [talk] about [T].";
+			stop the action.
+
+That is: an action such as `Kafka talking about the trial` will cause two lists
+of dialogue beats to be made. `leading beats` will list all the beats which
+could conceivably be performed next, and which have Kafka as the first speaker;
+`other beats` will be those which have somebody else speaking first.
+
+The `first-declared beat rule` then chooses which to beat perform. This picks
+the first leading beat if there is one, and then the first other beat if not,
+and otherwise gives up.
+
+Authors of dialogue-based stories may well want to replace this rule with
+variations of their own. For example, this:
+
+	First carry out an actor talking about an object (called T):
+		if the leading beats is not empty:
+			let N be the number of entries in the leading beats;
+			if the actor is not the player:
+				perform entry 1 of the leading beats;
+				continue the action;
+			if N is 1:
+				perform entry 1 of the leading beats;
+				continue the action;
+			say "Choose...";
+			say "[conditional paragraph break]";
+			let X be 0;
+			repeat with B running through the leading beats:
+				increase X by 1;
+				say "([X]). [textual content of opening line of B][line break]";
+			say "[conditional paragraph break]";
+			let Y be the chosen dialogue number up to X; 
+			perform entry Y of the leading beats;
+			continue the action;
+		if the other beats is not empty:
+			let N be the number of entries in the other beats;
+			let R be a random number from 1 to N;
+			perform entry R of the other beats;
+			continue the action;
+		if the player is the actor:
+			say "There is no reply.";
+		otherwise:
+			say "[The actor] [talk] about [T].";
+		stop the action.
+
+...offers the player a choice if there are multiple possible beats he/she
+could originate, and if it has to resort to the `other beats` it makes a
+random selection rather than always choosing the first.
 
 ## Exporting dialogue for voice performers or localisation
 
