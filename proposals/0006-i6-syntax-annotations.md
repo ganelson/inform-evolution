@@ -97,42 +97,42 @@ the subject of this proposal: this proposal is about syntax alone.
 
 The rules are as follows:
 
-(*) An annotation can be preceded by white space, but then begins with a `+` sign.
+* An annotation can be preceded by white space, but then begins with a `+` sign.
 An identifier follows which matches the regular expression `[A-Za-z_][A-Za-z0-9_]+`,
 that is, it begins with a letter or underscore, then consists of letters, digits
 or underscores.
 
-(*) Whitespace can follow the identifier, but cannot appear between the `+` and
+* Whitespace can follow the identifier, but cannot appear between the `+` and
 the identifier.
 
-(*) Following this, the annotation can optionally contain "details", which must
+* Following this, the annotation can optionally contain "details", which must
 appear inside a matched set of round brackets `(` and `)`.
 
-(*) Inside the brackets is a list of "terms". Syntactically, the text in the
+* Inside the brackets is a list of "terms". Syntactically, the text in the
 brackets is divided up into "tokens", divided up by whitespace. A token is a
 run of non-whitespace, or some text in single quotation marks: `91`, `'my text'`
 and `aquarius` are all tokens. The backslash escape `\'` can be used to write
 a single quotation mark inside quoted text: `'like \'this\''`.
 
-(*) Outside of quotation marks, the characters `(` and `)` must be used in a
+* Outside of quotation marks, the characters `(` and `)` must be used in a
 properly nested way; if a `(` appears at the top level, it begins a new token, 
 which only ends with its matching `)`.
 
-(*) Outside of quotation marks and brackets, a comma `,` acts as a term divider.
+* Outside of quotation marks and brackets, a comma `,` acts as a term divider.
 
-(*) Terms are key-value pairs, but can be written in two different ways.
+* Terms are key-value pairs, but can be written in two different ways.
 
-(*) If a term is a single lexical token, this is considered a value, and the
+* If a term is a single lexical token, this is considered a value, and the
 key is the placeholder `_`. For example, the annotation `+eat(brioche)`
 has one term with key `_` and value `brioche`.
 
-(*) If a term has two or more lexical tokens, the first token is the key name,
+* If a term has two or more lexical tokens, the first token is the key name,
 and the rest becomes the value. For example `+bake(temperature 220 Celsius)` has
 one term with key `temperature` and value `220 Celsius`.
 
-(*) In each term, the key must match the regular expression `[A-Za-z_][A-Za-z0-9_]+`.
+* In each term, the key must match the regular expression `[A-Za-z_][A-Za-z0-9_]+`.
 
-(*) Identifier and key names should always be read case-sensitively: `+xyzzy`
+* Identifier and key names should always be read case-sensitively: `+xyzzy`
 and `+XYZZY` are different annotations.
 
 Note that there are no maxima. A directive can have any number of annotations.
