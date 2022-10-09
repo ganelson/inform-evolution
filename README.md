@@ -38,7 +38,7 @@ Proposal                                                                        
 [(IE-0003) Dividing source text into multiple files](proposals/0003-multiple-source-files.md)            | 1 May 2022   | Partly implemented | [PR#3](https://github.com/ganelson/inform-evolution/pull/3)
 [(IE-0004) Access to data files embedded in blorbs](proposals/0004-using-data-files-in-blorbs.md)        | 5 May 2022   | Accepted | [PR#4](https://github.com/ganelson/inform-evolution/pull/4)
 [(IE-0005) Removing translates into Unicode](proposals/0005-removing-translates-into-unicode.md)         | 5 June 2022  | Accepted | [PR#5](https://github.com/ganelson/inform-evolution/pull/5)
-[(IE-0006) New annotations for I6 syntax](proposals/0006-i6-syntax-annotations.md)                       | 16 June 2022 | Accepted | [PR#6](https://github.com/ganelson/inform-evolution/pull/6)
+[(IE-0006) New annotations for I6 syntax](proposals/0006-i6-syntax-annotations.md)                       | 16 June 2022 | Implemented but unreleased | [PR#6](https://github.com/ganelson/inform-evolution/pull/6)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022  | Accepted | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022 | Accepted | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
 [(IE-0009) Dialogue sections](proposals/0009-dialogue-sections.md)                                       | 21 July 2022 | Implemented but unreleased | [PR#9](https://github.com/ganelson/inform-evolution/pull/9)
