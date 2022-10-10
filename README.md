@@ -43,3 +43,6 @@ Proposal                                                                        
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022 | Accepted | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
 [(IE-0009) Dialogue sections](proposals/0009-dialogue-sections.md)                                       | 21 July 2022 | Implemented but unreleased | [PR#9](https://github.com/ganelson/inform-evolution/pull/9)
 [(IE-0010) Concepts](proposals/0010-concepts.md)                                                         | 21 July 2022 | Implemented but unreleased | [PR#10](https://github.com/ganelson/inform-evolution/pull/10)
+_(IE-0011) New data structures_ (still drafting: see pull request)                                       | --           | Drafting | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
+_(IE-0012) A new GlkKit_ (still drafting: see pull request)                                              | --           | Drafting | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
+[(IE-0013) Annotations for kit linking](proposals/0013-annotations-for-kit-linking.md)                   | 10 October 2022 | Partly implemented | [PR#13](https://github.com/ganelson/inform-evolution/pull/13)

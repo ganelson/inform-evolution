@@ -5,7 +5,8 @@
 * Authors: Graham Nelson, David Kinder, and Andrew Plotkin
 * Language feature name: None
 * Status: Draft
-* Related proposals: [Corresponding I6 proposal](https://github.com/DavidKinder/Inform6/issues/189).
+* Related proposals: [IE-0013](0013-annotations-for-kit-linking.md) and
+[Corresponding I6 proposal](https://github.com/DavidKinder/Inform6/issues/189).
 * Implementation: Implemented but unreleased
 
 ## Summary
@@ -15,51 +16,33 @@ with linking or compilation, but which do not change its basic meaning.
 
 ## Motivation
 
-At present, many extensions need a little Inter source (written in Inform 6
-syntax) to power them: either to provide low-level functionality — say, to
-make obscure glk calls — or to replace some existing function in `BasicInformKit`
-or `WorldModelKit` with a hacked version.
+The motivating examples for this syntax change have now been spun off into
+their own proposal, [IE-0013](0013-annotations-for-kit-linking.md). What it
+comes down to, though, is that the original I6 language does not have a
+way to express instructions for linking (analogous to C's `extern` keyword,
+or `use` in many more modern languages). The I6-reader inside of `inter`
+and therefore `inform7` therefore needs to extend the I6 language with some
+syntactic extensions, and it seems good to have a clean notation for that.
 
-This means we see a lot of hybrid code. In a better world, I6-syntax business
-could be done in a kit accompanying an extension, rather than in an extension
-as such. But to fully support that, we would want kits to be able to specify
-linking rules for their definitions.
+There are also ambitions to improve the `inform6` compiler by allowing a
+system of type indications, which would also need new syntax.
 
-For example, an extension can say:
+It seems better to have a common syntax, so this proposal puts forward a
+purely syntactic description of how "annotations" can be applied to directives,
+and then read either
 
-	Include (-
-	[ SquareRoot num;
-		"Nobody cares about square roots, son.";
-	];
-	-) replacing "SquareRoot".
+(a) By `inter` or `inform7` when it processes `Include (- ... -)` or compiles
+kits from source, or
 
-But a kit has no way to indicate that its definition of a `SquareRoot` function
-should replace one from another kit, in the same sort of way.
-
-Similarly, we might want some functions or variables in a kit to be private to
-that kit, and not to be callable from anywhere else.
-
-But kits are written in Inform 6 syntax, and I6 has no way to express these
-ideas. So if we ever do want to develop them, we need to introduce new syntax
-into the language recognised by the I6-to-Inter compiler. But if we do, we
-effectively fork the I6 language.
-
-This is therefore a joint proposal for a mutually agreed syntax for annotating
-I6 directives which can be used either:
-
-(a) By the I6-to-Inter compiler inside inform7 which processes `Include (- ... -)`
-and compiles kit source, or
-
-(b) By the real I6 compiler itself, to allow development of I6 towards some
-mooted ideas such as type hints for variables.
+(b) By `inform6` itself.
 
 ## Components affected
 
 - [ ] No change to the natural-language syntax.
 - [ ] No change to inbuild.
 - [ ] No change to inform7.
-- [x] Change to inter, enabling it to read these.
-- [x] Change to the Inter specification, enabling it to store these.
+- [ ] No change to inter.
+- [ ] No change to the Inter specification.
 - [ ] No change to runtime kits.
 - [ ] No changes to the Standard Rules and Basic Inform.
 - [ ] No change to documentation.
@@ -67,8 +50,7 @@ mooted ideas such as type hints for variables.
 
 ## Impact on existing projects
 
-None, except that kits will need to be recompiled because of the change of
-Inter bytecode version number, which advances from 2 to 3.
+None.
 
 ## Syntax
 
