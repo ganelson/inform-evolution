@@ -1,7 +1,7 @@
 # (IE-0013) Annotations for kit linking
 
 * Proposal: [IE-0013](0013-annotations-for-kit-linking.md)
-* Discussion PR link: [#13](https://github.com/ganelson/inform-evolution/pull/13)
+* Discussion PR link: [#13](https://github.com/ganelson/inform-evolution/pull/13) 
 * Authors: Graham Nelson
 * Language feature name: --
 * Status: Draft
