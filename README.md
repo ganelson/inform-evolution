@@ -46,3 +46,4 @@ Proposal                                                                        
 _(IE-0011) New data structures_ (still drafting: see pull request)                                       | --           | Drafting | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
 _(IE-0012) A new GlkKit_ (still drafting: see pull request)                                              | --           | Drafting | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
 [(IE-0013) Annotations for kit linking](proposals/0013-annotations-for-kit-linking.md)                   | 10 October 2022 | Implemented but unreleased | [PR#13](https://github.com/ganelson/inform-evolution/pull/13)
+[(IE-0014) Inter names for rulebooks](proposals/0014-inter-names-for-rulebooks.md)                       | 23 October 2022 | Implemented but unreleased | [PR#14](https://github.com/ganelson/inform-evolution/pull/14)
