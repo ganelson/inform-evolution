@@ -18,6 +18,8 @@ This is an incomplete draft, but what is described below is implemented on
 the `master` branch of the repository. These features are not in any release
 branch as yet.
 
+The new test cases `Namespaces` and `Replacement` exercise the following.
+
 ## Motivation
 
 At present, many extensions need a little Inter source (written in Inform 6
@@ -176,6 +178,9 @@ Note that it's fine to write something like:
 
 thus dividing a kit into a public half and a private half.
 
+The namespace `replaced` is reserved for the linker's own use (see below) and
+attempting to create anything in it will throw an error.
+
 ## +replacing
 
 When the linker joins compilation units together, it looks for name clashes.
@@ -232,12 +237,47 @@ to throw a linking error if an unexpected rival appears from elsewhere.
 Replacement is a more slippery idea than it first seems. Some things to bear
 in mind:
 
-* The replaced declaration does not exist anywhere. It hasn't simply been
-renamed: it's gone.
 * If no clash ever occurs, no error is produced. The `+replacing` definition
 may not in fact have replaced anything, but it's still the valid one. So
 it's possible to mark a definition as `+replacing` which would overlap a
 definition in some other kit which might or might not be being used.
 * It is not possible to use `+replacing` to override a `+private` definition
 in another compilation unit.
-* How `+replacing` plays with namespaces other than `main` is not worked out yet.
+* By default, the replaced definition is destroyed, but see below.
+
+### +replacing(keeping)
+
+By default, when `+replacing` is used, the replaced declaration does not exist
+anywhere any more. It has been struck out of the Inter tree, and is gone.
+
+However, the optional parameter `keeping` can be used to ensure that the
+original is retained after all. It clearly cannot have the same name as before,
+and so is moved into the namespace `replaced`.
+
+For example, this effectively says "double the value of `REQUISITION_STACK_SIZE`,
+whatever that is":
+
+	+replacing(keeping) Constant REQUISITION_STACK_SIZE = (2 * replaced`REQUISITION_STACK_SIZE);
+
+Whereas this would produce an error:
+
+	+replacing Constant REQUISITION_STACK_SIZE = (2 * replaced`REQUISITION_STACK_SIZE);
+
+since then ``replaced`REQUISITION_STACK_SIZE`` would not exist: the old definition
+would have been destroyed, and so could not have been used.
+
+Or for another example, the following "corrects" the output of the existing
+definition of `SquareRoot` from `BasicInformKit` by rounding up to the nearest
+natural number, rather than down:
+
+	+replacing(keeping) [ SquareRoot num x;
+		x = replaced`SquareRoot(num);
+		if (x*x < num) x++;
+		return x;
+	];
+
+so that `the square root of 17` will then evaluate to 5, not 4.
+
+`+replacing(keeping)` can only be applied to global variables (`Global ...`),
+constants, arrays and routines: an error will be thrown for attempts to use
+it with other constructs.
