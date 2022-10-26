@@ -10,10 +10,10 @@
 
 ## Summary
 
-A purely additive change to the `translates into Inter as...` sentence syntax,
-allowing explicit Inter identifier names to be assigned to be rulebooks and
-activities created in source text. In particular, this allows kits to access
-rulebooks and activities created in extensions.
+This change deprecates the `translates into Inter as...` sentence syntax,
+in favour of two different syntaxes which offer a wider range of functionality.
+In particular, this allows kits to access rulebooks and activities created in
+extensions.
 
 This is an incomplete draft, but what is described below is implemented on
 the `master` branch of the repository. These features are not in any release
@@ -21,7 +21,34 @@ branch as yet.
 
 ## Motivation
 
-Suppose that an extension creates:
+The existing sentence syntax `X translates into Inter as Y` (or equivalently
+`X translates into I6 as Y`) allows users to specify how natural language
+names for language constructs should match up with identifier names in the
+compiled output. Or at least, that's how the sentence was originally envisaged.
+In practice, it had two subtly different meanings:
+
+(1) Sometimes it meant "X is created by the main Inform compiler from source
+text, and I want the Inter identifier Y to refer to it".
+
+(2) But sometimes it meant "Y is created by Inter code, for example in a kit,
+and I want the natural language name X to refer to it."
+
+These go in opposite directions, which makes it slippery to understand
+exactly what the sentence does. The existing possibilities are:
+
+(a) The construct is an object or kind of object. Meaning (1).
+(b) The construct is an action. Meaning (1).
+(c) The construct is a global variable. Meaning (2).
+(d) The construct is a property. Meaning (2).
+(e) The construct is a rule. Meaning (2).
+(f) The construct is an Understand token. Meaning (2).
+
+It seems better to use clearer wording which distinguishes these meanings
+better, not least because we could then make it possible for the user to
+choose which is meant in individual cases.
+
+Also, the list does not currently include rulebooks or activities, and that
+causes some nuisance already. Suppose that an extension creates:
 
 	The psychic visibility rules is a rulebook.
 	
@@ -40,38 +67,64 @@ declared early in Inform's run, but is too fragile for anyone else to use.
 Attempts to write `GlkKit` and `DialogueKit` both ran into this issue, so
 it is not entirely theoretical.
 
+This proposal therefore also extends the range of language constructs to
+which these sentences can apply.
+
 ## Components affected
 
-- [ ] No change to the natural-language syntax.
+- [x] Minor change to the natural-language syntax.
 - [ ] No change to inbuild.
 - [x] Minor change to inform7.
 - [ ] No change to inter.
 - [ ] No change to the Inter specification.
 - [ ] No change to runtime kits.
-- [ ] No changes to the Standard Rules and Basic Inform.
-- [ ] No change to documentation.
+- [x] Minor changes to the Standard Rules and Basic Inform.
+- [x] Minor change to documentation.
 - [ ] No change to the GUI apps.
 
 ## Impact on existing projects
 
-None: this change is purely additive to existing natural language syntax.
+The syntax `translates into Inter as` is being deprecated. All existing uses
+of it will continue to work for now, but the next major version of Inform (i.e.,
+v11) will throw a problem message if this deprecated sentence form is used.
+So this is a good time for extensions to migrate to the new syntax.
+
+Note that `translates into Inter as` will already throw a problem message if used
+with the new use-cases below (such as rulebooks and activities). But since these
+were not previously possible, that breaks no existing syntax.
+
+## New sentence syntaxes
+
+Instead of using `translates into Inter as` for both meanings (1) and (2) above,
+under this proposal `is accessible to Inter as` is used for meaning (1), and
+`is defined by Inter as` is used for meaning (2). For example:
+
+	The outside object is accessible to Inter as "out_obj".
+	The taking action is accessible to Inter as "Take".
+
+	The time of day variable is defined by Inter as "the_time".
+	The printed name property is defined by Inter as "short_name".
+	The initialise memory rule is defined by Inter as "INITIALISE_MEMORY_R".
+	The understand token a time period is defined by Inter as "RELATIVE_TIME_TOKEN".
+
+The Inform examples, built-in extensions and test cases have all had their
+usages of `translates into Inter as` replaced with the appropriate syntax in
+each case.
 
 ## Rulebook and activity naming
 
-The existing sentence `X translates into Inter/I6 as Y` (the old syntax `I6`
-is still allowed here, though `Inter` is now preferred) allows a variety
-of language constructs to be named in the subject position `X`. This change
-adds two more:
+Rulebooks and activities are not Inter concepts, and can only be defined by
+natural language source text. So it's clear which syntax must be used:
 
-	The NAME rulebook/rules translates into Inter as "DESIRED_IDENTIFIER".
+	The NAME rulebook/rules is accessible to Inter as "DESIRED_IDENTIFIER".
 
-	The NAME activity translates into Inter as "DESIRED_IDENTIFIER".
+	The NAME activity is accessible to Inter as "DESIRED_IDENTIFIER".
 
 For example:
 
 	The banana rules is a rulebook.
 
-	The banana rules translates into Inter as "BANANA_RULES".
+	The banana rules is accessible to Inter as "BANANA_RULES".
 
 	A banana rule:
 		say "I am yellow!"
@@ -86,7 +139,7 @@ Similarly:
 
 	Grimly testing something is an activity.
 
-	The grimly testing activity translates into Inter as "GRIM_ACT".
+	The grimly testing activity is accessible to Inter as "GRIM_ACT".
 
 	For grimly testing:
 		say "I am grimly testing."
@@ -94,13 +147,32 @@ Similarly:
 	To exhibit the behaviour:
 		(- CarryOutActivity(GRIM_ACT); -).
 
-## Remark
+## Accessing properties by name
 
-The wording `...translates into Inter as...` is slippery. Different language
-constructs deal with it differently. In these cases, what happens is that
-a (public, thus linkable) constant with the given identifier name is defined
-and equated to the internal ID. (This avoids annoying race conditions in
-the compiler to do with shared variable set ID numbers.)
+The existing sentence:
 
-However, this is an implementation detail not visible to users, who get what
-they want: an explicit Inter identifier evaluating to the right constant value.
+	The printed name property is defined by Inter as "short_name".
+
+can only be used for properties of objects, and tells the compiler that a
+kit will define the property with a `Property` or `Attribute` directive.
+
+This is not helpful if, for example, we want to set up a property for a kind
+of value which is not an object, and then refer to that from a kit. For
+example, suppose the source text says:
+
+	A dialogue beat can be performed or unperformed. A dialogue beat is
+	usually unperformed.
+
+where `dialogue beat` is a kind, but not a kind of object. Before this
+proposal, there was no way for Inter code to read or write the `performed`
+property. But it now can:
+
+	The performed property is accessible to Inter as "performed".
+
+Note that this is "accessible to", not "defined by" Inter, since the
+property is entirely created by the compiler from the natural language
+source text. Code in some kit can now write, say:
+
+	WriteGProperty(DIALOGUE_BEAT_TY, db, performed, true);
+
+to set the "performed" property for the beat `db`.
