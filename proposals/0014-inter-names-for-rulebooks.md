@@ -27,21 +27,22 @@ names for language constructs should match up with identifier names in the
 compiled output. Or at least, that's how the sentence was originally envisaged.
 In practice, it had two subtly different meanings:
 
-(1) Sometimes it meant "X is created by the main Inform compiler from source
-text, and I want the Inter identifier Y to refer to it".
+(1) Sometimes it meant "X is created by the source text, but I want to refer
+to it in Inter code as well, calling it Y."
 
 (2) But sometimes it meant "Y is created by Inter code, for example in a kit,
-and I want the natural language name X to refer to it."
+but I want to refer to it in source text as well, calling it X."
 
 These go in opposite directions, which makes it slippery to understand
-exactly what the sentence does. The existing possibilities are:
+exactly what the sentence does. Prior to this proposal there were six possible
+uses of the sentence - two with meaning (1), four with meaning (2):
 
-(a) The construct is an object or kind of object. Meaning (1).
-(b) The construct is an action. Meaning (1).
-(c) The construct is a global variable. Meaning (2).
-(d) The construct is a property. Meaning (2).
-(e) The construct is a rule. Meaning (2).
-(f) The construct is an Understand token. Meaning (2).
+* The construct is an object or kind of object. Meaning (1).
+* The construct is an action. Meaning (1).
+* The construct is a global variable. Meaning (2).
+* The construct is a property. Meaning (2).
+* The construct is a rule. Meaning (2).
+* The construct is an Understand token. Meaning (2).
 
 It seems better to use clearer wording which distinguishes these meanings
 better, not least because we could then make it possible for the user to
