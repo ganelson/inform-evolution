@@ -6,7 +6,7 @@
 * Language feature name: None
 * Status: Draft
 * Related proposals: None
-* Implementation: None
+* Implementation: Implemented but unreleased
 
 ## Summary
 
