@@ -25,7 +25,7 @@ but that isn't really what extensions are for.
 
 ## Components affected
 
-- [ ] No change to the natural-language syntax.
+- [x] Minor (additive) change to the natural-language syntax.
 - [x] Minor change to inbuild.
 - [ ] No change to inform7.
 - [ ] No change to inter.
@@ -39,56 +39,11 @@ but that isn't really what extensions are for.
 
 None.
 
-## Options
+### Implementation
 
-Three ways to do this have been proposed. At present, we lean towards option 3.
-
-### Contents file option 1
-
-This is in fact implemented, though not documented, in v10.1. It will be removed
-if we go for the other options.
-
-The user can create a subfolder of the `Materials` folder called `Source`. This
-must contain a file called `Contents.txt` which lists the source files to read,
-one per line. For example, it might read:
-```
-	# Source is split into several files as follows
-	Athens.i7
-	Asia Minor.i7
-	Pergamon.i7
-```
-(The `#` means a comment line and is, of course, optional.) inform7 then makes
-the main source text be the concatenation of the text in these files, which must
-all similarly be in the `Source` subfolder of the materials folder.
-
-Advantages: This restricts the splitting-up straightforwardly to a concatenation,
-and doesn't get into an elaborate tree of files including each other.
-
-Disadvantages: This looks very odd in the GUI apps, since the main source text
-is not being used, but is still presented by the apps just as if it were.
-
-### Inclusion option 2
-
-In this model, projects continue to have a main source text file, as now.
-But this can now make what amount to C-style `#include`s.
-
-	Include source text in "Filename".
-
-The filename is relative to the `Source` subdirectory of the materials directory
-for a project. It uses a forward slash `/`, if necessary, to indicate a descent
-into further subdirectories; this will be translated as appropriate for the
-host operating system. (Thus, on Windows it will be read as `\`.)
-
-Advantages: This is close to what projects like Counterfeit Monkey already
-do: it simply changes extension inclusions into these new text inclusions.
-
-Disadvantages: `#include` leads to a potential haystack of incomprehensible
-relationships in any language, and for Inform, it cuts across the headings
-system in awkward ways.
-
-### Externalised headings option 3
-
-External source files must be tied to headings in the source text. Thus:
+The main source file can declare that the contents of a heading are to be
+found in an external source file, using a new form of heading annotation.
+For example:
 
 	Chapter 7 - Into the Woods (see "woods.i7")
 
@@ -107,7 +62,9 @@ throws a problem, as does:
 	Section 7A - Acorns
 
 because `Section 7A` is a part of `Chapter 7`, and should therefore be in
-the external file with the rest of it. This however is fine:
+the external file with the rest of it.
+
+This however is fine:
 
 	Chapter 7 - Into the Woods (see "woods.i7")
 
@@ -117,33 +74,79 @@ the external file with the rest of it. This however is fine:
 
 because `Chapter 8` is not subordinate to `Chapter 7`.
 
-Advantages: This makes text file inclusion coherent with the headings
-structure of a large source text automatically, and dovetails nicely with
-[IE-0009](0009-dialogue-sections.md), since dialogue sections could then
-be isolated as script files in quite a tidy way.
+The file `woods.i7` must also comply with the rules:
+
+* It must open with a heading which exactly duplicates the one referring to it,
+but without the bracketed annotation(s).
+* It may not contain any subheadings of equal or higher rank than the one which
+referred to it.
+
+So for example:
+
+	Chapter 7 - Into the Woods
+	
+	Section 7.1 - Some Trees
+	
+	The Sylvan Glade is a room.
+	
+	Section 7.2 - Some Acorns
+	
+	An acorn is a kind of thing. Three acorns are in the Glade.
+
+...would be fine: the file opens with `Chapter 7 - Into the Woods`, which
+duplicate the heading referring to it, and it goes on to contain only
+headings inferior to Chapter - the two Section headings.
+
+Note: this dovetails nicely with [IE-0009](0009-dialogue-sections.md), since
+dialogue sections can now be isolated as script files in quite a tidy way.
+
+## Alternatives considered
+
+### Contents file option
+
+This was in fact speculatively implemented, though not documented, in v10.1,
+but it didn't really seem to mesh well with natural language, and felt too
+much like a C-style `#include`.
+
+The user can create a subfolder of the `Materials` folder called `Source`. This
+must contain a file called `Contents.txt` which lists the source files to read,
+one per line. For example, it might read:
+```
+	# Source is split into several files as follows
+	Athens.i7
+	Asia Minor.i7
+	Pergamon.i7
+```
+(The `#` means a comment line and is, of course, optional.) inform7 then makes
+the main source text be the concatenation of the text in these files, which must
+all similarly be in the `Source` subfolder of the materials folder.
+
+### Explicit include sentences option
+
+In this model, projects continue to have a main source text file, as now.
+But this can now make what amount to C-style `#include`s:
+
+	Include source text in "Filename".
+
+The filename is relative to the `Source` subdirectory of the materials directory
+for a project. It uses a forward slash `/`, if necessary, to indicate a descent
+into further subdirectories; this will be translated as appropriate for the
+host operating system. (Thus, on Windows it will be read as `\`.)
+
+Advantages: This is close to what projects like Counterfeit Monkey already
+do: it simply changes extension inclusions into these new text inclusions.
+
+Disadvantages: `#include` leads to a potential haystack of incomprehensible
+relationships in any language, and for Inform, it cuts across the headings
+system in awkward ways.
 
 ## GUI app integration
 
-For the GUI apps, this proposal presents two challenges, either or both of
-which they may want to ignore.
+On the MacOS app, it's already the case that if the user clicks on a
+clickback link to a source text reference in an external file (either from
+a problem message or from the index) then the app opens the file in an
+editable second window.
 
-1. Should the user be allowed to edit files stored in `Source` from the
-Materials folder? If so, what affordances should the apps offer for browsing
-and choosing those?
+Such clickback links look like so:
 
-2. How should we handle clickback links used in problem messages and the
-Index? (The familiar little orange discs with arrows in.) At present, these
-use special URL protocols, as in:
-```
-	<a href="source:story.ni#line16">(button)</a>
-	<a href="source:/Users/gnelson/Inform.app/Contents/Resources/Internal/Extensions/Graham Nelson/Standard Rules.i7x#line544">(button)</a>
-```
-That is, the file path is relative to the `Source` subdirectory of the project
-directory (_not_ the materials directory), unless a full file system path is
-given. How should a clickback link to an external source file be done:
-for example, would it be better to use something like this to make a clickback
-to line 16 of `woods.i7`?
-```
-	<a href="source:external/woods.i7#line16">(button)</a>
-```
-
+	<a href="source:/Users/gnelson/experimental/Test.materials/Source/woods.i7#line7">
