@@ -6,7 +6,7 @@
 * Language feature name: None
 * Status: Draft
 * Related proposals: None
-* Implementation: Partial in v10.1
+* Implementation: Implemented but unreleased
 
 ## Summary
 
@@ -104,13 +104,9 @@ dialogue sections can now be isolated as script files in quite a tidy way.
 
 ### Contents file option
 
-This was in fact speculatively implemented, though not documented, in v10.1,
-but it didn't really seem to mesh well with natural language, and felt too
-much like a C-style `#include`.
-
-The user can create a subfolder of the `Materials` folder called `Source`. This
-must contain a file called `Contents.txt` which lists the source files to read,
-one per line. For example, it might read:
+In this model, the user can create a subfolder of the `Materials` folder called
+`Source`. This must contain a file called `Contents.txt` which lists the source
+files to read, one per line. For example, it might read:
 ```
 	# Source is split into several files as follows
 	Athens.i7
@@ -120,6 +116,10 @@ one per line. For example, it might read:
 (The `#` means a comment line and is, of course, optional.) inform7 then makes
 the main source text be the concatenation of the text in these files, which must
 all similarly be in the `Source` subfolder of the materials folder.
+
+This option was in fact speculatively implemented, though not documented, in v10.1,
+but it didn't really seem to mesh well with natural language, and felt too
+much like a C-style `#include`. The implementation has now been removed.
 
 ### Explicit include sentences option
 
