@@ -36,7 +36,7 @@ Proposal                                                                        
 [(IE-0001) Directory format for extensions with resources](proposals/0001-extensions-with-resources.md)  | 1 May 2022   | Accepted | [PR#1](https://github.com/ganelson/inform-evolution/pull/1)
 [(IE-0002) Automatic gitignores for Inform projects](proposals/0002-inform-project-gitignores.md)        | 1 May 2022   | Implemented but unreleased | [PR#2](https://github.com/ganelson/inform-evolution/pull/2)
 [(IE-0003) Dividing source text into multiple files](proposals/0003-multiple-source-files.md)            | 1 May 2022   | Implemented but unreleased | [PR#3](https://github.com/ganelson/inform-evolution/pull/3)
-[(IE-0004) Access to data files embedded in blorbs](proposals/0004-using-data-files-in-blorbs.md)        | 5 May 2022   | Accepted | [PR#4](https://github.com/ganelson/inform-evolution/pull/4)
+[(IE-0004) Access to data files embedded in blorbs](proposals/0004-using-data-files-in-blorbs.md)        | 5 May 2022   | In progress | [PR#4](https://github.com/ganelson/inform-evolution/pull/4)
 [(IE-0005) Removing translates into Unicode](proposals/0005-removing-translates-into-unicode.md)         | 5 June 2022  | Implemented but unreleased | [PR#5](https://github.com/ganelson/inform-evolution/pull/5)
 [(IE-0006) New annotations for I6 syntax](proposals/0006-i6-syntax-annotations.md)                       | 16 June 2022 | Implemented but unreleased | [PR#6](https://github.com/ganelson/inform-evolution/pull/6)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022  | Accepted | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)

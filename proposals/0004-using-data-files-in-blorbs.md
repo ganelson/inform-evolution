@@ -6,7 +6,7 @@
 * Language feature name: None
 * Status: Draft
 * Related proposals: None
-* Implementation: None
+* Implementation: In progress
 
 ## Summary
 
@@ -117,3 +117,7 @@ if a `NAME` is given, will print out an I6 constant declaration of that. (This
 is no longer very useful, but since we have this for figures and sounds, we
 will have it for these too.) `type` must be one of `BINA`, `TEXT` or `FORM`, in
 full caps.
+
+3.2. This is a purely additive change to inblorb, which advances from version
+4 to version 4.1, following semver conventions.
+
