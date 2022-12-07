@@ -33,7 +33,7 @@ This repository was made public on 30 July 2022, and was described at
 
 Proposal                                                                                                 | Began        | Status   | Comments 
 -------------------------------------------------------------------------------------------------------- | ------------ | -------- | -------
-[(IE-0001) Directory format for extensions with resources](proposals/0001-extensions-with-resources.md)  | 1 May 2022   | Accepted | [PR#1](https://github.com/ganelson/inform-evolution/pull/1)
+[(IE-0001) Directory format for extensions with resources](proposals/0001-extensions-with-resources.md)  | 1 May 2022   | In progress | [PR#1](https://github.com/ganelson/inform-evolution/pull/1)
 [(IE-0002) Automatic gitignores for Inform projects](proposals/0002-inform-project-gitignores.md)        | 1 May 2022   | Implemented but unreleased | [PR#2](https://github.com/ganelson/inform-evolution/pull/2)
 [(IE-0003) Dividing source text into multiple files](proposals/0003-multiple-source-files.md)            | 1 May 2022   | Implemented but unreleased | [PR#3](https://github.com/ganelson/inform-evolution/pull/3)
 [(IE-0004) Access to data files embedded in blorbs](proposals/0004-using-data-files-in-blorbs.md)        | 5 May 2022   | In progress | [PR#4](https://github.com/ganelson/inform-evolution/pull/4)

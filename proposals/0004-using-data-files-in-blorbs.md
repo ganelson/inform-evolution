@@ -61,9 +61,10 @@ This will not change. But we will now also read something like:
 ```
 	The internal data file of glaciation areas is called "ice extents.usgs".
 ```
-Note `internal data`. We will also allow `internal text` and `internal form`;
-these three variants correspond to the three data file formats used by Blorb,
-that is, `BINA`, `TEXT` and `FORM`.
+Note `internal data`, corresponding to a `BINA`-format file in Blorb terms.
+We will also allow `internal text`, which corresponds to `TEXT`. (Earlier
+versions of this proposal referred to "form" as a third alternative, but not
+any more.)
 
 1.3. Just as users currently store figures and sounds in the Figures and Sounds
 subdirectories of the materials directory for a project, they will store their
@@ -115,8 +116,7 @@ This is analogous to the existing picture command, in that either a numerical
 `ID` can be given for the resource `ID`, or if not inblorb will choose one; and
 if a `NAME` is given, will print out an I6 constant declaration of that. (This
 is no longer very useful, but since we have this for figures and sounds, we
-will have it for these too.) `type` must be one of `BINA`, `TEXT` or `FORM`, in
-full caps.
+will have it for these too.) `type` must be one of `BINA` or `TEXT`, in full caps.
 
 3.2. This is a purely additive change to inblorb, which advances from version
 4 to version 4.1, following semver conventions.
