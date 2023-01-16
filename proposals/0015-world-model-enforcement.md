@@ -159,15 +159,21 @@ kinds person, container or supporter.
 * `now X holds Y` either results in a situation where `X holds Y` is true, or
 throws a run-time problem message.
 
-However, it is not true that:
+It is also true that:
 
-* For all objects `X`, `the holder of X holds X`.
+* If `X holds Y`, then `the holder of Y is X`.
+
+However, the converse is not true. In particular, if `X` is a person in a room
+`R`, then `the holder of X holds X` is false, because `the holder of X` is `R`
+and `R`, being a room and not a thing, cannot `hold X`. Also, though this is
+a less significant issue, `the holder of X` can sometimes be `nothing`.
 
 We have to accept that `holder of X` has a different and wider meaning than
 the relation `holding`, allowing it to be used in more abstract settings.
-(For one thing, `holder of X` can return `nothing`.) The meaning of `holder of X`
-is unchanged from Inform 10.1; to change it would break the Inform test suite,
-including some examples from the existing documentation.
+The meaning of `holder of X` is unchanged from Inform 10.1; to change it would
+break the Inform test suite, including some examples from the existing
+documentation. But the situation is at least improved over 10.1: in 10.1,
+neither of `X holds Y` and `the holder of Y is X` implied the other.
 
 ## The carrying relation
 
@@ -208,8 +214,7 @@ nothing to be gained by adding one. But if we defined:
 	To decide which object is the carrier of (something - object):
 		(- (CarrierOf({something})) -).
 
-then it would always be true that `the carrier of Y carries Y`, in all cases
-where somebody does carry `Y`.
+then it would always be true that `X carries Y` if and only if `the carrier of Y is X`.
 
 ## The wearing relation
 
@@ -248,6 +253,4 @@ There is no Inform phrase `wearer of X` in the Standard Rules, but if we defined
 	To decide which object is the wearer of (something - object):
 		(- (WearerOf({something})) -).
 
-then it would always be true that `the wearer of Y wears Y`, in all cases
-where somebody does wear `Y`.
-
+then it would always be true that `X wears Y` if and only if `the wearer of Y is X`.
