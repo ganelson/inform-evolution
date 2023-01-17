@@ -99,33 +99,61 @@ In particular, `holder of the player` could well evaluate to `Tapestry Room`.
 
 ### Remediation
 
-`R_holding` is now defined with terms `thing` and `thing`, not `person` and
-`thing`. At run-time this is tested with a new function `RelationalHolderOf`, thus:
+We have to accept that `hold` means something different in the spatial model
+than it might for more abstract collections of objects created by authors.
+There is `hold` in the sense of `be immediately subordinate in either the
+object tree or component-parts data structure`, and then there is `hold` in
+the narrower sense of `be a physical object directly in, say, the possession
+of a person`.
 
-	[ RelationalHolderOf o;
-		o = HolderOf(o);
-		if (o ofclass K2_thing) return o;
-		return nothing;
-	];
+Define a "spatial object" as any object which is a `thing`, `region`,
+`room` or `direction`. (This of course includes objects of subkinds of those,
+such as people or vehicles.) These are the objects in the tree which make up
+the spatial model for the world, and often they are the only instances of
+`object` in an Inform story. But if the author writes, say, `An idea is a kind
+of object`, then any instances of `idea` will not be spatial objects. Such
+objects will be called "abstract".
 
-Moreover, asserting `now X holds Y` throws a new run-time problem unless both
-`X` is a thing and `Y` is a person, a container or a supporter:
+`R_holding` is now defined with terms `object` and `object`, not `person` and
+`thing`. It continues to be tested with `HolderOf`, but the change of domain
+affects how determiners work with the relation. For example, suppose there
+is just one room, `Lab`, and the player is in this room. Then:
 
-	Only objects which are things can take part in holding or carrying.
-	For example, 'now the Viper Pit Room holds the snake' is incorrect
-	because the Viper Pit Room, being a room, is not a thing. The eventual
-	holder or wearer has to be not only a thing, but a special kind of
-	thing: either a person, or a supporter, or a container.
+	"whether or not Lab holds the player" = truth state: true
+	"whether or not nothing holds the player" = truth state: false
+	"whether or not nowhere holds the player" = truth state: false
+	"whether or not something holds the player" = truth state: false
+	"whether or not somewhere holds the player" = truth state: true
+	"whether or not everywhere holds the player" = truth state: true
 
-The loss of personhood from the defined kind of `Y` would affect an assertion
-sentence like this one:
+Note that `nothing` means `no object`, not `no thing`. Since a room, in this
+case `Lab` is an object, it is not true that `nothing holds the player`. On
+the other hand, `something` means `some object`. So despite appearances, it
+is perfectly consistent that `nothing holds the player` and `something holds the player`
+are both false.
+
+Asserting that `now X holds Y` imposes a new restriction if either `X` or `Y`
+is a spatial object. In these cases, `Y` must be a thing, and `X`
+must be either a room, a person, a container or a supporter. Failing that, the
+following run-time problem is produced:
+
+	Only things can be made to be held, carried or worn using 'now';
+	and in the case of wearing or carrying, the new wearer or carrier
+	must be a person, while for holding, the new holder must be a
+	room, a container, a supporter, or a person.
+
+The intention here is to prevent `now X holds Y` from breaking the consistency
+rules of the world model, while not restricting its use with abstract objects.
+
+The loss of personhood from the defined kind of `Y`, and thingness from `X`,
+would affect an assertion sentence like this one:
 
 	Mr Smith holds the silver coin.
 
 since it would create `Mr Smith`, in the absence of any other information, as
 a thing and not a person. We don't want that, so the Inform compiler has been
 given a special case rule inferring that `Mr Smith` is a person by virtue of
-being in the holding relationship.
+being in the holding relationship, and that the `silver coin` is a thing.
 
 Now, this does mean that:
 
@@ -153,27 +181,14 @@ The following should be now true:
 
 * For all pairs of `X` and `Y` where assertion sentences say that `X holds Y`
 in the initial state, the condition `if X holds Y` is true when play begins.
-* At all times `if X holds Y` can be true only if `X` and `Y` are both things.
-Moreover either `Y` is a component part of `X`, or `X` has one of the
-kinds person, container or supporter.
+* If either `X` or `Y` is a spatial object, then at all times `if X holds Y`
+can be true only if `X` is a thing and `Y` is a room, a person, a container
+or a supporter, or if `X` and `Y` are both things and `Y` is a component part of `X`.
+* If `if X holds Y` is true then either both `X` and `Y` are spatial objects,
+or neither is.
 * `now X holds Y` either results in a situation where `X holds Y` is true, or
 throws a run-time problem message.
-
-It is also true that:
-
-* If `X holds Y`, then `the holder of Y is X`.
-
-However, the converse is not true. In particular, if `X` is a person in a room
-`R`, then `the holder of X holds X` is false, because `the holder of X` is `R`
-and `R`, being a room and not a thing, cannot `hold X`. Also, though this is
-a less significant issue, `the holder of X` can sometimes be `nothing`.
-
-We have to accept that `holder of X` has a different and wider meaning than
-the relation `holding`, allowing it to be used in more abstract settings.
-The meaning of `holder of X` is unchanged from Inform 10.1; to change it would
-break the Inform test suite, including some examples from the existing
-documentation. But the situation is at least improved over 10.1: in 10.1,
-neither of `X holds Y` and `the holder of Y is X` implied the other.
+* `if X holds Y` is true if and only if `the holder of Y is X`.
 
 ## The carrying relation
 
@@ -214,7 +229,7 @@ nothing to be gained by adding one. But if we defined:
 	To decide which object is the carrier of (something - object):
 		(- (CarrierOf({something})) -).
 
-then it would always be true that `X carries Y` if and only if `the carrier of Y is X`.
+then `X carries Y` if and only if `the carrier of Y is X`.
 
 ## The wearing relation
 
@@ -253,4 +268,4 @@ There is no Inform phrase `wearer of X` in the Standard Rules, but if we defined
 	To decide which object is the wearer of (something - object):
 		(- (WearerOf({something})) -).
 
-then it would always be true that `X wears Y` if and only if `the wearer of Y is X`.
+then `X wears Y` if and only if `the wearer of Y is X`.
