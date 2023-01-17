@@ -245,7 +245,7 @@ The following should be now true:
 in the initial state, the condition `if X wears Y` is true when play begins.
 * At all times `if X wears Y` can be true only if `X` is a person and `Y` is
 a thing, and `Y` has the `worn` property.
-* `now X wears Y` either results in a situation where `X carries Y` is true, or
+* `now X wears Y` either results in a situation where `X wears Y` is true, or
 throws a run-time problem message.
 
 There is no Inform phrase `wearer of X` in the Standard Rules, but if we defined:
