@@ -35,8 +35,11 @@ In some cases, a lack of clarity about what it means to "hold" or "carry" has
 also led to linguistic inconsistencies with these verbs.
 
 Zed Lopez has been instrumental in finding some of these issues, and I'm grateful
-too for numerous other reporters of related bugs. For example, see Jira issue
-I7-2220.
+too for numerous other reporters of related bugs, and to Dannii Willis and
+Peter Bates for their comments. Relevant Jira issues include:
+
+* [I7-2220 on the definition of holding](https://inform7.atlassian.net/browse/I7-2220)
+* [I7-2219 on directions being held](https://inform7.atlassian.net/browse/I7-2219)
 
 This is an incomplete draft, but what is described below is implemented on
 the `master` branch of the repository. These features are not in any release
@@ -95,7 +98,9 @@ allows for rooms as well as things, the following could simultaneously be true:
 	if nothing holds the player, ...;
 
 Note that the function `HolderOf` was also used to power the phrase `holder of Y`.
-In particular, `holder of the player` could well evaluate to `Tapestry Room`.
+This behaved a little unexpectedly on direction objects, or at least those
+currently in play, since it returned the `Compass` pseudo-object (which can
+only be referred to from I6 code, and is an awkward leftover from Inform 1).
 
 ### Remediation
 
@@ -115,9 +120,14 @@ of object`, then any instances of `idea` will not be spatial objects. Such
 objects will be called "abstract".
 
 `R_holding` is now defined with terms `object` and `object`, not `person` and
-`thing`. It continues to be tested with `HolderOf`, but the change of domain
-affects how determiners work with the relation. For example, suppose there
-is just one room, `Lab`, and the player is in this room. Then:
+`thing`. It continues to be tested with `HolderOf`, though this function has
+been modified slightly so that the `holder of` a direction is `nothing`. As a
+result, the `holder of` of a spatial object is now always another spatial object,
+or else `nothing`.
+
+Note that the change of domain affects how determiners work with the relation.
+For example, suppose there is just one room, `Lab`, and the player is in this
+room. Then:
 
 	"whether or not Lab holds the player" = truth state: true
 	"whether or not nothing holds the player" = truth state: false
