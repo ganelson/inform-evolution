@@ -192,8 +192,9 @@ The following should be now true:
 * For all pairs of `X` and `Y` where assertion sentences say that `X holds Y`
 in the initial state, the condition `if X holds Y` is true when play begins.
 * If either `X` or `Y` is a spatial object, then at all times `if X holds Y`
-can be true only if `X` is a thing and `Y` is a room, a person, a container
-or a supporter, or if `X` and `Y` are both things and `Y` is a component part of `X`.
+can be true only if `Y` is a thing and `X` is a room, a person, a container
+or a supporter, or if `X` and `Y` are both things and `Y` is a component part of `X`,
+or if `X` and `Y` are both regions.
 * If `if X holds Y` is true then either both `X` and `Y` are spatial objects,
 or neither is.
 * `now X holds Y` either results in a situation where `X holds Y` is true, or
