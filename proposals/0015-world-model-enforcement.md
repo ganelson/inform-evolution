@@ -279,3 +279,73 @@ There is no Inform phrase `wearer of X` in the Standard Rules, but if we defined
 		(- (WearerOf({something})) -).
 
 then `X wears Y` if and only if `the wearer of Y is X`.
+
+## The regional containment relation `R_regional_containment`
+
+### Infelicities in Inform 10.1
+
+A region regionally contains itself, which is a little odd, and appears to be
+an oversight: nothing in the test suite relies on this. Regional containment
+is used to give meaning to `if X is in R` where `R` is a region, so the
+practical result is we can have `if R is in R` being true. There is a tenuous
+argument for this, but it seems more likely to surprise authors than not to.
+(Is Europe in Europe? I think I would say not.)
+
+It was impossible to change the region of a room with `now` (though it was
+possible to remove regions from other regions, in some cases). Whether this is
+infelicitous is a matter of taste.
+
+### Remediation
+
+The function `TestRegionalContainment` now returns `false` if asked to test
+whether a region contains itself, and so `if R is in R` is now false.
+
+A new function `SetRegionalContainment` moves either a room or a region to a
+region. This enables, for example:
+
+	Nirvana is a region. Shangri-La is a region. Nirvana is in Shangri-La.
+	Seventh Heaven is a region. 
+
+	Lebling Monument is a room. Lebling Monument is in Nirvana. A plaque
+	is in the Monument.
+
+	Instead of examining the plaque:
+		now Nirvana is in Seventh Heaven;
+		now Lebling Monument is in Seventh Heaven;
+		say "You feel mystic connections being rearranged."
+
+If `now X is in R` is tried in cases where `X` is anything other than a room
+or region, or in the case where `X` equals or is contained by `R`, a runtime
+problem is thrown:
+
+	If 'R' is the name of a region, then 'now X is in R' is only allowed in
+	cases where 'X' is a room or another region. It's otherwise too vague
+	where things are to move.
+
+This is technically a change to the containment relation, not to the regional
+containment relation, but rooms and regions can be removed from all regions with:
+
+	now Lebling Monument is nowhere;
+	now Nirvana is nowhere;
+
+(In Inform 10.1, `now Lebling Monument is nowhere` would throw a run-time problem
+if the player was in this room, and otherwise do nothing.)
+
+The `showme` debugging verb now lists the super-region of a region. (Since this
+can now change, it seems useful to be able to see what it is: for example
+by typing `SHOWME NIRVANA` in the above example.)
+
+### Invariant
+
+If `R` and `S` are regions and `X` is an object, then the following should be now true:
+
+* For all pairs of `X` and `R` where assertion sentences say that `X is in R`
+in the initial state, the condition `if X is in Y` is true when play begins.
+* At all times `if X is in R` can be true only if `X` is a thing, a room or
+a region.
+* This relation is transitive, but never reflexive or symmetric. In particular,
+`if X is in R` is true, then `if R is in X` is false; and `if R is in R` is false.
+* `if S is in R` then `R` must be the `holder of S`, or the `holder of the holder of S`,
+or... and so on.
+* `now X is in R` either results in a situation where `if X is in R` is true, or
+throws a run-time problem message.
