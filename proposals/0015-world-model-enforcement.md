@@ -78,6 +78,49 @@ test suite other than for indexing. (The test cases `Index-Tokens` and
 `Index-Relations` are affected because they describe the kinds of the terms
 in the spatial relationships.)
 
+## Consistency
+
+Suppose `R` is a relation between two kinds `K` and `L`, and defines the
+Inform verb `to arr`. Inform source text can deal with the relation in three ways:
+
+* A sentence can assert that `X arrs Y.` as play begins.
+* Phrases like `if` can test whether `X arrs Y` at any point during play.
+* The phrase `now` can sometimes force `now X arrs Y`, or `now X does not arr Y`.
+
+We will say that `R` is "consistent" if the following properties hold:
+
+* Writing the assertion sentence `X arrs Y.` has exactly one of these two consequences:
+	* A compilation error.
+	* The test `if X arrs Y` will be true at the start of play.
+* Writing the test `if X arrs Y` must:
+	* If `X` is a `K`, and `Y` is an `L`, produce a true/false result without
+	issuing a run-time problem.
+	* If `X` is not a `K`, or `Y` is not an `L`, either there must be a compilation
+	error so that the test is never made, or it must compile but then produce
+	the result false, without issuing a run-time problem.
+* If the test `if X arrs Y` is made twice in succession, and no state change has
+occurred between the two tests, the result must be the same.
+* Writing the phrase `now X arrs Y` has exactly one of these three consequences:
+	* A compilation error so that this is never executed.
+	* A run-time problem message.
+	* A change of state so that `if X arrs Y`, if tested immediately afterwards,
+	would be true.
+* Similarly for `now X does not arr Y`, except that the state is changed to false.
+
+Combining the first two properties above, an assertion sentence `X arrs Y.`
+is required to throw a compilation error if `X` is not a `K`, or if `Y` is not
+an `L`. For example, if the relation is defined over vehicles and doors, then
+the compiler must only allow `X arrs Y.` if `X` is a vehicle and `Y` is a door.
+
+It is *not* a requirement that assertion sentences `X arrs Y.` must be allowed
+for any pair of `X` and `Y` in the domains `K` and `L`, and similarly for
+`now`. (Indeed, the numerical relation `greater than` over numbers cannot be
+asserted or be changed with `now`.)
+
+Consistency seems simple, but it's surprisingly easy to leave edge cases which
+violate it. A minimum goal for this proposal is to ensure that all our spatial
+relations are consistent.
+
 ## The holding relation
 
 ### Infelicities in Inform 10.1
@@ -189,17 +232,41 @@ contained or supported by `X`.
 
 The following should be now true:
 
-* For all pairs of `X` and `Y` where assertion sentences say that `X holds Y`
-in the initial state, the condition `if X holds Y` is true when play begins.
-* If either `X` or `Y` is a spatial object, then at all times `if X holds Y`
-can be true only if `Y` is a thing and `X` is a room, a person, a container
-or a supporter, or if `X` and `Y` are both things and `Y` is a component part of `X`,
-or if `X` and `Y` are both regions.
+* Holding is a consistent relation defined over the kinds `object` and `object`.
+* `X holds Y.` can be asserted only in cases when `X` is a person and `Y` is a thing.
 * If `if X holds Y` is true then either both `X` and `Y` are spatial objects,
 or neither is.
-* `now X holds Y` either results in a situation where `X holds Y` is true, or
-throws a run-time problem message.
+* If both are spatial objects, then `if X holds Y` if one of the following:
+	* `Y` is a thing immediately inside a room `X`;
+	* `Y` is a thing immediately inside a container `X`;
+	* `Y` is a thing supported by a supporter `X`;
+	* `Y` is a thing carried by a person `X`;
+	* `Y` is a thing which is a component part of a thing `X`;
+	* `Y` is a region which is immediately a part of another region `X`.
+* If both are spatial objects, then `now X holds Y` is permitted only in the
+following cases:
+	* `Y` is a thing and `X` is a room;
+	* `Y` is a thing and `X` is a container;
+	* `Y` is a thing and `X` is a supporter;
+	* `Y` is a thing and `X` is a person.
+* `now X does not hold Y` is never permitted.
 * `if X holds Y` is true if and only if `the holder of Y is X`.
+* `if X holds Y` is true, then `if Y holds X` is false. Consequently, `if X holds X`
+is always false.
+
+Note that:
+
+* A region can only hold another region: in particular it does not hold rooms.
+* Backdrops and two-sided doors are conceptually present in multiple rooms at once, but
+this is implemented at runtime by moving them as necessary. Since `holder of B`
+for a backdrop `B` can only return the room it's currently in, `R holds B` only
+if `R` is that current location. This is not an inconsistency on a careful reading
+of the consistency rules above, but it can be a surprise. If the Brass Door is
+between the Blue Room and the Green Room, then nevertheless only one of these
+tests will be true at any given time:
+
+	if the Blue Room holds the Brass Door, ...
+	if the Green Room holds the Brass Door, ...
 
 ## The carrying relation
 
@@ -227,20 +294,17 @@ and which removes the `worn` property from `Y`.
 
 The following should be now true:
 
-* For all pairs of `X` and `Y` where assertion sentences say that `X carries Y`
-in the initial state, the condition `if X carries Y` is true when play begins.
-* At all times `if X carries Y` can be true only if `X` is a person and `Y` is
-a thing, and `Y` does not have the `worn` property.
-* `now X carries Y` either results in a situation where `X carries Y` is true, or
-throws a run-time problem message.
-
-There is no Inform phrase `carrier of X` in the Standard Rules, and probably
-nothing to be gained by adding one. But if we defined:
-
-	To decide which object is the carrier of (something - object):
-		(- (CarrierOf({something})) -).
-
-then `X carries Y` if and only if `the carrier of Y is X`.
+* Carrying is a consistent relation defined over the kinds `person` and `thing`.
+* `X carries Y.` can be asserted for any such pair, so long as this does not
+contradict other assertions. If `Y` is declared to be a backdrop or a door,
+that would be just such a contradiction.
+* If `if X carries Y` is true then both `X` and `Y` are spatial objects.
+* If `if X carries Y` is true then `Y` does not have the `worn` property.
+* `now X carries Y` is permitted in all cases, and causes the `worn` property
+to be removed from `Y`.
+* If `if X carries Y` is true then `if X holds Y` is true.
+* If an Inform phrase `carrier of X` were defined using `CarrierOf`, then
+it would be the case that `X carries Y` if and only if `the carrier of Y is X`.
 
 ## The wearing relation
 
