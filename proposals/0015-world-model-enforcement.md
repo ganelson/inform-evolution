@@ -186,7 +186,7 @@ room. Then:
 
 Note that `nothing` means `no object`, not `no thing`. Since a room, in this
 case `Lab` is an object, it is not true that `nothing holds the player`. On
-the other hand, `something` means `some object`. So despite appearances, it
+the other hand, `something` means `some thing`. So despite appearances, it
 is perfectly consistent that `nothing holds the player` and `something holds the player`
 are both false.
 
@@ -257,9 +257,9 @@ following cases:
 	* `Y` is a thing and `X` is a room;
 	* `Y` is a thing and `X` is a container;
 	* `Y` is a thing and `X` is a supporter;
-	* `Y` is a thing and `X` is a person.
-* If both are abstract objects, then `now X holds Y` is permitted in all cases
-except that in which `Y` already directly or indirectly holds `X`.
+	* `Y` is a thing and `X` is a person;
+	* `Y` is a region and `X` is a region.
+* If both are abstract objects, then `now X holds Y` is permitted in all cases.
 * `now X does not hold Y` is never permitted.
 * `if X holds Y` is true if and only if `the holder of Y is X`. In particular,
 for any given `Y`, there is at most one `X` such that `X holds Y`.
@@ -268,6 +268,10 @@ is always false.
 
 Note that:
 
+* Using `now` to change holding can result in a situation where an object
+indirectly or directly holds itself. This is not allowed, either for spatial
+or abstract objects, but technically results in a "programming error" message
+rather than a run-time problem message.
 * A region can only hold another region: in particular it does not hold rooms.
 * Backdrops and two-sided doors are conceptually present in multiple rooms at once, but
 this is implemented at runtime by moving them as necessary. Since `holder of B`
