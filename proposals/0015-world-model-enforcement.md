@@ -145,6 +145,11 @@ This behaved a little unexpectedly on direction objects, or at least those
 currently in play, since it returned the `Compass` pseudo-object (which can
 only be referred to from I6 code, and is an awkward leftover from Inform 1).
 
+`HolderOf` contained an awkward special case to deal with the situation before
+the "position player in the world model" rule has run; it then returned the
+pseudo-object `thedark` in a desperate attempt to avoid returning `nothing`,
+which caused certain past-tense conditions tested later in player to go wrong.
+
 ### Remediation
 
 We have to accept that `hold` means something different in the spatial model
@@ -228,6 +233,10 @@ ways, the one in which `X` is a person carrying something. In the same way,
 `now X holds Y` cannot make `Y` a component part of `X`, only a something carried,
 contained or supported by `X`.
 
+Finally, before the "position player in the world model" rule has run, `HolderOf`
+the player returns the position which the player will once it does; so it now
+never returns `thedark`, which is not a spatial object.
+
 ### Invariant
 
 The following should be now true:
@@ -250,7 +259,8 @@ following cases:
 	* `Y` is a thing and `X` is a supporter;
 	* `Y` is a thing and `X` is a person.
 * `now X does not hold Y` is never permitted.
-* `if X holds Y` is true if and only if `the holder of Y is X`.
+* `if X holds Y` is true if and only if `the holder of Y is X`. In particular,
+for any given `Y`, there is at most one `X` such that `X holds Y`.
 * `if X holds Y` is true, then `if Y holds X` is false. Consequently, `if X holds X`
 is always false.
 
@@ -305,6 +315,7 @@ to be removed from `Y`.
 * If `if X carries Y` is true then `if X holds Y` is true.
 * If an Inform phrase `carrier of X` were defined using `CarrierOf`, then
 it would be the case that `X carries Y` if and only if `the carrier of Y is X`.
+ In particular, for any given `Y`, there is at most one `X` such that `X carries Y`.
 
 ## The wearing relation
 
@@ -331,21 +342,46 @@ object at runtime having the `worn` attribute).
 
 The following should be now true:
 
-* For all pairs of `X` and `Y` where assertion sentences say that `X wears Y`
-in the initial state, the condition `if X wears Y` is true when play begins.
-* At all times `if X wears Y` can be true only if `X` is a person and `Y` is
-a thing, and `Y` has the `worn` property.
-* `now X wears Y` either results in a situation where `X wears Y` is true, or
-throws a run-time problem message.
+* Wearing is a consistent relation defined over the kinds `person` and `thing`.
+* `X wears Y.` can be asserted for any such pair, so long as this does not
+contradict other assertions. If `Y` is declared to be a backdrop or a door,
+that would be just such a contradiction.
+* If `if X wears Y` is true then both `X` and `Y` are spatial objects.
+* If `if X wears Y` is true then `Y` has the `worn` property.
+* `now X wears Y` is permitted in all cases, and causes the `worn` property
+to be given to `Y`.
+* If `if X wears Y` is true then `if X holds Y` is true.
+* If an Inform phrase `wearer of X` were defined using `WearerOf`, then
+it would be the case that `X wears Y` if and only if `the wearer of Y is X`.
+In particular, for any given `Y`, there is at most one `X` such that `X wears Y`.
 
-There is no Inform phrase `wearer of X` in the Standard Rules, but if we defined:
+## The support relation
 
-	To decide which object is the wearer of (something - object):
-		(- (WearerOf({something})) -).
+### Infelicities in Inform 10.1
 
-then `X wears Y` if and only if `the wearer of Y is X`.
+This was technically inconsistent, because `now X supports Y` was allowed even
+in cases where `X` was not a supporter.
 
-## The regional containment relation `R_regional_containment`
+### Remediation
+
+A run-time problem is now thrown by `now X supports Y` unless `X` is a supporter
+and `Y` is a thing.
+
+### Invariant
+
+The following should be now true:
+
+* Support is a consistent relation defined over the kinds `supporter` and `thing`.
+* `X supports Y.` or `Y is on X.` can be asserted for any such pair, so long as
+this does not contradict other assertions.
+* If `if X supports Y` is true then both `X` and `Y` are spatial objects.
+* `now X supports Y` is permitted in all cases.
+* If `if X supports Y` is true then `if X holds Y` is true.
+* If an Inform phrase `supporter of X` were defined using `SupporterOf`, then
+it would be the case that `X supports Y` if and only if `the supporter of Y is X`.
+In particular, for any given `Y`, there is at most one `X` such that `X supports Y`.
+
+## The regional containment relation
 
 ### Infelicities in Inform 10.1
 
@@ -355,6 +391,9 @@ is used to give meaning to `if X is in R` where `R` is a region, so the
 practical result is we can have `if R is in R` being true. There is a tenuous
 argument for this, but it seems more likely to surprise authors than not to.
 (Is Europe in Europe? I think I would say not.)
+
+If a region contains a door or backdrop, it sometimes does not contain component
+parts of that door or backdrop, or their further contents.
 
 It was impossible to change the region of a room with `now` (though it was
 possible to remove regions from other regions, in some cases). Whether this is
@@ -396,21 +435,34 @@ containment relation, but rooms and regions can be removed from all regions with
 (In Inform 10.1, `now Lebling Monument is nowhere` would throw a run-time problem
 if the player was in this room, and otherwise do nothing.)
 
+`TestRegionalContainment` has been rewritten to make clearer its
+connection to holding, and to ensure that component parts of backdrops
+and doors work correctly.
+
 The `showme` debugging verb now lists the super-region of a region. (Since this
 can now change, it seems useful to be able to see what it is: for example
 by typing `SHOWME NIRVANA` in the above example.)
 
 ### Invariant
 
-If `R` and `S` are regions and `X` is an object, then the following should be now true:
-
-* For all pairs of `X` and `R` where assertion sentences say that `X is in R`
-in the initial state, the condition `if X is in Y` is true when play begins.
-* At all times `if X is in R` can be true only if `X` is a thing, a room or
-a region.
-* This relation is transitive, but never reflexive or symmetric. In particular,
-`if X is in R` is true, then `if R is in X` is false; and `if R is in R` is false.
-* `if S is in R` then `R` must be the `holder of S`, or the `holder of the holder of S`,
-or... and so on.
-* `now X is in R` either results in a situation where `if X is in R` is true, or
-throws a run-time problem message.
+* Regional containment is a consistent relation defined over the kinds `region`
+and `object`.
+* No verb directly means regional containment, but assertions such as `X is in R.`
+can be made for regions or rooms `X`, and these are then read as using regional
+rather than regular containment.
+* If `if X [regionally] contains Y` is true then both `X` and `Y` are spatial objects.
+* `if X [regionally] contains Y` if one of the following:
+	* `Y` is a region directly or indirectly in `X`.
+	* `Y` is a room whose region is either `X` or is another region directly or indirectly in `X`.
+	* `Y` is a backdrop which is not `absent` and any one of whose locations is such a room.
+	* `Y` is a two-sided door which is not `absent`, either of whose locations is such a room.
+	* `Y` is any other thing, whose location is such a room.
+* Regional containment nearly, but does not quite, imply the transitive closure of holding.
+(Regions can only hold other regions, and the rules for backdrops and doors are different.)
+What can be said is that if `X [regionally] contains Y` and `Y holds Z` then `X [regionally]
+contains Z`. In particular this applies to component parts, even of backdrops and doors.
+* There can be multiple regions `R1`, `R2`, ..., such that `R1 [regionally] contains Y`
+and so on, for the same thing `Y`. This can be true even if neither `R1` is part of `R2`
+nor `R2` part of `R1`. There is therefore no consistent way to define the `region of`
+a thing.
+* `now Y is [regionally] in X` is permitted only when `Y` is also a region.
