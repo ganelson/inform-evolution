@@ -282,6 +282,42 @@ between the Blue Room and the Green Room, then only one of `the Blue Room holds 
 and `the Green Room holds the Brass Door` will be true, and it will not always
 be easy to be sure which.
 
+## The enclosure relation
+
+### Infelicities in Inform 10.1
+
+Because the enclosure relation is (almost) the transitive closure of holding,
+all the defects of holding in 10.1 could in principle harm enclosure as well,
+but in practice enclosure was mostly unaffected by those defects.
+
+### Remediation
+
+The change that makes the holder of a direction `nothing` affects enclosure,
+since it means the `Compass` pseudo-object no longer encloses any directions.
+
+### New specification
+
+The following should be now true:
+
+* Enclosure is a consistent relation defined over the kinds `object` and `object`.
+* `X encloses Y.` cannot be asserted: it is too vague.
+* If `if X encloses Y` is true then either both `X` and `Y` are spatial objects,
+or neither is.
+* Enclosure is the transitive closure of a relation we'll call "almost-holding".
+That is, `X encloses Y` if there is a sequence `H1`, `H2`, ..., `Hn` such that
+`X almost-holds H1`, `H1 almost-holds H2`, ..., `Hn almost-holds Y`.
+* For abstract objects, almost-holding is the same thing as holding.
+* For spatial objects, almost-holding is the same as holding except that:
+	* Both sides of a two-sided door almost-hold the door, whereas only the
+	side most recently seen by the player actually holds it;
+	* None of the rooms in which a backdrop is found almost-hold a backdrop,
+	whereas the side most recently seen by the player actually holds it.
+* `now X encloses Y` is never permitted.
+* Enclosure is transitive (unsurprisingly, since it's a transitive closure):
+that is, if `X encloses Y` and `Y encloses Z` then `X encloses Z`.
+* `if X encloses Y` is true, then `if Y encloses X` is false.
+Consequently, `if X encloses X` is always false.
+
 ## The carrying relation
 
 ### Infelicities in Inform 10.1
@@ -385,7 +421,40 @@ this does not contradict other assertions.
 it would be the case that `X supports Y` if and only if `the supporter of Y is X`.
 In particular, for any given `Y`, there is at most one `X` such that `X supports Y`.
 
-## The regional containment relation
+## The incorporation relation
+
+### Infelicities in Inform 10.1
+
+Mostly fine, except that it produced programming errors rather than runtime problems
+if attempts were made to `now` this on objects other than things.
+
+### Remediation
+
+The `MakePart` function now throws a runtime problem if applied to non-things.
+
+### New specification
+
+* Incorporation is a consistent relation defined over the kinds `thing` and `thing`.
+* `X is part of Y.` can be asserted for any such pair, so long as this does not
+contradict other assertions.
+* If `if Y is part of X` is true then both `X` and `Y` are spatial objects.
+* If `if Y is part of X` is true then `if X holds Y` is true.
+* `now Y is part of X` is permitted in all cases.
+* If an Inform phrase `incorporator of X` were defined using `PartOf`, then
+it would be the case that `Y is part of X` if and only if `the incorporator of Y is X`.
+In particular, for any given `Y`, there is at most one `X` such that `Y is part of X`.
+
+## The regional-containment relation
+
+This provides a meaning for `if X is regionally in Y`, but this is not a verb
+used very much. The relation more often arises because the predicate calculus
+engine in Inform silently reads `if X is in R` as `if X is regionally in R`,
+whenever `R` is a value whose kind is `region`. (In particular, this will
+certainly happen if `R` is the explicit name of a region, which is the most
+common case.)
+
+Regional containment cannot be eliminated from Inform because to do so would
+require code about ordinary containment to be compiled much less efficiently.
 
 ### Infelicities in Inform 10.1
 
@@ -454,8 +523,8 @@ and `object`.
 * No verb directly means regional containment, but assertions such as `X is in R.`
 can be made for regions or rooms `X`, and these are then read as using regional
 rather than regular containment.
-* If `if X [regionally] contains Y` is true then both `X` and `Y` are spatial objects.
-* `if X [regionally] contains Y` if one of the following:
+* If `if Y is regionally in X` is true then both `X` and `Y` are spatial objects.
+* `if Y is regionally in X` if one of the following:
 	* `Y` is a region directly or indirectly in `X`.
 	* `Y` is a room whose region is either `X` or is another region directly or indirectly in `X`.
 	* `Y` is a backdrop which is not `absent` and any one of whose locations is such a room.
@@ -463,10 +532,74 @@ rather than regular containment.
 	* `Y` is any other thing, whose location is such a room.
 * Regional containment nearly, but does not quite, imply the transitive closure of holding.
 (Regions can only hold other regions, and the rules for backdrops and doors are different.)
-What can be said is that if `X [regionally] contains Y` and `Y holds Z` then `X [regionally]
-contains Z`. In particular this applies to component parts, even of backdrops and doors.
-* There can be multiple regions `R1`, `R2`, ..., such that `R1 [regionally] contains Y`
-and so on, for the same thing `Y`. This can be true even if neither `R1` is part of `R2`
-nor `R2` part of `R1`. There is therefore no consistent way to define the `region of`
+What can be said is that if `Y is regionally in X` and `Y holds Z` then `Z is regionally in X`.
+In particular this applies to component parts, even of backdrops and doors.
+* There can be multiple regions `R1`, `R2`, ..., such that `Y is regionally in R1`
+and so on, for the same thing `Y`. This can be true even if neither `R1` holds `R2`
+nor vice versa. There is therefore no consistent way to define the `region of`
 a thing.
-* `now Y is [regionally] in X` is permitted only when `Y` is also a region.
+* `now Y is regionally in X` is permitted only when `Y` is also a region.
+
+## The room-containment relation
+
+This is used less even than regional containment. By definition, X is room-contained
+by Y if Y is equal to `the location of X`, a phrase which is an Inform 7 wrapper
+for the `WorldModelKit` function `LocationOf`.
+
+Authors could in theory choose to create a verb with this as meaning:
+
+	The verb to be roomwise in means the room-containment relation.
+
+Otherwise, though, room containment is used only internally to provide a meaning
+for -where words in sentences like `if X is somewhere`, or `if X is everywhere`.
+For example, `if X is somewhere` is read as `if the location of X is a room`,
+or equivalently `if the location of X is not nothing`.
+
+(So note that room containment is _not_ the meaning of `if X is in R` in cases
+where `R` can be proved at compile-time to have the kind room: in that sense it's
+not a parallel to regional containment.)
+
+### Infelicities in Inform 10.1
+
+This is technically inconsistent. It is defined over kinds `room` and `thing`,
+but in 10.1, a room room-contains itself. So for example if `Chapter House`
+is a room, then `Chapter House is somewhere` is true, and `Chapter House is nowhere`
+is false; `Chapter House is everywhere` is true if and only if this is the
+only room. Also, it was in theory possible to `now` this relationship between
+abstract objects.
+
+### Remediation
+
+Redefining it over `room` and `object` makes it consistent. A new function
+`MakeRoomContainerOf` makes suitable checks.
+
+### New specification
+
+For convenience, we'll pretend that the verb `to be roomwise in` has been created.
+
+* Room containment is a consistent relation defined over the kinds `room` and `object`.
+* It cannot be asserted: `X is roomwise in Y.` throws a problem message.
+* If `if X is roomwise in Y` is true then both `X` and `Y` are spatial objects.
+* `if X is roomwise in Y` is true if and only if `the location of X is Y`.
+* This happens if `Y` is a room, and one of:
+	* `X` is a two-sided door, and `Y` is either the front side of the door, or
+	else the back side if the player is currently in that room.
+	* `X` is a backdrop, and `Y` is one of the rooms `X` is in, and either the
+	player is currently in `Y` or else `Y` is the first room `X` is in.
+	* `X` is a thing directly or indirectly held by `Y`.
+	* `X` is `Y` itself, and therefore a room.
+* `now X is roomwise in Y` is permitted only if `X` is a thing and `Y` is a
+room, and is then equivalent to `now X is in Y`.
+
+This is once again awkward on backdrops and doors. That awkwardness means that,
+for example, `if the white mist is everywhere` will be false even if the mist
+is a backdrop which is indeed found in every room: because when the test is
+performed, only one of those rooms will be the `location of the white mist`.
+
+It is tempting to get rid of that issue by defining the relation differently,
+so that `white mist` is roomwise in every room it is found inside. But that
+would make tests such as `if X is somewhere` very inefficient, because they
+would then have to involve a loop through all rooms in the world. At present,
+`if X is somewhere` executes quickly because it only needs to find the location
+of `X` and consider that. Speed seems more important here: nobody really needs
+to test whether a backdrop is currently found in every location.
