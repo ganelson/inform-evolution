@@ -148,7 +148,7 @@ only be referred to from I6 code, and is an awkward leftover from Inform 1).
 `HolderOf` contained an awkward special case to deal with the situation before
 the "position player in the world model" rule has run; it then returned the
 pseudo-object `thedark` in a desperate attempt to avoid returning `nothing`,
-which caused certain past-tense conditions tested later in player to go wrong.
+which caused certain past-tense conditions tested later in play to go wrong.
 
 ### Remediation
 
@@ -237,7 +237,7 @@ Finally, before the "position player in the world model" rule has run, `HolderOf
 the player returns the position which the player will once it does; so it now
 never returns `thedark`, which is not a spatial object.
 
-### Invariant
+### New specification
 
 The following should be now true:
 
@@ -258,6 +258,8 @@ following cases:
 	* `Y` is a thing and `X` is a container;
 	* `Y` is a thing and `X` is a supporter;
 	* `Y` is a thing and `X` is a person.
+* If both are abstract objects, then `now X holds Y` is permitted in all cases
+except that in which `Y` already directly or indirectly holds `X`.
 * `now X does not hold Y` is never permitted.
 * `if X holds Y` is true if and only if `the holder of Y is X`. In particular,
 for any given `Y`, there is at most one `X` such that `X holds Y`.
@@ -272,11 +274,9 @@ this is implemented at runtime by moving them as necessary. Since `holder of B`
 for a backdrop `B` can only return the room it's currently in, `R holds B` only
 if `R` is that current location. This is not an inconsistency on a careful reading
 of the consistency rules above, but it can be a surprise. If the Brass Door is
-between the Blue Room and the Green Room, then nevertheless only one of these
-tests will be true at any given time:
-
-	if the Blue Room holds the Brass Door, ...
-	if the Green Room holds the Brass Door, ...
+between the Blue Room and the Green Room, then only one of `the Blue Room holds the Brass Door`
+and `the Green Room holds the Brass Door` will be true, and it will not always
+be easy to be sure which.
 
 ## The carrying relation
 
@@ -300,7 +300,7 @@ which did not. So it was possible for this to happen:
 throws a run-time problem message unless `X` is a person and `Y` is a thing,
 and which removes the `worn` property from `Y`.
 
-### Invariant
+### New specification
 
 The following should be now true:
 
@@ -338,7 +338,7 @@ object at runtime having the `worn` attribute).
 `WearObject` now throws a run-time problem message unless `X` is a person and
 `Y` is a thing. `WearerOf(X)` now returns `nothing` if `X` is not a thing.
 
-### Invariant
+### New specification
 
 The following should be now true:
 
@@ -367,7 +367,7 @@ in cases where `X` was not a supporter.
 A run-time problem is now thrown by `now X supports Y` unless `X` is a supporter
 and `Y` is a thing.
 
-### Invariant
+### New specification
 
 The following should be now true:
 
@@ -443,7 +443,7 @@ The `showme` debugging verb now lists the super-region of a region. (Since this
 can now change, it seems useful to be able to see what it is: for example
 by typing `SHOWME NIRVANA` in the above example.)
 
-### Invariant
+### New specification
 
 * Regional containment is a consistent relation defined over the kinds `region`
 and `object`.
