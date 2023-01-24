@@ -150,7 +150,7 @@ the "position player in the world model" rule has run; it then returned the
 pseudo-object `thedark` in a desperate attempt to avoid returning `nothing`,
 which caused certain past-tense conditions tested later in play to go wrong.
 
-### Remediation
+### Improvements
 
 We have to accept that `hold` means something different in the spatial model
 than it might for more abstract collections of objects created by authors.
@@ -233,7 +233,7 @@ ways, the one in which `X` is a person carrying something. In the same way,
 `now X holds Y` cannot make `Y` a component part of `X`, only a something carried,
 contained or supported by `X`.
 
-Finally, before the "position player in the world model" rule has run, `HolderOf`
+Before the "position player in the world model" rule has run, `HolderOf`
 the player returns the position which the player will once it does; so it now
 never returns `thedark`, which is not a spatial object.
 
@@ -290,7 +290,7 @@ Because the enclosure relation is (almost) the transitive closure of holding,
 all the defects of holding in 10.1 could in principle harm enclosure as well,
 but in practice enclosure was mostly unaffected by those defects.
 
-### Remediation
+### Improvements
 
 The change that makes the holder of a direction `nothing` affects enclosure,
 since it means the `Compass` pseudo-object no longer encloses any directions.
@@ -313,6 +313,7 @@ That is, `X encloses Y` if there is a sequence `H1`, `H2`, ..., `Hn` such that
 	* None of the rooms in which a backdrop is found almost-hold a backdrop,
 	whereas the side most recently seen by the player actually holds it.
 * `now X encloses Y` is never permitted.
+* `now X does not enclose Y` is never permitted.
 * Enclosure is transitive (unsurprisingly, since it's a transitive closure):
 that is, if `X encloses Y` and `Y encloses Z` then `X encloses Z`.
 * `if X encloses Y` is true, then `if Y encloses X` is false.
@@ -334,11 +335,14 @@ which did not. So it was possible for this to happen:
 	if the blue box carries the glass marble, ...; [False]
 	if the glass marble is in the blue box, ...; [True]
 
-### Remediation
+### Improvements
 
 `now X carries Y` is now implemented with a new `MakeCarrierOf` function, which
 throws a run-time problem message unless `X` is a person and `Y` is a thing,
 and which removes the `worn` property from `Y`.
+
+`now X does not carry Y` has been enabled for the first time. It's analogous
+to somebody putting an object down on whatever the floor is for them.
 
 ### New specification
 
@@ -352,6 +356,10 @@ that would be just such a contradiction.
 * If `if X carries Y` is true then `Y` does not have the `worn` property.
 * `now X carries Y` is permitted in all cases, and causes the `worn` property
 to be removed from `Y`.
+* `now X does not carry Y` is permitted in all cases. If `X carries Y` then
+`Y` is moved to the `holder of X`; if not, nothing happens. Note that if `X`
+is currently out of play (so that `holder of X` is `nothing`) then `Y` is
+made separately out of play.
 * If `if X carries Y` is true then `if X holds Y` is true.
 * If an Inform phrase `carrier of X` were defined using `CarrierOf`, then
 it would be the case that `X carries Y` if and only if `the carrier of Y is X`.
@@ -373,10 +381,13 @@ property, which it certainly shouldn't have. Also, `if X wears Y` did not
 check that `Y` was a thing (though it is hard to imagine any other class of
 object at runtime having the `worn` attribute).
 
-### Remediation
+### Improvements
 
 `WearObject` now throws a run-time problem message unless `X` is a person and
 `Y` is a thing. `WearerOf(X)` now returns `nothing` if `X` is not a thing.
+
+`now X does not wear Y` has been enabled for the first time. It's analogous
+to somebody taking a hat off but still carrying it.
 
 ### New specification
 
@@ -390,6 +401,9 @@ that would be just such a contradiction.
 * If `if X wears Y` is true then `Y` has the `worn` property.
 * `now X wears Y` is permitted in all cases, and causes the `worn` property
 to be given to `Y`.
+* `now X does not wear Y` is permitted in all cases. If `X wears Y` then
+`Y` has the `worn` property removed, so that now `X carries Y` instead; if not,
+nothing happens.
 * If `if X wears Y` is true then `if X holds Y` is true.
 * If an Inform phrase `wearer of X` were defined using `WearerOf`, then
 it would be the case that `X wears Y` if and only if `the wearer of Y is X`.
@@ -402,7 +416,7 @@ In particular, for any given `Y`, there is at most one `X` such that `X wears Y`
 This was technically inconsistent, because `now X supports Y` was allowed even
 in cases where `X` was not a supporter.
 
-### Remediation
+### Improvements
 
 A run-time problem is now thrown by `now X supports Y` unless `X` is a supporter
 and `Y` is a thing.
@@ -416,6 +430,7 @@ The following should be now true:
 this does not contradict other assertions.
 * If `if X supports Y` is true then both `X` and `Y` are spatial objects.
 * `now X supports Y` is permitted in all cases.
+* `now X does not support Y` is not permitted in any case.
 * If `if X supports Y` is true then `if X holds Y` is true.
 * If an Inform phrase `supporter of X` were defined using `SupporterOf`, then
 it would be the case that `X supports Y` if and only if `the supporter of Y is X`.
@@ -428,7 +443,7 @@ In particular, for any given `Y`, there is at most one `X` such that `X supports
 Mostly fine, except that it produced programming errors rather than runtime problems
 if attempts were made to `now` this on objects other than things.
 
-### Remediation
+### Improvements
 
 The `MakePart` function now throws a runtime problem if applied to non-things.
 
@@ -440,6 +455,7 @@ contradict other assertions.
 * If `if Y is part of X` is true then both `X` and `Y` are spatial objects.
 * If `if Y is part of X` is true then `if X holds Y` is true.
 * `now Y is part of X` is permitted in all cases.
+* `now Y is not part of X` is not permitted in any case.
 * If an Inform phrase `incorporator of X` were defined using `PartOf`, then
 it would be the case that `Y is part of X` if and only if `the incorporator of Y is X`.
 In particular, for any given `Y`, there is at most one `X` such that `Y is part of X`.
@@ -472,7 +488,7 @@ It was impossible to change the region of a room with `now` (though it was
 possible to remove regions from other regions, in some cases). Whether this is
 infelicitous is a matter of taste.
 
-### Remediation
+### Improvements
 
 The function `TestRegionalContainment` now returns `false` if asked to test
 whether a region contains itself, and so `if R is in R` is now false.
@@ -520,25 +536,22 @@ by typing `SHOWME NIRVANA` in the above example.)
 
 * Regional containment is a consistent relation defined over the kinds `region`
 and `object`.
-* No verb directly means regional containment, but assertions such as `X is in R.`
-can be made for regions or rooms `X`, and these are then read as using regional
-rather than regular containment.
-* If `if Y is regionally in X` is true then both `X` and `Y` are spatial objects.
-* `if Y is regionally in X` if one of the following:
-	* `Y` is a region directly or indirectly in `X`.
-	* `Y` is a room whose region is either `X` or is another region directly or indirectly in `X`.
+* If `if Y is regionally in R` is true then both `R` and `Y` are spatial objects.
+* `if Y is regionally in R` if one of the following:
+	* `Y` is a region directly or indirectly in `R`.
+	* `Y` is a room whose region is either `R` or is another region directly or indirectly in `R`.
 	* `Y` is a backdrop which is not `absent` and any one of whose locations is such a room.
 	* `Y` is a two-sided door which is not `absent`, either of whose locations is such a room.
 	* `Y` is any other thing, whose location is such a room.
 * Regional containment nearly, but does not quite, imply the transitive closure of holding.
 (Regions can only hold other regions, and the rules for backdrops and doors are different.)
-What can be said is that if `Y is regionally in X` and `Y holds Z` then `Z is regionally in X`.
+What can be said is that if `Y is regionally in R` and `Y holds Z` then `Z is regionally in R`.
 In particular this applies to component parts, even of backdrops and doors.
 * There can be multiple regions `R1`, `R2`, ..., such that `Y is regionally in R1`
 and so on, for the same thing `Y`. This can be true even if neither `R1` holds `R2`
 nor vice versa. There is therefore no consistent way to define the `region of`
 a thing.
-* `now Y is regionally in X` is permitted only when `Y` is also a region.
+* `now Y is regionally in R` is permitted only when `Y` is also a region.
 
 ## The room-containment relation
 
@@ -568,7 +581,7 @@ is false; `Chapter House is everywhere` is true if and only if this is the
 only room. Also, it was in theory possible to `now` this relationship between
 abstract objects.
 
-### Remediation
+### Improvements
 
 Redefining it over `room` and `object` makes it consistent. A new function
 `MakeRoomContainerOf` makes suitable checks.
@@ -590,6 +603,7 @@ For convenience, we'll pretend that the verb `to be roomwise in` has been create
 	* `X` is `Y` itself, and therefore a room.
 * `now X is roomwise in Y` is permitted only if `X` is a thing and `Y` is a
 room, and is then equivalent to `now X is in Y`.
+* `now X is not roomwise in Y` is not permitted in any case.
 
 This is once again awkward on backdrops and doors. That awkwardness means that,
 for example, `if the white mist is everywhere` will be false even if the mist
