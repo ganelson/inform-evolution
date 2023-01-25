@@ -460,6 +460,161 @@ contradict other assertions.
 it would be the case that `Y is part of X` if and only if `the incorporator of Y is X`.
 In particular, for any given `Y`, there is at most one `X` such that `Y is part of X`.
 
+## The containment relation
+
+### Infelicities in Inform 10.1
+
+Containment is the most problematic spatial relation in 10.1. There were three
+main problems:
+
+(1) First, containment could be tested and sometimes
+also created with `now` for cases which ought to be impossible. `now the coin is
+in the granite slab` would work even if the `granite slab` isn't a container,
+and there were numerous more subtle edge cases like that. For example, the
+|Compass| pseudo-object contained some (but not necessarily all) directions;
+and in general abstract objects could be tested for containment, though not
+always moved with `now` or looped correctly over. If containment is supposed
+to mean something like its natural-language meaning, this is all wrong.
+
+(2) The second problem is a subtle inconsistency to do with backdrops and doors.
+`now B is in R` is allowed in the case where `B` is a backdrop and `R` is a
+region; but `if B is in R` (if this is given the containment meaning) is then
+often false because the backdrop has been removed from the object tree, unless
+`R` is the player's current room. (If this is given the regional-containment
+meaning, it is true unless the region contains no rooms.)
+
+The same issue affects two-sided doors. `now D is in R` can move a two-sided door,
+and that potentially leads to inconsistency. In fact, though, this has pretty
+disastrous consequences anyway, because doors should not be mobile. (It is already
+the case that doors cannot be removed from play, and that map connections to doors
+cannot be altered. It seems to be just an oversight that doors could be moved
+with `now` in 10.1.)
+
+(3) The third problem arises from the way that `X is in Y` is interpreted as meaning
+containment most of the time, but as regional containment when `Y` is the literal
+name of a region. So consider this:
+
+	repeat with Y running through objects:
+		if the player is in Y:
+			say "You look around [Y].";
+	if the player is in the Vast Wasteland:
+		say "You look around the dreary landscape beyond."
+
+Here `Y` is not necessarily a region, so the compiler uses regular containment
+to decide whether `player is in Y`, and that applies on every iteration of the
+loop at runtime, including when `Y` equals `Vast Wasteland`; but it uses regional
+containment to decide whether `player is in the Vast Wasteland`. We might like
+the outcome to be the same in both cases. But it is not. In 10.1, regions do
+not contain anything except possibly other regions. But they regionally contain
+not only regions (including those only indirectly children in the object tree) but
+also all rooms inside them (or their indirect child regions) and also all things
+in any of those rooms. It's unclear what if anything we should do about this.
+
+### Improvements
+
+(1) Containment is now defended so that `X is in Y` can be true only for spatial objects.
+
+An attempt to have a non-container-or-room contain something now produces a
+runtime problem message. This is quite a consequential change: some may feel it
+breaks existing code, others that it identifies genuine bugs. As evidence of
+that, it turned up two bugs in the test suite and one in the Standard Rules:
+
+(a) The documentation example `Some Assembly Required`, which involves cutting
+up shirts, includes the line:
+
+	now every thing which is part of the noun is in the holder of the noun.
+
+This should have been (and now is) `is held by the holder of the noun`: otherwise
+it goes wrong if the player, say, is holding the thing being cut up into pieces.
+
+(b) The example `Transmutations` goes out of its way to court trouble by allowing
+the "inserting" action to bypass the requirement on being a container:
+
+	The can't insert into what's not a container rule does nothing when inserting something into the machine.
+
+A bug (and it is genuinely that) in the example went on to handle this case like so:
+
+	Carry out inserting something into the machine: 
+		now the noun is nowhere; 
+		now the player carries the new form of the noun.
+
+I'm pretty certain that the writer did not intend the `carry out` rulebook to
+continue executing from there, so that the regular `carry out inserting` would
+execute:
+
+	Carry out an actor inserting something into (this is the standard inserting rule):
+		now the noun is in the second noun.
+
+But in fact it did, and this is where the `now` throws a runtime problem message.
+The example should have written (and now does write) this:
+
+	Carry out inserting something into the machine: 
+		now the noun is nowhere; 
+		now the player carries the new form of the noun;
+		rule succeeds.
+
+(c) The Standard Rules included:
+
+	Carry out an actor dropping (this is the standard dropping rule):
+		now the noun is in the holder of the actor.
+
+This is now incorrect in the case when the actor is standing on an enterable
+supporter, because the `noun` cannot be `in` a supporter. (For example, this
+happens in the example `Priority Lab`.) The rule should have read, and now does read,
+
+	Carry out an actor dropping (this is the standard dropping rule):
+		now the noun is held by the holder of the actor.
+
+If a bad containment of this kind is made with `now`, the following new runtime
+problem message is produced:
+
+	When "now X is in Y" is used, "X" has to be a thing, and "Y" has to be a
+	container or a room. Sometimes this problem is triggered when an overly
+	broad phrase has been used such as "now X is in the holder of Y", which
+	would be fine if "Y' is in a room or container, but not if it's a supporter
+	or a person. (Things can be "on" a supporter, but not "in" it. Equally, it
+	can't be a person: people can "carry" or "wear" things, but not contain
+	them.) The safe way to avoid that is to write "now X is held by the holder
+	of Y". Whatever holds "Y", if it can hold "Y" then it can hold "X".
+
+(2) Now for the inconsistencies on moving doors or backdrops.
+
+Doors are easy enough to deal with. An attempt to move a door with `now D is in R`
+now produces a runtime problem message. (And similarly for `now P is wearing D`
+or `now P is carrying D` or `now S supports D`.)
+
+But backdrops remain problematic. For the moment the inconsistency remains.
+
+(3) Nothing has been done about this.
+
+### New specification
+
+* Containment is a currently inconsistent relation defined over the kinds `object` and `object`.
+It is consistent except for backdrops, where asserting `B is in R.` does not
+guarantee that `B is in R` will be true at start of play, and where `now B is in R`
+does not guarantee that `B is in R` will be true immediately afterwards (unless
+`R` is the literal name of a region, in which case it will work because regional
+containment not regular containment will be used).
+* `X is in Y.` can be asserted only where `X` is a thing and `Y` is either a room
+or a container. (Important to remember here that `X is in Y` is taken as meaning
+regional containment, not containment, in the case where `Y` is a region. Here
+we're describing the relation `containment`, not the meaning of `to be in`.)
+* If `if X is in Y` is true then both `X` and `Y` are spatial objects.
+* `X is in Y` is true if one of:
+	* `X` is a room and `Y` is its region;
+	* `X` is a thing and `Y` is a container or room holding `X`;
+	* `X` is a region and `Y` is a region holding `X`.
+* `now X is in Y` is permitted only where:
+	* `X` is a thing and `Y` is a container or room, or
+	* `X` is a room and `Y` is a region, or
+	* Both `X` and `Y` are regions.
+* `now X is not in Y` is not permitted in any case.
+* If `if X is in Y` is true then either `if X holds Y` is true or `X` is a room
+and `Y` is its region.
+* If an Inform phrase `container of X` were defined using `ContainerOf`, then
+it would be the case that `X is in Y` if and only if `the container of X is Y`.
+In particular, for any given `Y`, there is at most one `X` such that `X is in Y`.
+
 ## The regional-containment relation
 
 This provides a meaning for `if X is regionally in Y`, but this is not a verb
