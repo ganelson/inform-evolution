@@ -772,3 +772,138 @@ would then have to involve a loop through all rooms in the world. At present,
 `if X is somewhere` executes quickly because it only needs to find the location
 of `X` and consider that. Speed seems more important here: nobody really needs
 to test whether a backdrop is currently found in every location.
+
+## The visibility relation
+
+This is a relatively simple relation, since it can be tested but not asserted.
+
+### Infelicities in Inform 10.1
+
+Though defined over things, it can be tested for any objects, with potentially
+unpredictable outcomes: so this may be inconsistent.
+
+`X can see B`, for a backdrop or two-sided door `B`, may not work as expected,
+since the test is performed on the basis of the current holder of `B` -- a
+single location, where `B` most recently was.
+
+### Improvements
+
+`TestVisibility(A, B)` now returns `false` in all cases where either `A` or `B`
+is not a thing. 
+
+### New specification
+
+The following should be now true:
+
+* Visibility is a consistent relation defined over the kinds `thing` and `thing`.
+* `X can see Y.` cannot be asserted.
+* If `if X can see Y` is true then both `X` and `Y` are spatial objects.
+* `X can see Y` provided that both:
+	* The holder of the core of `X` offers light. (The core of a thing is the
+	result of repeatedly taking whatever thing it is a part of, until it is not
+	a part any more. So if a terminal is part of a battery which is part of a
+	camera which is carried by a photographer, then the core of the terminal
+	is the camera, and the holder of the core is the photographer.)
+	* `Y` is in scope from the point of view of `X`.
+* `now X can see Y` is not permitted.
+* `now X cannot see Y` is not permitted.
+
+## The audibility relation
+
+This is a relatively simple relation, since it can be tested but not asserted.
+
+### Infelicities in Inform 10.1
+
+Inform 10.1 does not have audibility, which was introduced as part of the new
+dialogue system.
+
+`X can hear B`, for a backdrop or two-sided door `B`, may not work as expected,
+since the test is performed on the basis of the current holder of `B` -- a
+single location, where `B` most recently was.
+
+### Improvements
+
+`TestAudibility(A, B)` now returns `false` in all cases where either `A` or `B`
+is not a thing.
+
+### New specification
+
+The following should be now true:
+
+* Audibility is a consistent relation defined over the kinds `thing` and `thing`.
+* `X can hear Y.` cannot be asserted.
+* If `if X can hear Y` is true then both `X` and `Y` are spatial objects.
+* `X can hear Y` provided that `Y` is in scope from the point of view of `X`.
+* `now X can hear Y` is not permitted.
+* `now X cannot hear Y` is not permitted.
+
+Note that this is visibility minus the requirement for light.
+
+## The touchability relation
+
+This is a relatively simple relation, since it can be tested but not asserted.
+
+### Infelicities in Inform 10.1
+
+Though defined over things, it can be tested for any objects, with potentially
+unpredictable outcomes: so this may be inconsistent.
+
+Unlike the visibility and audibility relations, touchability makes a real effort
+to get backdrops and two-sided doors right. It gets just one case wrong, and then
+only sometimes: if both `A` and `B` are backdrops (or doors) where both are
+in principle present, but they are currently in two different rooms in the object
+tree and in both cases these are rooms where the other is not in principle present,
+there is a false negative. But I think it is always correct in cases where at most
+one of `A` and `B` is a backdrop/door.
+
+### Improvements
+
+`TestTouchability(A, B)` now returns `false` in all cases where either `A` or `B`
+is not a thing. 
+
+### New specification
+
+The following should be now true:
+
+* Touchability is a consistent relation defined over the kinds `thing` and `thing`.
+* `X can touch Y.` cannot be asserted.
+* If `if X can touch Y` is true then both `X` and `Y` are spatial objects.
+* `X can touch Y` provided that both:
+	* `Y` is in scope from the point of view of `X` (but see note about backdrops/doors above).
+	* The accessibility rulebook allows `Y` to be touched by `X` (see function `ObjectIsUntouchable`).
+* `now X can touch Y` is not permitted.
+* `now X cannot touch Y` is not permitted.
+
+In very early IF, direction objects sometimes doubled as objects representing walls:
+thus "south" could be typed to refer either to the direction or to the south wall
+of (doubtless) a cave. Inform no longer takes that view, and you can't see or
+touch a direction.
+
+## The concealment relation
+
+This is a relatively simple relation, since it can be tested but not asserted.
+
+### Infelicities in Inform 10.1
+
+This one seems to have been well-defined in 10.1, and it has no backdrop or
+door issues since neither can be concealed, not can conceal.
+
+### Improvements
+
+None.
+
+### New specification
+
+The following should be now true:
+
+* Concealment is a consistent relation defined over the kinds `thing` and `thing`.
+* `X conceals Y.` cannot be asserted.
+* If `if X conceals Y` is true then both `X` and `Y` are spatial objects.
+* `X conceals Y` provided that `X` encloses `Y`, and the deciding the concealed
+possessions activity says that it's concealed.
+* `now X conceals Y` is not permitted.
+* `now X does not conceal Y` is not permitted.
+
+Note that although this is almost always used with `X` being a person, there's
+no requirement for that: containers and supporters can also conceal things.
+(Rooms however cannot, since rooms are not things.)
