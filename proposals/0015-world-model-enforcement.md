@@ -290,10 +290,17 @@ Because the enclosure relation is (almost) the transitive closure of holding,
 all the defects of holding in 10.1 could in principle harm enclosure as well,
 but in practice enclosure was mostly unaffected by those defects.
 
+In 10.1, both adjoining rooms enclosed the two sides of a door, but none of
+the containing rooms enclosed a backdrop (even if it was, in fact, found in
+only that room). This treated doors and backdrops differently.
+
 ### Improvements
 
 The change that makes the holder of a direction `nothing` affects enclosure,
 since it means the `Compass` pseudo-object no longer encloses any directions.
+
+A room now encloses a backdrop if it's any of the rooms in which the backdrop
+is found (unless the backdrop is `absent`).
 
 ### New specification
 
@@ -310,8 +317,8 @@ That is, `X encloses Y` if there is a sequence `H1`, `H2`, ..., `Hn` such that
 * For spatial objects, almost-holding is the same as holding except that:
 	* Both sides of a two-sided door almost-hold the door, whereas only the
 	side most recently seen by the player actually holds it;
-	* None of the rooms in which a backdrop is found almost-hold a backdrop,
-	whereas the side most recently seen by the player actually holds it.
+	* Any of the rooms in which a backdrop is found almost-hold it (unless it is `absent`),
+	whereas only the one most recently seen by the player actually holds it.
 * `now X encloses Y` is never permitted.
 * `now X does not enclose Y` is never permitted.
 * Enclosure is transitive (unsurprisingly, since it's a transitive closure):
@@ -738,8 +745,9 @@ abstract objects.
 
 ### Improvements
 
-Redefining it over `room` and `object` makes it consistent. A new function
-`MakeRoomContainerOf` makes suitable checks.
+Redefining it over `room` and `object` makes it consistent.
+
+A new function `MakeRoomContainerOf` makes suitable checks.
 
 ### New specification
 
@@ -759,6 +767,13 @@ For convenience, we'll pretend that the verb `to be roomwise in` has been create
 * `now X is roomwise in Y` is permitted only if `X` is a thing and `Y` is a
 room, and is then equivalent to `now X is in Y`.
 * `now X is not roomwise in Y` is not permitted in any case.
+
+The reason we want a room to room-contain itself is so that wordings such as
+`if R is somewhere dark` will work. This is read as testing if `R` is room-contained
+by a dark room: which, if `R` is itself a room, is equivalent to testing whether
+`R` is dark, and that's clearly what the writer of these words intended to find out.
+If we didn't allow `R` to room-contain itself, `if R is somewhere dark` would
+always fail when `R` is a room.
 
 This is once again awkward on backdrops and doors. That awkwardness means that,
 for example, `if the white mist is everywhere` will be false even if the mist
