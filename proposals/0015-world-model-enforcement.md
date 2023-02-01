@@ -319,6 +319,8 @@ That is, `X encloses Y` if there is a sequence `H1`, `H2`, ..., `Hn` such that
 	side most recently seen by the player actually holds it;
 	* Any of the rooms in which a backdrop is found almost-hold it (unless it is `absent`),
 	whereas only the one most recently seen by the player actually holds it.
+* Since holding implies almost-holding, holding also implies enclosure. Thus
+`X holds Y` always implies that `X encloses Y`. 
 * `now X encloses Y` is never permitted.
 * `now X does not enclose Y` is never permitted.
 * Enclosure is transitive (unsurprisingly, since it's a transitive closure):

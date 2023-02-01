@@ -137,7 +137,7 @@ the hypothetical extension `Red Fire Hydrants by Emily Short`:
 	Red Fire Hydrants-v1_3
 		extension_metadata.json
 		Source
-			Red Fire Hydrants-v1_3.i7x
+			Red Fire Hydrants.i7x
 		Documentation
 			Documentation.txt
 			Examples
@@ -154,7 +154,7 @@ the hypothetical extension `Red Fire Hydrants by Emily Short`:
 			Sounds
 				gushing.mp3
 ```
-`Red Fire Hydrants-v1_3.i7x` is the extension file as at present: no change
+`Red Fire Hydrants.i7x` is the extension file as at present: no change
 to its syntax is proposed. The `Source` directory may contain further files in
 line with [IE-0003](0003-multiple-source-files.md); to be decided.
 
@@ -259,7 +259,15 @@ out.
 ### 5. Media resources
 
 5.1. `Materials/Figures` and `Materials/Sounds` allow extensions to provide these,
-exactly as the `Materials` folder for a project can.
+exactly as the `Materials` folder for a project can. Similarly (see IE-0004)
+for internal data files, in `Materials/Data`.
+
+A consequence of this is that, for the first time, Inform checks for the existence
+of sound and picture files which the source text claims to exist. Previously,
+if they did not exist then this would come to light only when indexing or releasing.
+It's now a compilation failure to refer to a non-existent resource. (This can be
+deactivated using the new command-line switch `-no-resource-checking`, which is
+a convenience for the Inform test suite.)
 
 5.2. Inside an extension, filenames in figure and sound declaration sentences are
 taken as referring to these, but see (7) below.
