@@ -6,7 +6,7 @@
 * Language feature name: --
 * Status: Draft
 * Related proposals: --
-* Implementation: Experiments in progress
+* Implementation: In progress
 
 ## Summary
 
