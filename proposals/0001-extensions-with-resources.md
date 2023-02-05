@@ -147,7 +147,148 @@ Everything other than `Source` and the JSON file is optional.
 
 ## JSON metadata file
 
-...
+A minimum viable metadata file looks like this:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Red Fire Hydrants",
+			"author": "Emily Short",
+			"version": "1.3"
+		}
+	}
+
+However, the file may also specify any or all of the following:
+
+`"compatibility"` is a string saying which architectures the extension is
+compatible with; by default it's assumed to be universally compatible. For
+example:
+
+	{
+		"is": {
+			...
+		},
+		"compatibility": "Glulx only"
+	}
+
+For the full specification of compatibility texts, see `Compatibility.w` in
+the Inform source code module `arch`. Other examples would be `"Z-machine version 8"`,
+`"Glulx without debugging"`, `"16d or 32d"`. Note that compatibility describes
+architectures, not compilation targets: you can't specify "don't compile this via C".
+
+`"activates"` is a list of strings, each of which is the name of some compiler
+feature which the extension - simply by virtue of being used in a project - turns
+on for that project.
+
+`"deactivates"` similarly turns off compiler features.
+
+`"needs"` specifies what other resources the extension needs in order to be used.
+For example, here's a valid JSON metadata file for our example extension:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Red Fire Hydrants",
+			"author": "Emily Short",
+			"version": "1.3"
+		},
+		"needs": [ {
+			"need": {
+				"type": "kit",
+				"title": "RedFireHydrantsKit"
+			}
+		}, {
+			"need": {
+				"type": "kit",
+				"title": "DefaultFireFightersKit"
+			}
+		}, {
+			"need": {
+				"type": "extension",
+				"title": "Big Yellow Tubing",
+				"author": "Aaron Reed"
+			}
+		} ],
+	}
+
+As can be seen, `"needs"` is a list of objects - here, three items long. Two of
+the extension's requirements are kits. Those will be easy to find, since they
+are private to the extension and stored within it (see below). But because they
+are listed here as needs, Inform automatically merges them into any build of a
+project which includes our extension. (It also incrementally rebuilds them
+from source as necessary.)
+
+It might seem that every kit private to the extension will be one of its kit needs,
+and vice versa. In fact, neither of those has to be true:
+
+* An extension can "need" a kit which is not private to it. Inform will then
+look for this just as it looks for other resources - for example, from the project's
+materials folder.
+* An extension does not have to "need" every kit private to it. Kits can
+in principle have quite complicated further requirements when used. We could
+imagine a situation where the extension needs private kit A, which then sometimes -
+but only sometimes - needs private kit B as well. The dependency of the extension
+on kit A would be in the extension's JSON metadata, whereas the dependency of kit B
+on kit A would be in kit A's JSON metadata.
+
+The third need is for another extension, and this of course is not housed
+inside the `Red Fire Hydrants-v1_3` directory - extensions cannot contain other
+extensions. So it will be looked for in the usual manner.
+
+Needs can optionally give a version number for what they want. For example:
+
+	{
+		"need": {
+			"type": "extension",
+			"title": "Big Yellow Tubing",
+			"author": "Aaron Reed",
+			"version": "7.2"
+		}
+	}
+
+Such versions are then interpreted according to semver rules: so this would
+work with any 7.x, where x is at least 2, but not with 7.1 or 8.3.
+
+### Redundancy of the metadata file
+
+Some of the information in the metadata file effectively duplicates information
+which could be deduced from the extension's source text.
+
+For example, Inform requires that the metadata must exactly match the title,
+author and version given in the titling line of the extension source text. It
+will throw an error if the extension begins:
+
+	Version 3.2 of Chrome Couplings by Andrew Plotkin begins here.
+
+but the metadata reads:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Shiny Chrome Couplings",
+			"author": "Andrew Zarf Plotkin",
+			"version": "3.2.8"
+		}
+	}
+
+Similarly, the extension needs can be deduced from the source text, because
+if the extension source includes:
+
+	Include version 7.2 of Big Yellow Tubing by Aaron Reed.
+
+...then it clearly needs this extension.
+
+Not all of the data in the JSON file is redundant: the details about kits cannot
+be expressed in any other way and are essential to the correct working of the
+extension.
+
+So why do we have any redundant data in this file? The answer is that we will want
+Internet registries software to be able to know, in an efficient way, what
+an extension is and what other resources it might need in order to operate. The
+idea is that looking at the JSON file alone - which is straightforward to parse -
+tools for filing and dealing with Inform resources can learn all that they need
+to know. Moreover, the JSON schema we use can also describe other Inform resources,
+such as kits. We want to handle all of these in a more or less uniform way.
 
 ## Extension materials
 

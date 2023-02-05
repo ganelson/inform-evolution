@@ -48,6 +48,10 @@ English - will need to be reconstructed.
 "Language bundles" will similarly need to be changed, and folded into the
 associated translation extensions.
 
+It is also just possible that source text dealing with the obscure built-in
+kind `natural_language` might need to change, but only if it was doing something
+quite strange to begin with.
+
 ## Evolution
 
 To see the point of these changes, it's worth first summarising how Inform has
@@ -216,11 +220,39 @@ prevent out-of-date references there from causing problems, and will make
 clearer that anyone can create a translation extension, without needing changes
 to be made to the core Inform distribution.
 
+Finally, an oddity of Inform up to now has been that the built-in kind of value
+called `natural_language` was set up on each compilation with one instance for
+each language whose bundle the compiler could find - so, typically, a game would
+be compiled with six enumerated values of `natural_language`, even though most
+would come from language bundles not involved in the compilation at all. This is
+unsatisfactory, because it means that the same source text compiles differently
+according to what resources are installed on the user's computer. This Basic Inform
+source text:
+
+	To begin:
+		showme the list of natural languages.
+
+produces different output for different users. This practice has been abolished.
+Instead, `natural_language` is an enumeration of a very simple kind indeed - it
+is compiled with either one or two instances. `English language` is always present,
+and is the default value for the kind; if the language of play is different from
+English, then that provides a second instance. So for example:
+
+	"list of natural languages" = list of natural languages: {English language, French language}
+
 ## New metadata for language bundles
 
 Like (directory) extensions and kits, language bundles now provide metadata about
-themselves in a JSON file, in this case called `language_metadata.json`. Follow
-this model:
+themselves in a JSON file, in this case called `language_metadata.json`. This replaces
+a simpler-looking file called `about.txt` which looked something like this:
+
+	1	French
+	2	Français
+	3	en français
+	4	fr
+	5	Nathanaël Marion
+
+The `about.txt` file must be removed. For the JSON replacement, follow this model:
 
 	{
 		"is": {
@@ -228,7 +260,7 @@ this model:
 			"title": "French"
 		},
 		"language-details": {
-    		"supports": [ "play", "syntax", "indexing" ],
+    		"supports": [ "played", "written", "indexed" ],
 			"translated-name": "Français",
 			"iso-639-1-code": "fr",
 			"translated-syntax-cue": "en français"
@@ -238,18 +270,18 @@ this model:
 A few notes:
 
 (1) The language bundle does not specify an author in its `is` object:
-but of course it's part of an extension which does have a named author, so it's
-not really anonymous.
+but of course it's very likely to be part of an extension which does have a
+named author, so it's not really anonymous.
 
 (2) A language bundle, unlike a kit or an extension, cannot have `needs`, that
 is, cannot require other resources to be present. It is the lowest of the low:
 it is needed by others, but needs nothing for itself.
 
 (3) The `"supports"` list says what this bundle can do. Inform will reject an
-attempt to compile a project `written in French`, for example, if `"syntax"`
-is not in the `"supports"` list for that language. To support `"play"`, a kit
-must be provided as part of the surrounding extension; to support `"syntax"`, a
-Preform file must be provided in the language bundle; to support `"indexing"`,
+attempt to compile a project `written in French`, for example, if `"written"`
+is not in the `"supports"` list for that language. To support `"played"`, a kit
+must be provided as part of the surrounding extension; to support `"written"`, a
+Preform file must be provided in the language bundle; to support `"indexed"`,
 an `Index.txt` file must be provided in the language bundle.
 
 (4) `"translated-syntax-cue"` is now optional. At one time it was intended that
@@ -261,13 +293,3 @@ and that the "cue" `en français` would make Inform look for a suitable language
 bundle, and then set the language of syntax and play both to that language.
 That now seems too confusing, and is difficult for `inbuild` to deal with
 efficiently. So for the moment, at least, `"translated-syntax-cue"` is not used.
-
-## Still unimplemented
-
-A curiosity of Inform at present is that every language bundle found by
-inbuild becomes an enumerated value for the `natural language` kind when Inform
-is working. Cool in a way, but in practice this means that the same source text
-compiles differently on different users' machines according to which language
-bundles they have installed, which is a little odd. This will change so that
-the only enumerated values are those from (i) English (the default), and (ii)
-the language of play, if other than English.
