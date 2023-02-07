@@ -5,8 +5,8 @@
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
-* Related proposals: None
-* Implementation: None
+* Related proposals: [IE-0016](0016-language-extensions-reform.md)
+* Implementation: In progress
 
 ## Summary
 
@@ -35,29 +35,27 @@ or to translate the language of play into French, or to provide low-level
 features which need support from a kit of Inter code. We want end users to
 be able to obtain everything necessary to use an extension in a single download.
 
-In this proposal, then, extensions can contain kits, language bundles or
-templates, but not other extensions or Inter compilation pipelines.
+In this proposal, then, extensions can contain kits, language bundles,
+website and interpreter templates, sound effects, images, and data files, but
+not other extensions or Inter compilation pipelines.
 
-### A note on kits
+In particular, the way language bundles and translation extensions work - for making
+Inform stories which play in languages other than English - is significantly
+changed by all of this. The details are broken out in the associated proposal
+[IE-0016](0016-language-extensions-reform.md).
 
-Kits are libraries of Inter code, stored as binary Inter files but compiled
-by inbuild from Inform 6-syntax source. They are new in Inform 10.1, so the
-following will make little sense without having read the inter manual.
+## Future implications
 
-Most extensions do not need to use a kit, but a language extension like `Norwegian
-Language by Hypothetical Person` would need to have `NorwegianLanguageKit` around.
-Users have to successfully install both, and may need to do something clumsy to
-ensure that the kit is read in, since although a kit can require an extension,
-the reverse is currently not true. All very well for hackers experimenting with
-the system, but not good for end users.
+Firstly, we expect that extensions will be the most practical way to
+distribute kits and language translations, and because of that we won't try to
+have separate public library-like repositories for those: we'll instead take
+the view that users of Inform will always install what they need in the form
+of extensions, even if those extensions are thin wrappers around something else.
 
-One implication of the proposal below is that authors of kits who want to make
-them available for other Inform users should always distribute those kits
-wrapped up inside extensions. As a result of that, end users need not know what
-kits even are, and need not customise their projects in strange ways in order
-to use them. If `Heapsort by Dannii Willis` is really powered by a kit of Inter
-code, users will not need to care about that: it will be an extension like
-any other, so far as the user is concerned.
+Secondly, there's likely to be a shift in what is best practice when writing
+or maintaining extensions. Currently, complicated extensions tend to be full
+of inclusions of low-level code `(-` ... `-)`, for example: that's better when
+broken out into an accompanying kit.
 
 Distributing kits wrapped up in extensions is no loss of functionality since:
 
@@ -76,6 +74,9 @@ two extensions installed which each unwittingly have a kit called, say, `SignalK
 (ii) Making it easy for kit authors to provide documentation to users, since
 this can just be the documentation on the wrapper extension.
 
+Traditional single-file extensions can still be read, for backwards-compatibility,
+but the directory format will be preferred in future.
+
 ## Components affected
 
 - [ ] No change to the natural-language syntax.
@@ -90,48 +91,29 @@ this can just be the documentation on the wrapper extension.
 
 ## Impact on existing projects
 
-None.
+Because of the way extensions can now provide figures, sounds and so on,
+the Inform compiler has to be more proactive in looking for the relevant
+files. As a result, and for the first time, Inform checks for the existence
+of sound and picture files which the source text claims to exist.
+Previously, if they did not exist then this would come to light only when
+indexing or releasing. It's now a compilation failure to refer to a
+non-existent resource.
 
-## Proposal
+This can be deactivated using the new command-line switch `-no-resource-checking`,
+which is a convenience for the Inform test suite.
 
-### 1. Changing from one file to a directory of files
+## Extension directory name
 
-1.1. At any storage position where an extension file such as `Locksmith.i7x` is
-expected, an extension directory can be given instead.
+Anywhere Inform (properly speaking, `inbuild`) could previously recognise an
+extension file such as `Locksmith.i7x`, it can now recognise an extension directory
+with a name such as `Locksmith-v3_2_1`. Note that the inclusion of a version
+number is mandatory, and that Inform will reject the extension with an error if
+this is not the version number given inside the extension itself. In particular,
+an extension must have a version number in order to exist in directory form.
 
-1.2. Either can be read, for backwards-compatibility, but the directory format
-will be preferred. If we move to a public registry of Git repositories which
-hold extensions, then directory-format will be required for those. In general,
-we will want to phase out the use of single-file extensions across the board.
+## Example
 
-1.3. inbuild will have an option, say `-convert-extension`, which takes a single-file
-`.i7x` extension (i.e. what exists now), perhaps incorrectly identified or with
-an otherwise dubious filename, and makes an equivalent and correctly-named
-directory. (Inbuild is already able to identify extensions properly regardless
-of their filenaming.)
-
-The Inform apps will be able to use this when they install extensions which the
-user has downloaded from somewhere. At present, the UI apps all have their own
-essentially duplicated code for working out how and where to install a new
-extension: we really want to move that into inbuild, saving the UI apps from
-having to know about any of this.
-
-1.4. The naming rules for this directory will be almost the same as those for
-single extension files at present, except that:
-
-(a) no `.i7x` file extension will be used;
-
-(b) a version number like `-v4`, which can optionally be appended to single
-extension file names, is mandatory in the case of directory names.
-
-For (b), note that v10.1.0 of Inform introduced the possibility of an extension
-filename containing its version number, so that multiple versions of the same
-extension can be held alongside each other: thus where v9 and earlier would
-only recognise `Locksmith.i7x`, v10 also recognises `Locksmith-v3_2_1.i7x`, say,
-for version 3.2.1. (Provided that this is in fact the version number inside; if
-it is not, Inform complains.)
-
-1.5. Here is an example of what a directory might look like, for version 1.3 of
+Here is an example of what a directory might look like, for version 1.3 of
 the hypothetical extension `Red Fire Hydrants by Emily Short`:
 ```
 	Red Fire Hydrants-v1_3
@@ -152,145 +134,251 @@ the hypothetical extension `Red Fire Hydrants by Emily Short`:
 			Figures
 				dalmatian.jpg
 			Sounds
-				gushing.mp3
+				gushing.ogg
 ```
 `Red Fire Hydrants.i7x` is the extension file as at present: no change
-to its syntax is proposed. The `Source` directory may contain further files in
-line with [IE-0003](0003-multiple-source-files.md); to be decided.
+to its syntax is proposed.
 
 `extension_metadata.json` is a JSON-format metadata file analogous to the
 `kit_metadata.json` metadata for kits, and following the same schema, though
 with an `extension-details` member replacing `kit-details`.
 
-Everything else (i.e. other than `Source` and the JSON file) is optional.
+Everything other than `Source` and the JSON file is optional.
 
-### 2. Documentation
+## JSON metadata file
 
-2.1. The `Documentation` subdirectory is optional, and provides an alternative to
+A minimum viable metadata file looks like this:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Red Fire Hydrants",
+			"author": "Emily Short",
+			"version": "1.3"
+		}
+	}
+
+However, the file may also specify any or all of the following:
+
+`"compatibility"` is a string saying which architectures the extension is
+compatible with; by default it's assumed to be universally compatible. For
+example:
+
+	{
+		"is": {
+			...
+		},
+		"compatibility": "Glulx only"
+	}
+
+For the full specification of compatibility texts, see `Compatibility.w` in
+the Inform source code module `arch`. Other examples would be `"Z-machine version 8"`,
+`"Glulx without debugging"`, `"16d or 32d"`. Note that compatibility describes
+architectures, not compilation targets: you can't specify "don't compile this via C".
+
+`"activates"` is a list of strings, each of which is the name of some compiler
+feature which the extension - simply by virtue of being used in a project - turns
+on for that project.
+
+`"deactivates"` similarly turns off compiler features.
+
+`"needs"` specifies what other resources the extension needs in order to be used.
+For example, here's a valid JSON metadata file for our example extension:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Red Fire Hydrants",
+			"author": "Emily Short",
+			"version": "1.3"
+		},
+		"needs": [ {
+			"need": {
+				"type": "kit",
+				"title": "RedFireHydrantsKit"
+			}
+		}, {
+			"need": {
+				"type": "kit",
+				"title": "DefaultFireFightersKit"
+			}
+		}, {
+			"need": {
+				"type": "extension",
+				"title": "Big Yellow Tubing",
+				"author": "Aaron Reed"
+			}
+		} ],
+	}
+
+As can be seen, `"needs"` is a list of objects - here, three items long. Two of
+the extension's requirements are kits. Those will be easy to find, since they
+are private to the extension and stored within it (see below). But because they
+are listed here as needs, Inform automatically merges them into any build of a
+project which includes our extension. (It also incrementally rebuilds them
+from source as necessary.)
+
+It might seem that every kit private to the extension will be one of its kit needs,
+and vice versa. In fact, neither of those has to be true:
+
+* An extension can "need" a kit which is not private to it. Inform will then
+look for this just as it looks for other resources - for example, from the project's
+materials folder.
+* An extension does not have to "need" every kit private to it. Kits can
+in principle have quite complicated further requirements when used. We could
+imagine a situation where the extension needs private kit A, which then sometimes -
+but only sometimes - needs private kit B as well. The dependency of the extension
+on kit A would be in the extension's JSON metadata, whereas the dependency of kit B
+on kit A would be in kit A's JSON metadata.
+
+The third need is for another extension, and this of course is not housed
+inside the `Red Fire Hydrants-v1_3` directory - extensions cannot contain other
+extensions. So it will be looked for in the usual manner.
+
+Needs can optionally give a version number for what they want. For example:
+
+	{
+		"need": {
+			"type": "extension",
+			"title": "Big Yellow Tubing",
+			"author": "Aaron Reed",
+			"version": "7.2"
+		}
+	}
+
+Such versions are then interpreted according to semver rules: so this would
+work with any 7.x, where x is at least 2, but not with 7.1 or 8.3.
+
+### Redundancy of the metadata file
+
+Some of the information in the metadata file effectively duplicates information
+which could be deduced from the extension's source text.
+
+For example, Inform requires that the metadata must exactly match the title,
+author and version given in the titling line of the extension source text. It
+will throw an error if the extension begins:
+
+	Version 3.2 of Chrome Couplings by Andrew Plotkin begins here.
+
+but the metadata reads:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Shiny Chrome Couplings",
+			"author": "Andrew Zarf Plotkin",
+			"version": "3.2.8"
+		}
+	}
+
+Similarly, the extension needs can be deduced from the source text, because
+if the extension source includes:
+
+	Include version 7.2 of Big Yellow Tubing by Aaron Reed.
+
+...then it clearly needs this extension.
+
+Not all of the data in the JSON file is redundant: the details about kits cannot
+be expressed in any other way and are essential to the correct working of the
+extension.
+
+So why do we have any redundant data in this file? The answer is that we will want
+Internet registries software to be able to know, in an efficient way, what
+an extension is and what other resources it might need in order to operate. The
+idea is that looking at the JSON file alone - which is straightforward to parse -
+tools for filing and dealing with Inform resources can learn all that they need
+to know. Moreover, the JSON schema we use can also describe other Inform resources,
+such as kits. We want to handle all of these in a more or less uniform way.
+
+## Extension materials
+
+The optional `Materials` subdirectory can provide a variety of resources, just
+like the materials folder for a project, and it has essentially the same layout.
+
+* Figures can be provided in `Materials/Figures`.
+* Sound effects can be provided in `Materials/Sounds`.
+* Data files can be provided in `Materials/Data`.
+* Templates for websites or interpreters can be provided in `Materials/Templates`.
+This means extensions can be wrappers for these, so that users do not even need
+to write their own release instructions - because those can be put in the
+extension's source text.
+* Kits can be provided in `Materials/Inter`. They are private to this extension,
+and are linked into a project including the extension _if the extension metadata says so_. See above.
+* Language bundles can be provided in `Materials/Languages`. See [IE-0016](0016-language-extensions-reform.md).
+* But extensions may not be provided in `Materials/Extensions`. Extensions
+containing other extensions... is a regress too far.
+
+Inform already supports figure and sound effect declarations (and see [IE-0004](0004-using-data-files-in-blorbs.md) for data files),
+with sentences like this:
+
+	Figure of dalmatian mascot is the file "dalmatian.jpg".
+	Sound of gushing water is the file "gushing.ogg".
+
+If such sentences are found in the main source text, nothing changes about their
+meaning: the files, `dalmatian.jpg` and `gushing.ogg`, are looked for in the
+project's materials folder, as before.
+
+But if such sentences are found in the source text for an extension directory,
+then Inform looks for the files first in the materials for the extension.
+If it doesn't find them there, it then turns to the project's materials folder.
+(In particular, this means that any existing extension declaring figures or
+sounds like this will continue to work as before.)
+
+If Inform does find that the extension directory has provided the resource, it
+then just checks to see if the author has _overridden_ this. For example, suppose
+the author using `Red Fire Hydrants by Emily Short` doesn't like the dog picture,
+and wants to substitute a better one. That author can then supply this:
+
+	Hypothetical Project.materials/Figures/Red Fire Hydrants/dalmatian.jpg
+
+Note that this is in a subdirectory of `Figures`, with the same name as that
+of the extension. This means the author could replace `dalmatian.jpg` from
+multiple different extensions, while still having a quite unrelated `dalmatian.jpg`
+used by the project's main source text.
+
+## Not yet implemented
+
+### Documentation
+
+The `Documentation` subdirectory is optional, and provides an alternative to
 writing documentation in the source text of an extension. It is an error for an
 extension to provide documentation in both forms. This optional form is much richer,
 allowing for larger manuals with multiple chapters and sections, examples, and
 indexing.
 
-2.2. If provided, it must contain `Documentation.txt`, an indoc-format manual for
+If provided, it must contain `Documentation.txt`, an indoc-format manual for
 the extension. This is optionally allowed to use Examples and Images, in their own
 subdirectories of `Documentation`. (There is no indoc configuration file; inbuild
 will manage the finicky business of configuring indoc to compile this documentation.)
 
-2.3. In v10.1.0, the documentation-compiler "indoc" is not included in the Inform apps,
+In v10.1.0, the documentation-compiler "indoc" is not included in the Inform apps,
 but it now will be.
 
-2.4. When inbuild wants to generate documentation from an extension providing this
+When inbuild wants to generate documentation from an extension providing this
 directory, it will use "indoc" instead. (If running inside the apps, where the tools
 may not be able to run each other directly for sandboxing reasons on the local
 operating system, it will print out the necessary commands in some way so that the
 app can then run "indoc" on its behalf.)
 
-2.5. At present, inbuild generates documentation on an extension every time it is
+At present, inbuild generates documentation on an extension every time it is
 used. For large `Documentation`-style manuals that could prove slow, so inbuild may
 cease to generate documentation every time, and instead do so only if the source or
 the full Inform build version has changed since the last time.
 
-### 3. Kits
+### Multiple source files
 
-3.1. An extension directory can optionally contain one or more kits, inside
-a `Materials/Inter` subdirectory. Like all kits, these will have names ending in
-`Kit` (and no file extension, since a kit is itself a directory holding a variety
-of resources).
+The `Source` directory may contain further files in line with [IE-0003](0003-multiple-source-files.md); to be decided.
 
-3.2. Kits contain metadata which, among other things, can say that if the
-kit is to be used then so must a given extension: unsurprisingly, a kit
-which entirely belongs to an extension must mandate the use of that extension.
+### Conversion
 
-3.3. (i) If just one kit is supplied, it is automatically linked into any project
-including the extension.
+`inbuild` will have an option, say `-convert-extension`, which takes a single-file
+`.i7x` extension (i.e. what exists now), perhaps incorrectly identified or with
+an otherwise dubious filename, and makes an equivalent and correctly-named
+directory. (Inbuild is already able to identify extensions properly regardless
+of their filenaming.)
 
-(ii) If multiple kits are supplied, the one whose name is that of the extension
-but with spaces removed and `Kit` put at the end is linked in. (So, for example,
-`RedFireHydrantsKit`.) Any other kits also supplied will only be linked in if
-the If-This-Then-That rules for the primary kit's metadata call for them. For
-example, `RedFireHydrantsKit` could see if the user is also intending to have
-`FireFightersKit` present, and if not then to link `DefaultFireFightersKit`
-instead.
-
-Clearly (ii) is an edge case, but it's something which BasicInformKit
-does in order to be able to work in both basic and non-basic Inform projects.
-
-### 4. Language bundles
-
-`Language bundles` are used internally to represent natural languages (English,
-French, German and so on), but they are in practice no use without an extension
-to match.
-
-4.1. An extension directory can optionally contain one or more language bundles,
-inside a `Materials/Languages` subdirectory. In practice, it is likely to contain
-either none or exactly one, of course.
-
-4.2. At present `inform/inform7/Internal/Languages` holds a selection of
-language bundles written some years ago, but it really shouldn't: the core
-Inform distribution should ship only with the default English language bundle.
-All others will be deleted from the core distribution.
-
-Instead, what might formerly have been stored as `Internal/Languages/French` is
-now at `Extensions/Marcel Proust/French Language/Materials/Languages/French` (i.e.,
-it has moved into the extension itself).
-
-4.3. Note that by making language bundles belong to extensions, we make it possible
-for a user to have alternative versions of the same language to choose from.
-If there is also an `Extensions/Victor Hugo/French Language` then these extensions
-can provide different French language bundles, and the one applying to a given
-project will be the one belonging to the extension the user chose to include.
-
-It will however be an error for a project to include two extensions which both
-include a language bundle with the same name. (This is no loss to the user: that
-was never going to end well.)
-
-4.4. A curiosity of Inform at present is that every language bundle found by
-inbuild becomes an enumerated value for the `natural language` kind when Inform
-is working. Cool in a way, but in practice this means that the same source text
-compiles differently on different users' machines according to which language
-bundles they have installed, which is a little odd. This will change so that
-the only enumerated values are those from (i) English (the default), and (ii)
-any actually Included extension which contains one.
-
-4.5. Language bundles will be able to include Preform files: details to be worked
-out.
-
-### 5. Media resources
-
-5.1. `Materials/Figures` and `Materials/Sounds` allow extensions to provide these,
-exactly as the `Materials` folder for a project can. Similarly (see IE-0004)
-for internal data files, in `Materials/Data`.
-
-A consequence of this is that, for the first time, Inform checks for the existence
-of sound and picture files which the source text claims to exist. Previously,
-if they did not exist then this would come to light only when indexing or releasing.
-It's now a compilation failure to refer to a non-existent resource. (This can be
-deactivated using the new command-line switch `-no-resource-checking`, which is
-a convenience for the Inform test suite.)
-
-5.2. Inside an extension, filenames in figure and sound declaration sentences are
-taken as referring to these, but see (7) below.
-
-### 6. Website/interpreter templates
-
-6.1. An extension directory can optionally contain one or more website templates,
-inside a `Templates` subdirectory. In practice, it is likely to contain
-either none or exactly one, of course. The effect of this is that if the
-extension is included by a project, then `Release with...` will be able to
-use this template, and if not, not.
-
-### 7. Overriding materials
-
-7.1. Suppose a project called, say, `Boston Fire Dept` wants to use an extension,
-but to override its choice of a given image (or kit, or sound, or template, or
-language bundle) and provide a customised alternative. It can do so by providing
-those alternatives in its own materials directory.
-
-For example, `Boston Fire Dept.materials/Figures/Red Fire Hydrants/dalmatian.jpg`
-would override `Red Fire Hydrants-v1_3/Materials/Figures/dalmatian.jpg`.
-
-7.2. Note the presence of the intermediate directory `Red Fire Hydrants`. The project
-could conceivably also have its own unrelated image of a dalmation, with the same
-leafname. (To be considered: would this cause problems in the blorb? Do we need to
-mangle these filenames to ensure there are no name clashes in the final release?)
+The Inform apps will be able to use this when they install extensions which the
+user has downloaded from somewhere. At present, the UI apps all have their own
+essentially duplicated code for working out how and where to install a new
+extension: we really want to move that into inbuild, saving the UI apps from
+having to know about any of this.
