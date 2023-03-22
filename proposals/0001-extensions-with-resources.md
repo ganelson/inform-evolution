@@ -345,12 +345,18 @@ prudent to do so, which means altering the extension in the file system. In
 non-repairing mode, or if repairs are tried but fail because of, say, a file-system
 error, we report all errors.
 
+The main use case for repairing mode is this: When an author changes the title or
+version number of an extension by editing the source text, Inform then automatically
+takes care of correcting the discrepancies which would otherwise arise from the fact
+that it now sits in a wrongly-named directory structure, and has non-matching JSON
+metadata.
+
 ### What do we consider a directory extension?
 
 `inbuild` (and hence `inform`) regards a directory as holding an extension if either:
 
-(a) It contains a file called `extension_metadata.json`.
-(b) It has a directory name ending in `.i7xd`.
+* It contains a file called `extension_metadata.json`, or
+* It has a directory name ending in `.i7xd`.
 
 As we shall see, both of these are required to be true: so if only one is true, the
 directory is regarded as a damaged extension, but still an extension.
