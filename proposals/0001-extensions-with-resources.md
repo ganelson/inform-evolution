@@ -102,15 +102,6 @@ non-existent resource.
 This can be deactivated using the new command-line switch `-no-resource-checking`,
 which is a convenience for the Inform test suite.
 
-## Extension directory name
-
-Anywhere Inform (properly speaking, `inbuild`) could previously recognise an
-extension file such as `Locksmith.i7x`, it can now recognise an extension directory
-with a name such as `Locksmith-v3_2_1`. Note that the inclusion of a version
-number is mandatory, and that Inform will reject the extension with an error if
-this is not the version number given inside the extension itself. In particular,
-an extension must have a version number in order to exist in directory form.
-
 ## Example
 
 Here is an example of what a directory might look like, for version 1.3 of
@@ -255,12 +246,12 @@ Some of the information in the metadata file effectively duplicates information
 which could be deduced from the extension's source text.
 
 For example, Inform requires that the metadata must exactly match the title,
-author and version given in the titling line of the extension source text. It
-will throw an error if the extension begins:
+author and version given in the titling line of the extension source text. We would
+not allow the extension to begin:
 
 	Version 3.2 of Chrome Couplings by Andrew Plotkin begins here.
 
-but the metadata reads:
+but the metadata to read:
 
 	{
 		"is": {
@@ -336,6 +327,153 @@ of the extension. This means the author could replace `dalmatian.jpg` from
 multiple different extensions, while still having a quite unrelated `dalmatian.jpg`
 used by the project's main source text.
 
+## Exactly how inbuild reads and repairs extensions
+
+As noted above, directory extensions are fiddly to get right, because in some
+cases the same information has to be present in multiple places.
+
+Directory extensions can be scanned in two modes: repairing, and not. In
+repairing mode, we not only forgive minor errors, but put them right.
+
+* `inform` scans extensions in a project's Materials folder in repairing mode,
+but all other extensions in non-repairing mode.
+* `inbuild` scans in repairing mode if and only if the command line switch `-repair`
+is used when running it.
+
+The idea is that in repairing mode, we silently fix mistakes whenever it seems
+prudent to do so, which means altering the extension in the file system. In
+non-repairing mode, or if repairs are tried but fail because of, say, a file-system
+error, we report all errors.
+
+### What do we consider a directory extension?
+
+`inbuild` (and hence `inform`) regards a directory as holding an extension if either:
+
+(a) It contains a file called `extension_metadata.json`.
+(b) It has a directory name ending in `.i7xd`.
+
+As we shall see, both of these are required to be true: so if only one is true, the
+directory is regarded as a damaged extension, but still an extension.
+
+### What is considered as damage, and what can be repaired?
+
+#### Source file
+
+(1) A directory extension must contain at least one source text file whose name ends
+`.i7x`, and which is in the `Source` subdirectory of the directory.
+
+If there are multiple files meeting this description, Inbuild first looks for one
+called `Title.i7x`, where `Title` is the title of the extension. Failing that, it
+looks for the alphabetically earliest.
+
+If no file with a name ending `.i7x` is present, this is irreparable, and a problem
+is thrown.
+
+(2) The source text file must have a valid opening line in Inform extension syntax:
+
+	Version 5.4 of Marble Staircases by Andrea Palladio begins here.
+
+If not, this is irreparable, and a problem is thrown.
+
+(3) While it is optional for single-file extensions to provide a version number,
+it is mandatory for directory extensions to do so.
+
+If not, this is irreparable, and a problem is thrown.
+
+(4) The source text file must have the filename `<Title>.i7x`, where the Title
+is as given in its own opening line. For example:
+
+	Marble Staircases.i7x
+
+In repairing mode, the file is renamed if this is not true.
+
+#### Directory name for the extension
+
+(1) The directory name for the extension must take the form `<Title>-v<Number>.i7xd`,
+where the Title and Version number exactly match those in the source file. The
+dots occurring in the Number, if any, are flattened to underscores. For example:
+
+	Marble Staircases-v5_4.i7xd
+
+In repairing mode, the directory is renamed if any part of this is wrong.
+
+#### JSON metadata file
+
+(1) The directory must contain a file called `extension_metadata.json`.
+
+In repairing mode, such a file is created if absent, using the metadata extracted
+from the first line of the extension source. For example:
+
+	{
+		"is": {
+			"type": "extension",
+			"title": "Marble Staircases",
+			"author": "Andrea Palladio",
+			"version": "5.4"
+		}
+	}
+
+(2) The `extension_metadata.json` must be valid JSON, which matches the requirements in:
+
+	inform7/Internal/Miscellany/resource.jsonr
+
+If not, this is irreparable, and a problem is thrown.
+
+(3) In this metadata, the `is.type` must be `extension`.
+
+If not, this is irreparable, and a problem is thrown. (It seems best not to
+attempt a "repair" if what has happened is that the user has accidentally copied
+in a kit metadata file, say.)
+
+(4) In this metadata, the `is.title`, `is.author` and `is.version` must all match those
+declared by the extension source.
+
+In repairing mode, the metadata file is rewritten to correct any discrepancies, taking
+the extension source as the correct one. Note that any other material in the existing
+JSON file, if there is one, will be preserved by this: only the `is` object changes.
+
+#### Contents of the extension
+
+(1) The extension directory may contain no files except:
+
+* "Hidden files" beginning with a `.`, which Inform ignores.
+* `extension_metadata.json`.
+
+If it does contain other files, this is irreparable, and a problem is thrown.
+
+(2) The extension directory may contain no subdirectories except:
+
+* "Hidden subdirectories" beginning with a `.`, which Inform ignores.
+* `Source`, which it must contain (see above).
+* `Materials`, which is optional.
+* `Documentation`, which is optional.
+
+If it does contain other subdirectories, this is irreparable, and a problem is thrown.
+
+(3) The Source subdirectory must contain exactly one (unhidden) file, which must
+be the source text, and no (unhidden) subdirectories.
+
+If it does contain other matter, this is irreparable, and a problem is thrown.
+
+(4) The Materials subdirectory must contain exactly no (unhidden) files, and can
+only contain the following (unhidden) subdirectories:
+
+* `Data`, which is optional.
+* `Figures`, which is optional.
+* `Inter`, which is optional.
+* `Sounds`, which is optional.
+* `Templates`, which is optional.
+
+If it does contain other matter, this is irreparable, and a problem is thrown.
+
+(5) The Documentation subdirectory must contain exactly one (unhidden) file, called
+`Documentation.txt`, and can only contain the following (unhidden) subdirectories:
+
+* `Examples`, which is optional.
+* `Images`, which is optional.
+
+If it does contain other matter, this is irreparable, and a problem is thrown.
+
 ## Not yet implemented
 
 ### Documentation
@@ -351,14 +489,14 @@ the extension. This is optionally allowed to use Examples and Images, in their o
 subdirectories of `Documentation`. (There is no indoc configuration file; inbuild
 will manage the finicky business of configuring indoc to compile this documentation.)
 
-In v10.1.0, the documentation-compiler "indoc" is not included in the Inform apps,
+In v10.1.0, the documentation-compiler `indoc` is not included in the Inform apps,
 but it now will be.
 
 When inbuild wants to generate documentation from an extension providing this
-directory, it will use "indoc" instead. (If running inside the apps, where the tools
+directory, it will use `indoc` instead. (If running inside the apps, where the tools
 may not be able to run each other directly for sandboxing reasons on the local
 operating system, it will print out the necessary commands in some way so that the
-app can then run "indoc" on its behalf.)
+app can then run `indoc` on its behalf.)
 
 At present, inbuild generates documentation on an extension every time it is
 used. For large `Documentation`-style manuals that could prove slow, so inbuild may
