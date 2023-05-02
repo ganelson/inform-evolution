@@ -306,8 +306,8 @@ For example, the JSON metadata file for `AmphibianKit` might read:
 			"version": "5.2"
 		},
 		"kit-details": {
-        	"configuration-flags": [ "DRIFTING_LILYPADS" ],
-        	"configuration-values": [ "SKIN_TYPE", "FROG_COUNT", "JUMP_HEIGHT" ]
+		"configuration-flags": [ "DRIFTING_LILYPADS" ],
+		"configuration-values": [ "SKIN_TYPE", "FROG_COUNT", "JUMP_HEIGHT" ]
 		}
 	}
 
@@ -405,7 +405,7 @@ no longer exists. People really shouldn't have been using that: well, now they c
 
 Use option                        | Previously set                       | Now sets
 --------------------------------- | ------------------------------------ | --------------------------------
-ineffectual	                      | (nothing)                            | (nothing)
+ineffectual                       | (nothing)                            | (nothing)
 index figure thumbnails           | `MAX_FIGURE_THUMBNAILS_IN_INDEX`     | (nothing)
 engineering notation              | `USE_E_NOTATION`                     | (nothing)
 telemetry recordings              | `TELEMETRY_ON`                       | (nothing)
@@ -475,7 +475,7 @@ in `WorldModelKit` contains the line:
 
 This of course is commented out. Further down, code like this appears:
  
- 	#Ifdef LKTRACE_LIST_WRITER; print "[There are ", no_groups, " groups.]^"; #Endif;
+	#Ifdef LKTRACE_LIST_WRITER; print "[There are ", no_groups, " groups.]^"; #Endif;
 
 If the definition is un-commented-out and the kit rebuilt, this print statement
 will take effect. This is all intended for "tracing", that is, for debugging
