@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Language feature name: --
 * Status: Draft
-* Related proposals: [IE-0006](0006-i6-syntax-annotations.md)
+* Related proposals: [IE-0006](0006-i6-syntax-annotations.md), [IE-0018](0018-use-options-and-kit-configuration.md)
 * Implementation: Partly implemented but unreleased
 
 ## Summary
