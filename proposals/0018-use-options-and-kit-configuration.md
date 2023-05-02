@@ -290,10 +290,10 @@ standard conventions for this.
 When a configuration flag or value is tied to a kit, two things are different:
 
 * The constant name is moved into that kit's namespace, so, for example,
-we have `AmphibianKit```DRIFTING_LILYPADS` not `DRIFTING_LILYPADS`.
+we have ``AmphibianKit`DRIFTING_LILYPADS`` not `DRIFTING_LILYPADS`.
 * As a result, if two different kits both have a configuration value called,
 say, `MAX_CAPACITY`, both can be used without a conflict occurring, because
-one will be `FirstKit```MAX_CAPACITY_CFGV` and the other `SecondKit```MAX_CAPACITY_CFGV`.
+one will be ``FirstKit`MAX_CAPACITY_CFGV`` and the other ``SecondKit`MAX_CAPACITY_CFGV``.
 * A problem message is thrown if the name is not one of those listed in the
 kit's metadata as being expected.
 
@@ -327,7 +327,7 @@ can occur. For example, if we had had
 	"configuration-values": [ "SKIN_TYPE", "FROG_COUNT", "JUMP_HEIGHT", "SECRET_POND" ]
 
 then whenever Inform compiled a project with `AmphibianKit` it would define
-the constant `AmphibianKit```SECRET_POND_CFGV` to 0. Should a knowledgeable
+the constant ``AmphibianKit`SECRET_POND_CFGV`` to 0. Should a knowledgeable
 user come along and write
 
 	Use secret pond of 10 translates to configuration value SECRET_POND in AmphibianKit.
@@ -409,31 +409,31 @@ ineffectual	                      | (nothing)                            | (noth
 index figure thumbnails           | `MAX_FIGURE_THUMBNAILS_IN_INDEX`     | (nothing)
 engineering notation              | `USE_E_NOTATION`                     | (nothing)
 telemetry recordings              | `TELEMETRY_ON`                       | (nothing)
-no deprecated features            | `NO_DEPRECATED_FEATURES`             | `BasicInformKit```NO_DEPRECATED_CFGF`
-dynamic memory allocation         | `DynamicMemoryAllocation`            | `BasicInformKit```STACK_FRAME_CAPACITY_CFGV`
-maximum text length               | `TEXT_TY_BufferSize` (1)             | `BasicInformKit```TEXT_BUFFER_SIZE_CFGV`
-maximum things understood at once | `MATCH_LIST_WORDS` (1)               | `BasicInformKit```MULTI_OBJ_LIST_SIZE_CFGV`
-authorial modesty                 | `AUTHORIAL_MODESTY`                  | `BasicInformKit```AUTHORIAL_MODESTY_CFGF`
-numbered rules                    | `NUMBERED_RULES`                     | `BasicInformKit```NUMBERED_RULES_CFGF`
-predictable randomisation         | `FIX_RNG`                            | `BasicInformKit```FIX_RNG_CFGF`
-command line echoing              | `ECHO_COMMANDS`                      | `BasicInformKit```ECHO_COMMANDS_CFGF`
-memory economy                    | `MEMORY_ECONOMY`                     | `BasicInformKit```MEMORY_ECONOMY_CFGF`
-printed engineering notation (3)  | (didn't exist)                       | `BasicInformKit```PRINT_ENGINEER_EXPS_CFGF`
-American dialect                  | `DIALECT_US`                         | `BasicInformKit```AMERICAN_DIALECT_CFGF`
-serial comma                      | `SERIAL_COMMA` (1)                   | `WorldModelKit```SERIAL_COMMA_CFGF`
-no scoring                        | `USE_SCORING` = 0 (1)                | `WorldModelKit```SCORING_CFGV` = 0
-scoring                           | `USE_SCORING` = 1 (1)                | `WorldModelKit```SCORING_CFGV` = 1
-default route-finding (4)         | (didn't exist)                       | `WorldModelKit```ROUTE_FINDING_CFGV` = 0
-fast route-finding                | `FAST_ROUTE_FINDING`                 | `WorldModelKit```ROUTE_FINDING_CFGV` = 1
-slow route-finding                | `SLOW_ROUTE_FINDING`                 | `WorldModelKit```ROUTE_FINDING_CFGV` = 2
-full-length room descriptions     | `KIT_CONFIGURATION_LOOKMODE` = 2 (2) | `WorldModelKit```ROOM_DESC_DETAIL_CFGV` = 2
-abbreviated room descriptions     | `KIT_CONFIGURATION_LOOKMODE` = 3 (2) | `WorldModelKit```ROOM_DESC_DETAIL_CFGV` = 3
-VERBOSE room descriptions         | `DEFAULT_VERBOSE_DESCRIPTIONS`       | `WorldModelKit```ROOM_DESC_DETAIL_CFGV` = 2
-BRIEF room descriptions           | `DEFAULT_BRIEF_DESCRIPTIONS`         | `WorldModelKit```ROOM_DESC_DETAIL_CFGV` = 1
-SUPERBRIEF room descriptions      | `DEFAULT_SUPERBRIEF_DESCRIPTIONS`    | `WorldModelKit```ROOM_DESC_DETAIL_CFGV` = 3
-undo prevention                   | `PREVENT_UNDO`                       | `CommandParserKit```UNDO_PREVENTION_CFGF`
-manual pronouns                   | `MANUAL_PRONOUNS`                    | `CommandParserKit```MANUAL_PRONOUNS_CFGF`
-unabbreviated object names        | `UNABBREVIATED_OBJECT_NAMES`         | `CommandParserKit```UNABBREVIATED_NAMES_CFGF`
+no deprecated features            | `NO_DEPRECATED_FEATURES`             | ``BasicInformKit`NO_DEPRECATED_CFGF``
+dynamic memory allocation         | `DynamicMemoryAllocation`            | ``BasicInformKit`STACK_FRAME_CAPACITY_CFGV``
+maximum text length               | `TEXT_TY_BufferSize` (1)             | ``BasicInformKit`TEXT_BUFFER_SIZE_CFGV``
+maximum things understood at once | `MATCH_LIST_WORDS` (1)               | ``BasicInformKit`MULTI_OBJ_LIST_SIZE_CFGV``
+authorial modesty                 | `AUTHORIAL_MODESTY`                  | ``BasicInformKit`AUTHORIAL_MODESTY_CFGF``
+numbered rules                    | `NUMBERED_RULES`                     | ``BasicInformKit`NUMBERED_RULES_CFGF``
+predictable randomisation         | `FIX_RNG`                            | ``BasicInformKit`FIX_RNG_CFGF``
+command line echoing              | `ECHO_COMMANDS`                      | ``BasicInformKit`ECHO_COMMANDS_CFGF``
+memory economy                    | `MEMORY_ECONOMY`                     | ``BasicInformKit`MEMORY_ECONOMY_CFGF``
+printed engineering notation (3)  | (didn't exist)                       | ``BasicInformKit`PRINT_ENGINEER_EXPS_CFGF``
+American dialect                  | `DIALECT_US`                         | ``BasicInformKit`AMERICAN_DIALECT_CFGF``
+serial comma                      | `SERIAL_COMMA` (1)                   | ``WorldModelKit`SERIAL_COMMA_CFGF``
+no scoring                        | `USE_SCORING` = 0 (1)                | ``WorldModelKit`SCORING_CFGV`` = 0
+scoring                           | `USE_SCORING` = 1 (1)                | ``WorldModelKit`SCORING_CFGV`` = 1
+default route-finding (4)         | (didn't exist)                       | ``WorldModelKit`ROUTE_FINDING_CFGV`` = 0
+fast route-finding                | `FAST_ROUTE_FINDING`                 | ``WorldModelKit`ROUTE_FINDING_CFGV`` = 1
+slow route-finding                | `SLOW_ROUTE_FINDING`                 | ``WorldModelKit`ROUTE_FINDING_CFGV`` = 2
+full-length room descriptions     | `KIT_CONFIGURATION_LOOKMODE` = 2 (2) | ``WorldModelKit`ROOM_DESC_DETAIL_CFGV`` = 2
+abbreviated room descriptions     | `KIT_CONFIGURATION_LOOKMODE` = 3 (2) | ``WorldModelKit`ROOM_DESC_DETAIL_CFGV`` = 3
+VERBOSE room descriptions         | `DEFAULT_VERBOSE_DESCRIPTIONS`       | ``WorldModelKit`ROOM_DESC_DETAIL_CFGV`` = 2
+BRIEF room descriptions           | `DEFAULT_BRIEF_DESCRIPTIONS`         | ``WorldModelKit`ROOM_DESC_DETAIL_CFGV`` = 1
+SUPERBRIEF room descriptions      | `DEFAULT_SUPERBRIEF_DESCRIPTIONS`    | ``WorldModelKit`ROOM_DESC_DETAIL_CFGV`` = 3
+undo prevention                   | `PREVENT_UNDO`                       | ``CommandParserKit`UNDO_PREVENTION_CFGF``
+manual pronouns                   | `MANUAL_PRONOUNS`                    | ``CommandParserKit`MANUAL_PRONOUNS_CFGF``
+unabbreviated object names        | `UNABBREVIATED_OBJECT_NAMES`         | ``CommandParserKit`UNABBREVIATED_NAMES_CFGF``
 gn testing version                | `GN_TESTING_VERSION`                 | (removed entirely)
 
 (1) In these cases the original name is preserved as an alias, so that references
@@ -491,7 +491,7 @@ to creating constants. For example, "no deprecated features" is declared thus:
 	Use no deprecated features translates as the configuration flag NO_DEPRECATED
 	in BasicInformKit.
 
-This is all true and it causes the constant `BasicInformKit```NO_DEPRECATED_CFGF` to
+This is all true and it causes the constant ``BasicInformKit`NO_DEPRECATED_CFGF`` to
 be declared as 1 not 0, but it also causes the compiler to watch out for deprecated
 phrase usage, and so on. This is a complete list, at present, of use options with
 compiler side-effects:
