@@ -113,12 +113,12 @@ The apps must be able to install from the following sources:
 
 We may eventually want to add two other capabilities, but are not sure:
 * A drag of an extension file (or directory) onto the project window, or perhaps just onto its toolbar or one of the tabs other than "Source". (Drags into source generally paste in the contents of text files.)
-* `From another project...` - this would open a file picker allowing an Inform project to be selected; a second file picker would then offer a choice of its installed extensions. (We're not sure if this idea really works, or will just seem odd.) 
+* `From another project...` - this would open a file picker allowing an Inform project to be selected; a second file picker would then offer a choice of its installed extensions. (We're not sure if this idea really works, or will just seem odd.)
 
 The apps should allow _only_ the following to be selected for installation:
 
 * Single files with the `.i7x` extension.
-* Directories whose names end with `.i7xd`. 
+* Directories whose names end with `.i7xd`.
 * Zip archives whose names end with `.zip`, which the app is responsible for unzipping, and which turn out to contain either a single `.i7x` or a single `.i7xd`.
 
 ##### What to do once an extension to install has been identified
