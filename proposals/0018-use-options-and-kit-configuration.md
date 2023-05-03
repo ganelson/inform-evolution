@@ -31,11 +31,18 @@ project; and if not, not. However:
 * The use of `(-` and `-)` and Inform 6 notation is always clumsy, and hard
 for relative novices to follow.
 * But particularly so here, since we have to spell out that a constant is being made.
-* If we don't do that, then arbitrary code could be written in the inclusion, with
-unpredictable consequences.
-* It is unclear which kit is being affected.
-* It is easy to get these constant names wrong, leading to silent errors.
-* Confusion easily follows if the kit wrongly makes an `#Ifdef` test on such
+* Sometimes the constant was never wanted in the first place. `Locksmith by Emily Short`,
+for example, defines a use option `sequential action` as creating the constant
+`SEQUENTIAL_ACTION`, but in fact never refers to that constant again: instead,
+the extension just tests whether the option is active or not.
+* Although most users want to use only very simple definitions, and some users
+don't even want that, they are in theory free to write arbitrary code in this
+inclusion, with unpredictable consequences.
+* If the aim of the use option is to affect the operation of a kit, it is unclear
+from the definition which kit is being affected.
+* Presumably the idea is to create a constant whose name is significant to the
+kit, but it is easy to get such constant names wrong, leading to silent errors.
+* Confusion anyway follows if the kit wrongly makes an `#Ifdef` test on such
 a constant, because the existence of the constant is not known when the kit
 itself is being built. (It is known when the project is being built, but that
 will be later on.) This can cause subtle errors through use options not taking
@@ -47,9 +54,6 @@ kits facing the same issue could not use.
 * Contradictions due to mutually exclusive settings were not detected: for
 example, if a project says both `Use fast route-finding` and `Use slow route-finding`,
 perhaps because two extensions disagree about what they want.
-* A few use options which really instructed the compiler about how to compile
-the project, and had nothing to do with kit code, made spurious symbols as a
-side-effect.
 
 ## Components affected
 
@@ -64,8 +68,6 @@ side-effect.
 - [ ] No change to the GUI apps.
 
 ## New syntax for declarations
-
-### Use options as values
 
 ### Configuration flags and values
 
@@ -117,35 +119,35 @@ But this is rejected as contradictory:
 	Use frog count of 160.
 
 As has been true in Inform for many years, use options are values at runtime,
-with the kind `use option`. But not much could be done with them. There are
-now two new adjectives, `chosen` and `unchosen`, applying to them: a chosen
-option is one which the source text has specified (other than in its declaration
-line, that is). So if we have:
+with the kind `use option`. The adjectives `active` and `inactive` could be
+applied to them: an active option is one which the source text has specified
+(other than in its declaration line, that is). So if we have:
 
 	Use fried omelettes translates as a configuration flag.
 	Use pepper count translates as a configuration value.
 	Use pepper count of 17.
 
-then `pepper count` is `chosen`, but `fried omelettes` is `unchosen`. So for
+then `pepper count` is `active`, but `fried omelettes` is `inactive`. So for
 example:
 
 	When play begins:
-		if fried omelettes option is chosen:
+		if fried omelettes option is active:
 			say "I'd better get some butter.";
 
 will print something.
 
-In addition, the phrase `numerical value of U`, where `U` is a use option, will
-give its current value. (For a flag, that will be 0 or 1.) If the option is
-unchosen, the value will be the default, of course. For example:
+While Inform v10 supported `active` and `inactive`, it provided no way to access
+the numerical value of a configuration. The phrase `numerical value of U`, where
+`U` is a use option, now does that. (For a flag, that will be 0 or 1.) If the
+option is inactive, the value will be the default, of course. For example:
 
 	When play begins:
-		repeat with U running through chosen use options:
+		repeat with U running through active use options:
 			if the numerical value of U > 1:
 				say "[U] has been set to [numerical value of U].";
 			otherwise:
 				say "[U] is on.";
-		say "Not chosen: [list of unchosen use options].";
+		say "Not active: [list of inactive use options].";
 
 These new features make it possible both the declare and test use options
 entirely in natural language, without need for any Inform 6 syntax, and should
@@ -252,7 +254,7 @@ example:
 
 This is a very contrived example, but the point of interest is that the array
 `Drifts` exists only when the use option `Use drifting lanyards` has been
-chosen. If it were a very much larger array, that might be a saving of memory
+active. If it were a very much larger array, that might be a saving of memory
 for projects not choosing the option.
 
 Note that Inform v10 only supported one form of `#Iftrue`:
@@ -382,9 +384,8 @@ together with any I6 code injected by old-style use option declarations.
 
 ## Impact on existing projects
 
-Although the existing syntax is likely to be deprecated soon, it has not been
-withdrawn. Old-style use option declarations work as before, so the changes
-are almost all additive.
+Although the existing syntax is likely to be deprecated soon, it has mostly not
+been withdrawn.
 
 If a project or one of its extensions explicitly refers to one of the kit
 constant symbols which previously expressed whether a use option was in force,
@@ -457,6 +458,37 @@ caused several little-used options from v10 to begin working again: in particula
 	Use slow route-finding.
 
 were all ineffectual in v10 due to linking errors.
+
+## Deprecation of old inline notation
+
+The ability to write old-style `(- ... -)` definitions will go, but in two
+stages.
+
+(a) In the first build shipping with IE-0018, all definitions in these forms
+will continue to work as before:
+
+	Constant NAME;
+	Constant NAME = VALUE;
+	Constant NAME = {N};
+	Constant NAME = {N} + VALUE;
+	Constant NAME = VALUE*{N};
+	Constant NAME = {N}*VALUE;
+
+where `VALUE` is a literal non-negative number 0, 1, 2, 3, ... Any definition
+not in this form (up to white space) will be rejected with a problem message.
+
+Note that in Zed Lopez's search of the existing extension base, every known
+use of this notation falls into these categories, so that none of those
+extensions should cease to work because of IE-0018.
+
+(b) Nevertheless, even these simple uses of `... translates as (- ... -)` are
+now deprecated. Any use of them with `no deprecated features` enabled will
+throw a problem message. The documentation in "Writing with Inform" will
+always use new-style use option declarations, and will only note the old
+syntax to advise against its use.
+
+(c) In some later major version of Inform, they will be withdrawn entirely,
+and this interim support will be removed.
 
 ## A note on conditional compilation in the built-in kits
 
