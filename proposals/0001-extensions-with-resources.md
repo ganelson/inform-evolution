@@ -107,7 +107,7 @@ which is a convenience for the Inform test suite.
 Here is an example of what a directory might look like, for version 1.3 of
 the hypothetical extension `Red Fire Hydrants by Emily Short`:
 ```
-	Red Fire Hydrants-v1_3
+	Red Fire Hydrants-v1_3.i7xd
 		extension_metadata.json
 		Source
 			Red Fire Hydrants.i7x
