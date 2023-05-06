@@ -101,6 +101,37 @@ Plenty:
 
 To "install" an extension now means "to add it to the materials folder for the current (topmost) project". The apps will no longer install extensions to the external area.
 
+##### An easy example
+
+The following screenshots show the general idea, as implemented in the MacOS Inform app.
+
+1. The user begins a new project.
+
+![Starting a project](./images/IE0017-in1.png)
+
+2. One way to install a new extension is by download from the Public Library,
+but they can also be installed from menu items, as here:
+
+![Selecting a menu item](./images/IE0017-in2.png)
+
+3. That opens a file-picker dialogue box, and the user selects the file to be
+installed. (Here, it's from a big pile of sorted extensions all nicely named,
+but it doesn't need to be.)
+
+![The file picker](./images/IE0017-in3.png)
+
+4. The Inform app responds by opening a page about this extension, which is
+automatically identified (and screened for metadata problems, though there
+aren't any this time). In effect, it's a confirmation page.
+
+![Confirm page](./images/IE0017-in4.png)
+
+5. The user clicks the big green install button, and...
+
+![Starting a project](./images/IE0017-in5.png)
+
+And now the extension is installed to the project.
+
 ##### Sources
 
 The apps must be able to install from the following sources:
