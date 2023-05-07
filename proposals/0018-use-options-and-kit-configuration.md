@@ -373,6 +373,49 @@ cases, a new syntax is available:
 There are just a few of these and they exist only for their side-effects.
 See below.
 
+### New notation for "compiler options"
+
+For some years Inform has supported the notation:
+
+	Use MAX_WHATEVER of 2000.
+
+This did not change the Inter compiled by Inform, except to mark it so that if
+it were ever compiled onward into Inform 6 code, then the memory setting
+`$MAX_WHATEVER=2000` would be added to that. This in effect controls how the
+I6 compiler behaves, but by remote control. If the same Inter code is compiled
+to any other target, this use option is ignored.
+
+That was useful for a while, but (i) only allowed numerical settings to be
+made, and (ii) was Inform 6-specific. It also (iii) looked confusingly like
+other configuration settings which controlled the Inform 7 compiler, i.e.,
+like other use options.
+
+The new notation is:
+
+	Use TARGET compiler option "CONTENT".
+
+(Note that lack of `of` here. It's not a setting of some variable to a value.)
+
+For example:
+
+	Use Ada compiler option "$--Zap".
+	Use Inform 6 compiler option "$MAX_WHATEVER=2000".
+	Use Inform 6 compiler option "$DICT_WORD_SIZE=9".
+
+The target name is read case-sensitively but white space is removed from it;
+for example, the above generates the following:
+
+	Pragma set for target 'Ada': '$--Zap'
+	Pragma set for target 'Inform6': '$MAX_WHATEVER=2000'
+	Pragma set for target 'Inform6': '$DICT_WORD_SIZE=9'
+
+(Inter refers to such instructions as "pragmas", a traditional compiler term
+for a control feature which is not part of the language as such.)
+
+The old notation continues to work for the time being, but instances of it
+have been removed from the core Inform extensions, and it is now considered
+deprecated.
+
 ### Debugging log
 
 A new debugging log aspect, "use options", has been added:
