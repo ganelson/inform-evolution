@@ -177,3 +177,19 @@ source text. Code in some kit can now write, say:
 	WriteGProperty(DIALOGUE_BEAT_TY, db, performed, true);
 
 to set the "performed" property for the beat `db`.
+
+## A note about kinds of object
+
+Work done for this proposal also fixed Jira bug I7-2225, "Translating kinds
+into I6 doesn't work". This now works as expected:
+
+	A fruit is a kind of thing.
+	The fruit kind is accessible to Inter as "K_fruit".
+
+The Inter class for fruit is called `K_fruit`. Moreover, Inter identifiers
+derived from this one make parallel translations: thus `K_fruit_Count` is
+the constant for the number of instances, `K_fruit_First` is the first
+instance, and `K_fruit_Next` the property for moving forward in the linked
+list of fruit instances. Without the above `...is accessible to...` sentence,
+these would have been called something unpredictable like `K13_fruit`,
+`K13_fruit_Count` and so on -- the unpredictable part being the number 13.
