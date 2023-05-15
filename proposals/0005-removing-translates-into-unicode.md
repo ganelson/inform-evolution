@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
-* Related proposals: None
+* Related proposals: [IE-0019](0019-unicode-command-parser.md)
 * Implementation: Implemented but unreleased
 
 ## Summary
