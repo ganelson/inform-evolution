@@ -92,9 +92,9 @@ continues only to allow code points in Unicode plane 0, that is, in the range
 0 to 0xFFFF.
 
 6. However, if (as is true by default) Inform is compiling to a 32-bit VM such
-as Glulx or to C, then Inform allows plane 1 as well, i.e., up to 0x1FFFF.
-Allowing plane 1 for the first time means that many emoji and other exotic
-script characters are now legal:
+as Glulx or to C, then Inform allows names to be used from plane 1 as well,
+i.e., up to 0x1FFFF. Allowing plane 1 for the first time means that many emoji
+and other exotic script characters are now legal:
 	```
 	[unicode Egyptian hieroglyph o030]
 	[unicode tetragram for vastness or wasting]
@@ -107,8 +107,27 @@ Inevitably, you're at the mercy of what fonts on your computer can actually
 display. On the author's current MacOS installation, "signwriting floorplane
 shoulder hip move" turns out to be unavailable, for example, though the rest worked.
 
-7. Inform recognises all names of characters in Unicode version 15.0.0 except
-for those with Unicode category `Cc`: control characters left over from ASCII
-and which have no name according to Unicode. Just two control characters have
-names in Inform:  `TAB` (9) and `NEWLINE` (10). So `[unicode tab]` is allowed,
-for example.
+7. Inform recognises all names of characters in the range 0 to 0x1FFFF drawn
+from Unicode version 15.0.0 except for those with Unicode category `Cc`: control
+characters left over from ASCII and which have no name according to Unicode.
+Just two control characters have names in Inform:  `TAB` (9) and `NEWLINE` (10).
+So `[unicode tab]` is allowed, for example.
+
+8. The internal representation of text at runtime now holds 32-bit characters
+(if using the 32-bit Glulx architecture), not 16-bit as in Inform versions 10
+and earlier. This code therefore produces three cat faces, not one cat face
+and then two question marks, as would otherwise have happened:
+	```
+	let kitty be "[unicode Smiling Cat Face With Heart-Shaped Eyes]";
+	say "[kitty].";
+	let c be "[kitty]";
+	let x be the substituted form of kitty;
+	say "[c] [x]."
+	```
+Note that Smiling Cat Face With Heart-Shaped Eyes is Unicode 0x1f63b, so is
+not representable in 16 bits.
+
+9. Unicode characters beyond 0x20000 can, at the user's own risk, be written
+numerically. In practice, they really aren't very useful, because hardly
+any fonts provide any of their characters.
+
