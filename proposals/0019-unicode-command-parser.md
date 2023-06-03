@@ -6,7 +6,7 @@
 * Language feature name: --
 * Status: Accepted in principle
 * Related proposals: [IE-0005](0005-removing-translates-into-unicode.md)
-* Implementation: In progress
+* Implementation: Complete
 
 ## Summary 
 
