@@ -400,14 +400,12 @@ For example:
 
 	Use Ada compiler option "$--Zap".
 	Use Inform 6 compiler option "$MAX_WHATEVER=2000".
-	Use Inform 6 compiler option "$DICT_WORD_SIZE=9".
 
 The target name is read case-sensitively but white space is removed from it;
 for example, the above generates the following:
 
 	Pragma set for target 'Ada': '$--Zap'
 	Pragma set for target 'Inform6': '$MAX_WHATEVER=2000'
-	Pragma set for target 'Inform6': '$DICT_WORD_SIZE=9'
 
 (Inter refers to such instructions as "pragmas", a traditional compiler term
 for a control feature which is not part of the language as such.)
@@ -415,6 +413,37 @@ for a control feature which is not part of the language as such.)
 The old notation continues to work for the time being, but instances of it
 have been removed from the core Inform extensions, and it is now considered
 deprecated.
+
+### A note about DICT_WORD_SIZE
+
+The Inform 6 compiler option `DICT_WORD_SIZE` controls the resolution of
+words in the command parser's dictionary: for example, if this is 6, then
+it looks only at the first six letters of each word, so that GET VELVET and
+GET VELVETEEN look like the same command. By default, it is 6 on Z-machine
+and 9 on Glulx, but on Glulx it can be raised.
+
+While this could be handled with:
+
+	Use Inform 6 compiler option "$DICT_WORD_SIZE=12".
+
+that would be misleading, because in fact this constant is relevant whatever
+the target compiler is: for example, it affects C output.
+
+Because of this, attempts to set `DICT_WORD_SIZE` are now rejected with a
+problem message:
+
+	You wrote 'Use Inform 6 compiler option "$DICT_WORD_SIZE=12"' (source
+    text, line 3): but the Inform 6 memory setting 'DICT_WORD_SIZE' should no
+    longer be used, and instead you should write 'Use dictionary resolution of
+    N' to set the number of letters recognised in a word typed in a command
+    during play.
+
+As this explains, the correct thing to do is to use a new use option in Basic
+Inform:
+
+	Use dictionary resolution of 12.
+
+This then works regardless of the target compiler, as it should.
 
 ### Debugging log
 

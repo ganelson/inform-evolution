@@ -4,9 +4,9 @@
 * Discussion PR link: [#19](https://github.com/ganelson/inform-evolution/pull/19)
 * Authors: Andrew Plotkin
 * Language feature name: --
-* Status: Accepted in principle
+* Status: Accepted
 * Related proposals: [IE-0005](0005-removing-translates-into-unicode.md)
-* Implementation: In progress
+* Implementation: Implemented but unreleased
 
 ## Summary 
 
