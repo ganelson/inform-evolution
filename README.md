@@ -32,7 +32,7 @@ This repository was made public on 30 July 2022, and was described at
 ## List of proposals
 
 Proposal                                                                                                 | Began           | Status                     | Comments
--------------------------------------------------------------------------------------------------------- | --------------- | -------------------------- | -------
+-------------------------------------------------------------------------------------------------------- | --------------- | -------------------------- | --------
 [(IE-0001) Directory format for extensions with resources](proposals/0001-extensions-with-resources.md)  | 1 May 2022      | In progress                | [PR#1](https://github.com/ganelson/inform-evolution/pull/1)
 [(IE-0002) Automatic gitignores for Inform projects](proposals/0002-inform-project-gitignores.md)        | 1 May 2022      | Implemented but unreleased | [PR#2](https://github.com/ganelson/inform-evolution/pull/2)
 [(IE-0003) Dividing source text into multiple files](proposals/0003-multiple-source-files.md)            | 1 May 2022      | Implemented but unreleased | [PR#3](https://github.com/ganelson/inform-evolution/pull/3)
@@ -44,7 +44,7 @@ Proposal                                                                        
 [(IE-0009) Dialogue sections](proposals/0009-dialogue-sections.md)                                       | 21 July 2022    | Implemented but unreleased | [PR#9](https://github.com/ganelson/inform-evolution/pull/9)
 [(IE-0010) Concepts](proposals/0010-concepts.md)                                                         | 21 July 2022    | Implemented but unreleased | [PR#10](https://github.com/ganelson/inform-evolution/pull/10)
 _(IE-0011) New data structures_ (still drafting: see pull request)                                       | --              | Drafting                   | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
-_(IE-0012) A new GlkKit_ (still drafting: see pull request)                                              | --              | Drafting                   | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
+[(IE-0012) Glk foundations](proposals/0012-glk-foundations.md)                                           | 23 Sept 2022    | In progress                | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
 [(IE-0013) Annotations for kit linking](proposals/0013-annotations-for-kit-linking.md)                   | 10 October 2022 | Implemented but unreleased | [PR#13](https://github.com/ganelson/inform-evolution/pull/13)
 [(IE-0014) Inter names for rulebooks](proposals/0014-inter-names-for-rulebooks.md)                       | 23 October 2022 | Implemented but unreleased | [PR#14](https://github.com/ganelson/inform-evolution/pull/14)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023 | In progress                | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
