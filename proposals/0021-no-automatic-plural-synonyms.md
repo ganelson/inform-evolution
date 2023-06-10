@@ -6,7 +6,7 @@
 * Language feature name: --
 * Status: Accepted in principle
 * Related proposals: --
-* Implementation: In progress
+* Implementation: Implemented but unreleased
 
 ## Summary
 
