@@ -10,7 +10,7 @@
 
 ## Summary
 
-Incorporate code from the Glulx Entry Points and other extensions.
+Incorporate code from the extension Glulx Entry Points.
 
 ## Motivation
 
@@ -63,14 +63,6 @@ This extension replaces the convoluted multiple phase-based GGRecoverObjects/Ide
 ### [Glk Events](https://github.com/i7/extensions/blob/9.3/Dannii%20Willis/Glk%20Events.i7x)
 
 This extension is an alternative to the original I6 HandleGlkEvent API inherited by I7 and GEP. One of the main flaws with that API is that the HandleGlkEvent hook is only called by the three standard input functions: VM_KeyChar, VM_KeyDelay, and VM_ReadKeyboard. If something else (usually an extension) ever calls glk_select by itself then the hook won't be called. So what this extension does instead is intercept calls to `glk_select`. This means the author (or extension authors) has a single place to handle all events, including converting events from one type to another, cancelling the event (convert it to a null event), etc.
-
-### [Alternative Startup Rules](https://github.com/i7/extensions/blob/9.3/Dannii%20Willis/Alternative%20Startup%20Rules.i7x)
-
-This extension is the result of my belief that the standard I7 startup code seems somewhat poorly organised. In particular, despite the existence of the starting the virtual machine activity, a bunch of actions are put into the startup rules. So this extension shifts them into the appropriate stages of the starting the virtual machine activity. In particular, the before rules should not use any IO functions (it doesn't do anything to catch errors printed at that stage, though as discussed in earlier emails that would probably be a good idea, and wouldn't actually be very hard to add.) The for rules are for setting up IO systems, and the after rules is a good place for low level miscellaneous startup stuff, including a good place for extensions to place their code. The startup rules can then be more for the author's own code. And splitting up the rules into the three activity rules also means that less needs to be done to order them manually, as they'll have a natural ordering.
-
-It also breaks up VM_Initialise which does 5 separate tasks, some of which an extension might want to replace without touching the others.
-
-The relevant parts of 10.1 have changed significantly since 6M62 so it can't simply be incorporated, but the principles of where to place rules should be followed for all the current rules.
 
 ### GEP leftovers
 
