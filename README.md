@@ -11,7 +11,7 @@ number bump), or implementation changes on any large scale, should always
 now begin with a proposal document on this repository.
 
 - Proposals are numbered IE-0001, IE-0002, ... in order of creation. They
-are unlikely to be implemented in numerical order.
+will not always be implemented in numerical order.
 - The baseline design is Inform version 10.1.0.
 - Any change to the Inform design visible to users (and causing a minor or
 major version number bump) should be related to a proposal here.
@@ -53,3 +53,4 @@ _(IE-0011) New data structures_ (still drafting: see pull request)              
 [(IE-0018) Use options and kit configuration](proposals/0018-use-options-and-kit-configuration.md)       | 2 May 2023      | Implemented but unreleased | [PR#18](https://github.com/ganelson/inform-evolution/pull/18)
 [(IE-0019) Unicode command parser](proposals/0019-unicode-command-parser.md)                             | 15 May 2023     | Implemented but unreleased | [PR#19](https://github.com/ganelson/inform-evolution/pull/19)
 [(IE-0021) No automatic plural synonyms use option](proposals/0021-no-automatic-plural-synonyms.md)      | 7 June 2023     | Implemented but unreleased | [PR#21](https://github.com/ganelson/inform-evolution/pull/21)
+[(IE-0022) Tidying the startup sequence](proposals/0022-startup.md)                                      | 11 June 2023    | In progress                | [PR#22](https://github.com/ganelson/inform-evolution/pull/22)
