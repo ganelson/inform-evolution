@@ -60,6 +60,9 @@ was also helpful. See in particular the new section `Startup.i6t` of `BasicInfor
 which gives functions used when the program starts up in a Basic Inform project:
 in a non-Basic project, different functions found in `WorldModelKit` replace
 those functions.
+* A new architectural constant, `CHARSIZE`, is now defined whenever a kit is
+being built. Analogous to `WORDSIZE`, it has the value 1 in the 16-bit architecture,
+and 4 in 32-bit, where `CHARSIZE` equals `WORDSIZE`.
 
 ## New style convention for writing kit code
 
@@ -68,18 +71,18 @@ were only ever two possible targets: the Z-machine VM, or the Glulx VM. This
 is no longer quite true, and it is better to think of two different architectures.
 Compiling to C has the same architecture as compiling to Glulx, but it is not
 actually the same thing as Glulx. Because of that, conditionally compiling on
-the symbols |TARGET_ZCODE| and |TARGET_GLULX| is not ideal. Instead we now
+the symbols `TARGET_ZCODE` and `TARGET_GLULX` is not ideal. Instead we now
 follow the following convention. It should be emphasized that these all have
 the same *effect*, so the difference is just a signal to the reader of the
 source code:
-* Use |#Iftrue (WORDSIZE == 2);| for general economy measures needed when
+* Use `#Iftrue (WORDSIZE == 2);` for general economy measures needed when
 we run in a 16-bit machine with limited memory - smaller arrays, less
 stack space, and so on.
-* Use |#Iftrue (CHARSIZE == 1);| to distinguish the version of the command
+* Use `#Iftrue (CHARSIZE == 1);` to distinguish the version of the command
 parser which writes characters into single bytes from the one which uses
-words for characters, and accommodates much more of Unicode, where |CHARSIZE|
-equals |WORDSIZE|.
-* Use |#Ifdef TARGET_ZCODE;| as little as possible, and only when genuinely
+words for characters, and accommodates much more of Unicode, where `CHARSIZE`
+equals `WORDSIZE`.
+* Use `#Ifdef TARGET_ZCODE;` as little as possible, and only when genuinely
 using some feature of the Z-machine architecture not found in Glulx.
 
 ## Marking activities to omit them from RULES output
