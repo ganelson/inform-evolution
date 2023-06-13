@@ -52,31 +52,45 @@ None, since this feature is entirely additive.
 
 The new phrases are:
 
-- start index of the/-- text match ... number
-- final index of the/-- text match ... number
+- first index of the/-- text match ... number
+- last index of the/-- text match ... number
 - length of the/-- text match ... number
-- start index of subexpression (number) ... number
-- final index of subexpression (number) ... number
+- first index of subexpression (number) ... number
+- last index of subexpression (number) ... number
 - length of subexpression  (number) ... number
 
-Every text (including "") matches the text "". In this case, the start index,
-final index, and length are all 0.
+After `if "shinto" matches the text "hint"`, `first index of the text match`
+would be 2, and `last index of the text match` would be 5, i.e., these are
+the same 1-indexed values one would use with `character number <n> of <t>`
+to get "h" and "t" in "shinto".
+
+Every text, including the empty text "", matches the text "". In this case,
+the first index, last index, and length are all 0. This is the only case where
+any of those would be 0 following a successful text match.
+
+Following `if "educate" matches the regular expression "du(cat)"` the `first
+index of subexpression 1` would be 4 and `the last index of subexpression 1`
+would be 6. The `first index of subexpression 0` would be 2; `the last index
+of subexpression 0` would also be 6. (The documentation will reveal that
+subexpression 0 can be used to mean the whole of the text matching the regexp,
+including what was outside of any capture groups: this was already true, but
+undocumented.)
 
 In many languages (Perl, Python, Ruby, Javascript), any string matches an
 empty regular expression; Inform hews to the arguably more correct position
-that only the empty string matches the empty regular expression. They all
-agree that only the empty string matches `^$`. If the empty string successfully
-matches any regular expression, the results for start index, final index,
-and length are all 0.
+that only the empty string matches the empty regular expression. If the empty
+string successfully matches *any* regular expression, the results for first index,
+last index, and length of subexpression 0 will all be 0.
 
-Any text will match the regular expression `(?:)`; the resulting start index,
-final index, and length are all 0 for that case. But in the general case
-for non-empty texts, the values will all be 1 or more, as one would expect
-given Inform's 1-indexed texts.
+Unlike with the text match case, it is possible for the results to all be 0
+when a non-empty text successfully matches a regular expression. For instance,
+`if "Q*bert" matches the regular expression "x?"` is true, and subsequent to
+it, first index, last index, and length of subexpression 0 will be 0.
 
-The documentation will reveal that subexpression 0 can be used to mean the
-whole of the text matching the regexp, outside of any capture groups. (This
-was already true, but undocumented.)
+Subsequent to any successful text or regular expression matches, it should
+always be the case that either all of the values for first index, last index,
+and length should be 0, or that none of them are. In the non-zero case, the
+length is always the 1 + the last index - the first index.
 
 As with `text matching the regular expression` or `text matching subexpression
 <n>`, these phrases should be invoked immediately after a successful match: the
