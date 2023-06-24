@@ -4,7 +4,7 @@
 * Discussion PR link: [#25](https://github.com/ganelson/inform-evolution/pull/25)
 * Authors: Graham Nelson
 * Language feature name: --
-* Status: Draft
+* Status: Implemented but unreleased
 * Related proposals: --
 * Implementation: Implemented but unreleased
 
