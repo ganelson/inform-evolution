@@ -40,6 +40,9 @@ Peter Bates for their comments. Relevant Jira issues include:
 
 * [I7-2220 on the definition of holding](https://inform7.atlassian.net/browse/I7-2220)
 * [I7-2219 on directions being held](https://inform7.atlassian.net/browse/I7-2219)
+* [I7-2211 on world model violations](https://inform7.atlassian.net/browse/I7-2211)
+* [I7-2046 on output for containers with concealed contents](https://inform7.atlassian.net/browse/I7-2046)
+* [I7-2036 on examining things with concealed contents](https://inform7.atlassian.net/browse/I7-2036)
 
 This is an incomplete draft, but what is described below is implemented on
 the `master` branch of the repository. These features are not in any release
@@ -73,10 +76,10 @@ but we have to recognise a trade-off. Authors do sometimes use the ability of
 objects to contain each other (outside of the spatial model) for abstract
 purposes we don't want to prohibit. So changes must be made cautiously.
 
-At present no change in this proposal affects any test case in the Inform
-test suite other than for indexing. (The test cases `Index-Tokens` and
-`Index-Relations` are affected because they describe the kinds of the terms
-in the spatial relationships.)
+The changes described below regarding output for supporters or containers all of
+whose contents are concealed altered the output for the "Undescribed" test case.
+(Additionally, the test cases `Index-Tokens` and `Index-Relations` are affected
+because they describe the kinds of the terms in the spatial relationships.)
 
 ## Consistency
 
@@ -899,20 +902,51 @@ touch a direction.
 ## The concealment relation
 
 This is a relatively simple relation, since it can be tested but not asserted.
+Concealment has no backdrop or door issues since neither can be concealed, nor can
+conceal.
 
 ### Infelicities in Inform 10.1
 
-This one seems to have been well-defined in 10.1, and it has no backdrop or
-door issues since neither can be concealed, not can conceal.
+When listing inventory, if a player had a container or supporter with concealed
+contents, those contents were listed but were *not* in scope.
+
+Output between truly empty containers or supporters and those which held one or
+more concealed items differed in several places, constituting "tells" of the
+existence of the concealed item:
+
+* a falsely empty scenery supporter would get a locale paragraph to say "On
+(the supporter) is nothing"; a truly empty one wouldn't get a paragraph
+* in room descriptions, a truly empty container would be tagged "(empty)"; a
+falsely empty one wouldn't
+* opening a truly empty container yielded "You open (the container)"; opening
+a falsely empty one would add ", revealing nothing"
+* the default message on examining a truly empty container was "(The container)
+is empty" or, for a truly empty supporter, "You see nothing special about (the
+supporter)"; for a falsely empty receptacle, it would be "In/on (the receptacle)
+is nothing"
+* when entering a falsely empty supporter or container, subsequent to the "You
+get into/onto..." message, you would be told "In/on (the receptacle) you can
+see nothing"
+* upon searching a truly empty container, the output was "(The container) is
+empty" or, for a truly empty supporter, "There is nothing on (the supporter)";
+for a falsely empty receptacle, the output was "In/on (the receptacle) is
+nothing"
 
 ### Improvements
 
-None.
+The concealed contents of things the player has are omitted from inventory.
+
+The output for falsely empty things matches the output for truly empty ones.
 
 ### New specification
 
 The following should be now true:
 
+* While it continues to be the case that a player is aware of all the things they
+directly carry or wear, it is no longer guaranteed that the player is aware of all
+the things they *enclose*.
+* The default output for actions on falsely empty receptacles is consistent with
+that for actions on truly empty ones.
 * Concealment is a consistent relation defined over the kinds `thing` and `thing`.
 * `X conceals Y.` cannot be asserted.
 * If `if X conceals Y` is true then both `X` and `Y` are spatial objects.
@@ -924,3 +958,8 @@ possessions activity says that it's concealed.
 Note that although this is almost always used with `X` being a person, there's
 no requirement for that: containers and supporters can also conceal things.
 (Rooms however cannot, since rooms are not things.)
+
+There continues to be a potential tell of concealed items in that they continue to
+count against carrying capacity. This is deemed to be the appropriate default
+behaviour; how or whether to deal with that situation is left to the individual
+author.
