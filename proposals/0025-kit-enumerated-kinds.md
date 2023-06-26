@@ -85,6 +85,11 @@ would create `green` and `taupe` with values 1 and 2. This:
 
 creates the values as 10, 11, 20, 21.
 
+Values can alternatively be given in Inform 6 hexadecimal or binary notation:
+
+		instance: cerise = CERISE_COL = $1f0
+		instance: hue mask = HUE_MASK = $$1110001
+
 ### Referring to enumerated values in Inform source text
 
 The effect is that if Inform compiles a project using this extension, then
