@@ -4,9 +4,8 @@
 * Discussion PR link: [#22](https://github.com/ganelson/inform-evolution/pull/22)
 * Authors: Dannii Willis
 * Language feature name: None
-* Status: In progress
+* Status: Implemented but unreleased
 * Related proposals: None
-* Implementation: None
 
 ## Summary
 
@@ -75,7 +74,13 @@ A new function `Startup` will be added, which will do two things: run an Archite
 
 The startup sequence would be reorganised according to these principles:
 
-1. As much as possible, it should be consistent between regular Inform and Basic Inform. The only (startup) function with alternative implementations should be `Main`. If regular Inform needs to setup more systems, then it should do so with additional rules, rather than adding code to a function of the same name from Basic Inform.
+1. Differences between regular Inform and Basic Inform should be minimised. But when regular Inform needs to do something that Basic Inform doesn't, there are three options:
+
+    - Do it in a new rule
+    - Replace a rule from Basic Inform with a new rule
+    - Wrap the rule's function, with a `replace(keeping)(from BasicInformKit)` directive, so that the original function can still be called
+
+    Each of these are appropriate choices for different situations.
 
 2. Giant functions should be avoided, instead each function or rule should have one thing that it implements. (In the sense that Glk windows and streams need separate rules, but not that each global variable needs to be initialised in its own rule, related globals can be initialised together.)
 
