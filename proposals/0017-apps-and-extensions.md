@@ -230,17 +230,23 @@ a file provided in the core Inform distribution which simply tells the user that
 
 Secondly, within webviews displayed by the app (the Index, Problem messages, the Extensions index, and so on), the apps intercept URL links like this one:
 
-	inform://Extensions/Documentation/Aaron%20Reed/Poor%20Man%27s%20Mistype/index.html
+	inform:/Extensions/Reserved/Documentation/Emily%20Short/Postures/index.html
 
 and send those to an HTML page in the materials area:
 
-	MATERIALS/Extensions/Documentation/Aaron Reed/Poor Man's Mistype/index.html
+	MATERIALS/Extensions/Reserved/Documentation/Emily Short/Postures/index.html
 
-Thus, any URL prefixed `inform://Extensions/` should be redirected to `MATERIALS/Extensions/`.
+Thus, any URL prefixed `inform:/Extensions/` should be redirected to `MATERIALS/Extensions/` and opened as a file link.
+
+For example, the Extensions home page looks something like this for a project which has installed two extensions but is currently using only one:
+
+![Typical Extensions home page](./images/IE0017-in6.png)
+
+As before, it's important for the app to reload these pages rather than cache them, because they are dynamically rewritten when compilations or installations take place.
 
 Again, fall back on the above page if no such file exists.
 
-(In principle, `inbuild` could now choose to generate `file://...` links rather than `inform://...` ones, but such links would break if the user moved the project around in the file system, so let's keep the `inform://Extensions/` logic for the moment, but simply move it to the materials area.)
+(In principle, `inbuild` could now choose to generate `file:` links rather than `inform:` ones, but such links would break if the user moved the project around in the file system, so let's keep the `inform:` logic for the moment, but simply move it to the materials area.)
 
 ### Legacy issues
 
@@ -270,6 +276,78 @@ operation of `-external` has not changed.
 If the project includes an extension from a nest marked as `-deprecated-external`, the extension will work exactly as normal (though documentation on it will continue to be stored the new way). Nothing which previously compiled will now fail to compile.
 
 However, the Results pages from compilations will contain warnings that the project is using extensions from the deprecated area, and prompting the user to install them into the project instead, at which point the warnings go away.
+
+#### Coping with the loss of census mode
+
+As noted above, the apps used to call `inform7` to perform a census of the legacy extensions area from time to time, to keep the documentation and its indexes up to date. They should now never do so. Attempts to call:
+
+	inform7 -census-update
+	inform7 -no-census-update
+	inbuild -census
+	inbuild -no-census
+
+now result in a message such as:
+
+	(ignoring -census-update and -no-census-update, which have been withdrawn)
+
+but do not yet halt with an error. In some future release, they will be removed altogether.
+
+The MacOS app in fact used census mode for its own purposes, too, parsing the printed output in order to populate some submenus. What it now does is to call
+
+	inbuild/Tangled/inbuild  -inspect -recursive -contents-of AREA -json FILE
+
+where `AREA` is the directory of legacy extensions (or whatever else it wants to look at), and `FILE` is a filename for a JSON file to write. If this is a hyphen, `-`, then the JSON is output to `stdout` instead, and can thus be piped to other Unix tools.
+
+The JSON file contains search results for what `inbuild` found inside `AREA`. Formally, this complies with the requirements in
+
+	inform7/Internal/Miscellany/inbuild.jsonr
+
+Briefly, though, it looks something like this:
+
+	{
+		"inspection": [ {
+			"resource": {
+				"type": "extension",
+				"title": "Commonly Unimplemented",
+				"author": "Aaron Reed",
+				"version": "2"
+			},
+			"location-file": "/Users/gnelson/Library/Inform/Extensions/Aaron Reed/Commonly Unimplemented.i7x"
+		}, {
+			"resource": {
+				"type": "extension",
+				"title": "Locksmith",
+				"author": "Emily Short",
+				"version": "14"
+			},
+			"location-file": "/Users/gnelson/Library/Inform/Extensions/Emily Short/Locksmith.i7x"
+		} ]
+	}
+
+That is, the file contains a single object. Inspection results are in the member `inspection`, which is an array (i.e., a JSON list) of result objects. Each result always has `resource`, identifying what has been found, and exactly one of `location-file` or `location-directory`.
+
+If `inbuild` found errors in scanning the object, a list of these as strings appears as the field `errors`:
+
+		{
+			"resource": {
+				"type": "extension",
+				"title": "When To The Sessions Of Sweet Silent Thought I Conjure Up",
+				"author": "Araminta Intest"
+			},
+			"errors": [ "title too long: 57 characters (max is 51)" ],
+			"location-file": "/Users/gnelson/Library/Inform/Extensions/Araminta Intest/When To The Sessions Of Sweet Silent Thought I Conjure Up.i7x"
+		}
+
+The `resource` contains up to four fields: `type` and `title` are mandatory, `author` is mandatory for extensions but not for some other genres of resource, and `version` exists if and only if the resource has a version number. (Extensions should, but do not always.) The `type` is at present one of these:
+
+	kit
+	extension
+	language
+	project
+	pipeline
+	template
+
+Note that the way to tell an extension stored in directory form from one stored in traditional file form is to see whether it has a `location-file` or a `location-directory`.
 
 ### Public Library downloading features
 
