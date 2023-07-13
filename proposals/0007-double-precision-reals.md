@@ -105,7 +105,7 @@ will become:
 
 	[ REAL_NUMBER_TY_Sin in out;
 		@dload in sp sp;
-		@dsin sp sp sp sp; 
+		@dsin sp sp sp sp;
 		@dstore out sp sp;
 		return out;
 	];
