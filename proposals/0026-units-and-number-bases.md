@@ -42,7 +42,7 @@ number bases might have names clashing with user-defined phrases.
 rephrase.
 * Authors who define notations including angle brackets will now have to escape
 those, which will mean a small but easy one-line change.
-* A bug in Inform 11 caused (decimal) literal numbers with leading zeros to be
+* A bug in Inform 10 caused (decimal) literal numbers with leading zeros to be
 valid as literal values of `number`: thus `00001` was read as `1`. This bug has
 been fixed, but it is halfway conceivable that somebody may have relied on the
 old behaviour. If so, they'll find a problem message and an easy fix.
@@ -114,7 +114,7 @@ For example, the output of this Basic Inform program:
 	number: 127
 	text: 177
 
-## Units with number bases
+## Units with number bases
 
 ### Recap
 
