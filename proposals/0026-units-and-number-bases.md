@@ -304,8 +304,8 @@ squares `a1` to `h8`? A devious option would be:
 
 	A chessboard square is a kind of value.
 	<file><rank> specifies a chessboard square with parts
-		file (1 octal digit,
-		digits "abcdefgh") and rank (1 to 8).
+		file (1 octal digit, digits "abcdefgh") and
+		rank (1 to 8).
 
 But this is not ideal. We would find that `file part of a1` was 0, whereas
 `rank part of a1` was 1: it seems clumsy to number files from 0 and ranks from 1.
@@ -443,17 +443,17 @@ are normally given "tail numbers" like this:
 
 	A tail number is a kind of value.
 	Aircraft <country>-<first><second><third><fourth> specifies a tail number
-	with parts country (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
-	Q, R, S, T, U, V, W, X, Y, Z", corresponding to the international aviation
-	alphabet), first (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q,
-	R, S, T, U, V, W, X, Y, Z", corresponding to the international aviation
-	alphabet), second (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
-	Q, R, S, T, U, V, W, X, Y, Z", corresponding to the international aviation
-	alphabet), third (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q,
-	R, S, T, U, V, W, X, Y, Z", corresponding to the international aviation
-	alphabet) and fourth (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O,
-	P, Q, R, S, T, U, V, W, X, Y, Z", corresponding to the international
-	aviation alphabet).
+	with parts
+		country (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
+			corresponding to the international aviation alphabet),
+		first (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
+			corresponding to the international aviation alphabet),
+		second (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
+			corresponding to the international aviation alphabet),
+		third (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
+			corresponding to the international aviation alphabet), and
+		fourth (values "A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z",
+			corresponding to the international aviation alphabet).
 
 This is all a little clumsy and repetitious, but no matter, because now we
 can write assertions like:
