@@ -282,8 +282,9 @@ As an example of named parts:
 
 	CSS colour is a kind of value.
 	#<red level><green level><blue level> specifies a CSS colour with parts
-	red level (2 hexadecimal digits), green level (2 hexadecimal digits)
-	and blue level (2 hexadecimal digits).
+		red level (2 hexadecimal digits),
+		green level (2 hexadecimal digits) and
+		blue level (2 hexadecimal digits).
 
 This enables constants like `#4169E1`, royal blue, to be written, understood
 and parsed back.
@@ -302,16 +303,18 @@ How to achieve this, making an Inform kind whose values are exactly the 64
 squares `a1` to `h8`? A devious option would be:
 
 	A chessboard square is a kind of value.
-	<file><rank> specifies a chessboard square with parts file (1 octal digit,
-	digits "abcdefgh") and rank (1 to 8).
+	<file><rank> specifies a chessboard square with parts
+		file (1 octal digit,
+		digits "abcdefgh") and rank (1 to 8).
 
 But this is not ideal. We would find that `file part of a1` was 0, whereas
 `rank part of a1` was 1: it seems clumsy to number files from 0 and ranks from 1.
 The following would fix that, but hardly seems elegant:
 
 	A chessboard square is a kind of value.
-	<file><rank> specifies a chessboard square with parts file (1 to 8,
-	digits "0abcdefgh9") and rank (1 to 8).
+	<file><rank> specifies a chessboard square with parts
+		file (1 to 8, digits "0abcdefgh9") and
+		rank (1 to 8).
 
 where, of course, the digits `0` and `9` can never be needed for the file,
 because its range is constrained as `1 to 8`.
@@ -319,8 +322,9 @@ because its range is constrained as `1 to 8`.
 This is tidier:
 
 	A chessboard square is a kind of value.
-	<file><rank> specifies a chessboard square with parts file
-	(values "a, b, c, d, e, f, g, h") and rank (1 to 8).
+	<file><rank> specifies a chessboard square with parts
+		file (values "a, b, c, d, e, f, g, h") and
+		rank (1 to 8).
 
 The file part is automatically constrained as 1 to 8 because there are 8
 notations in the text `"a, b, c, d, e, f, g, h"`: this is a comma-separated
@@ -337,7 +341,6 @@ The following little game works with any of the three definitions above:
 	Capablanca's Dining Room is a room.
 
 	When play begins:
-		say "Chess test...";
 		showme c4;
 		showme d7;
 		repeat with S running from a1 to h8:
@@ -379,10 +382,11 @@ Which all works as expected:
 The descriptive English notation would also be possible:
 
 	A chessboard square is a kind of value.
-	<file><rank> specifies a chessboard square with parts file
-	(values "QR, QN, QB, Q, K, KB, KN, KR") and rank (1 to 8).
+	<file><rank> specifies a chessboard square with parts
+		file (values "QR, QN, QB, Q, K, KB, KN, KR") and
+		rank (1 to 8).
 
-But since quaint feature of descriptive notation is that the square which
+But since a quaint feature of descriptive notation is that the square which
 White calls KB2 is the square Black calls KB7, and we cannot know who is
 asking, we had probably better avoid that.
 
@@ -401,9 +405,9 @@ correspond to something other than a number. Here is yet another definition:
 	the fifth rank, the sixth rank, the seventh rank, the eighth rank.
 
 	A chessboard square is a kind of value.
-	<file><rank> specifies a chessboard square with parts file
-	(values "a, b, c, d, e, f, g, h", corresponding to chessboard files) and
-	rank (1 to 8, corresponding to chessboard ranks).
+	<file><rank> specifies a chessboard square with parts
+		file (values "a, b, c, d, e, f, g, h", corresponding to chessboard files) and
+		rank (1 to 8, corresponding to chessboard ranks).
 
 We now find that, for example:
 
@@ -471,8 +475,8 @@ that the Sun was indeed a star, found a way to sort stars by their spectra,
 that is, by the blend of colours of light with which they shone. He used:
 
 	A stellar type is a kind of value.
-	Secchi class <class> specifies a stellar type with parts class (values
-	"I, II, III, IV, V, VI, VII").
+	Secchi class <class> specifies a stellar type with parts
+		class (values "I, II, III, IV, V, VI, VII").
 
 At Harvard, Henry Draper and, more particularly, Edward Pickering carried out
 a larger survey and subdivided Secchi's classes so that there were now letters 
@@ -503,10 +507,11 @@ Modern stellar classification is a combination:
 	dwarf.
 
 	A stellar type is a kind of value. <class><temperature><luminosity> specifies a
-	stellar type with parts class (values "O, B, A, F, G, K, M", corresponding to
-	temperature classes), temperature (1 decimal digit, corresponding to a real
-	number) and luminosity (values "0, Ia, Iab, Ib, II, III, IV, V, VI, VII",
-	corresponding to luminosity classes).
+	stellar type with parts
+		class (values "O, B, A, F, G, K, M", corresponding to temperature classes),
+		temperature (1 decimal digit, corresponding to a real number) and
+		luminosity (values "0, Ia, Iab, Ib, II, III, IV, V, VI, VII", corresponding
+			to luminosity classes).
 
 In fact this is still a simplification because people sometimes subdivide
 the number further or add "peculiarity" suffixes like `He wk`, or add extreme
@@ -520,11 +525,11 @@ Here's a smaller survey:
 	by the Table of Astral Survey Work.
 
 	Table of Astral Survey Work
-	name				stellar type
+	name			stellar type
 	S Monocerotis		O7V
-	Rigel				B8Ia
-	Deneb				A2Ia
-	Zeta Leonis			F0III
+	Rigel			B8Ia
+	Deneb			A2Ia
+	Zeta Leonis		F0III
 	Beta Aquilae		G8IV
 	Epsilon Eridani		K2V
 	Herschel's Garnet	M2Ia
@@ -588,17 +593,18 @@ which plays as follows:
 The Ordnance Survey National Grid reference system (OSGB) was developed in 1936
 for the great retriangulation, which led to the building of many concrete pillars
 on British hilltops and to today's maps. The full range of values is enormous,
-since OSGB can specify any point of in the British Isles to an accuracy of 1m.
-Fortunately, we only want to use positions in the town of Oxford, occupying
-only a portion of square `SP`. So:
+since OSGB can specify any point in the British Isles to an accuracy of 1m.
+Fortunately, we only want to use positions in the town of Oxford, which sits
+fully inside a modest rectangular portion of square `SP`. So:
 
 	Length is a kind of value. 1.0m specifies a length. 1.0km specifies a length
 	scaled up by 1000. Area is a kind of value. 1.0 sq m specifies an area. A length
 	times a length specifies an area.
 
 	Grid reference is a kind of value. SP <easting> <northing> specifies a grid
-	reference with parts easting (45000 to 54999, corresponding to lengths) and
-	northing (5 digits, 3000 to 8999, corresponding to lengths).
+	reference with parts
+		easting (45000 to 54999, corresponding to lengths) and
+		northing (5 digits, 3000 to 8999, corresponding to lengths).
 
 	A room has a grid reference called map position.
 
