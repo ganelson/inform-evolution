@@ -509,6 +509,8 @@ values to look for matches against conditions. For example, given:
 		if file parity is rank parity, no;
 		yes.
 
+...we can write, e.g., `list of white chessboard squares`.
+
 ### A draft example: Harvard star classifications
 
 In 1866 the Italian priest Angelo Secchi, having determined for the first time
