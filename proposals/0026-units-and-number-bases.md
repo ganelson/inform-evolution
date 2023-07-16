@@ -468,6 +468,47 @@ which prints out as:
 
 	Hello Shanwick, this is Golf Echo Romeo Tango India.
 
+### Finite domains
+
+For the first time, kinds specified by notation can have a finite range. (Well,
+in a sense all numbers in a computer must be finite, but let's ignore that.)
+In Inform v10 and earlier, because the first part of a notation was always
+unbounded in size - it could range up to whatever would fit in a single word
+value at runtime - the range of values which could be expressed was finite.
+
+But in v11, definitions such as:
+
+	A chessboard square is a kind of value.
+	<file><rank> specifies a chessboard square with parts
+		file (values "a, b, c, d, e, f, g, h") and
+		rank (1 to 8).
+
+can result in finite domains, as this one does. With 8 possible files and
+8 possible ranks, there are only 64 possible values.
+
+For such domains it is now possible to loop over them, or count them, or
+take random members of them, and so on. Thus:
+
+	"number of chessboard squares" = number: 64
+	"list of chessboard squares" = list of chessboard squares: {a1, a2, a3, a4,
+	a5, a6, a7, a8, b1, b2, b3, b4, b5, b6, b7, b8, c1, c2, c3, c4, c5, c6, c7,
+	c8, d1, d2, d3, d4, d5, d6, d7, d8, e1, e2, e3, e4, e5, e6, e7, e8, f1, f2,
+	f3, f4, f5, f6, f7, f8, g1, g2, g3, g4, g5, g6, g7, g8, h1, h2, h3, h4, h5,
+	h6, h7, h8}
+	"a random chessboard square" = chessboard square: c7
+
+and repeat loops such as `repeat with S running through chessboard squares`
+are now possible, as are implicit loops which involve searching through
+values to look for matches against conditions. For example, given:
+
+	Definition: a chessboard square is white rather than black:
+		let F be the file part of it;
+		let file parity be whether or not F is the a-file or F is the c-file or F is the e-file or F is the g-file;
+		let R be the rank part of it;
+		let rank parity be whether or not R is the first rank or R is the third rank or R is the fifth rank or R is the seventh rank;
+		if file parity is rank parity, no;
+		yes.
+
 ### A draft example: Harvard star classifications
 
 In 1866 the Italian priest Angelo Secchi, having determined for the first time
