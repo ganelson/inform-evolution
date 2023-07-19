@@ -481,7 +481,7 @@ Use option                        | Previously set                       | Now s
 ineffectual                       | (nothing)                            | (nothing)
 index figure thumbnails           | `MAX_FIGURE_THUMBNAILS_IN_INDEX`     | (nothing)
 engineering notation              | `USE_E_NOTATION`                     | (nothing)
-telemetry recordings              | `TELEMETRY_ON`                       | (nothing)
+telemetry recordings              | `TELEMETRY_ON`                       | (removed entirely)
 no deprecated features            | `NO_DEPRECATED_FEATURES`             | ``BasicInformKit`NO_DEPRECATED_CFGF``
 dynamic memory allocation         | `DynamicMemoryAllocation`            | ``BasicInformKit`STACK_FRAME_CAPACITY_CFGV``
 maximum text length               | `TEXT_TY_BufferSize` (1)             | ``BasicInformKit`TEXT_BUFFER_SIZE_CFGV``
@@ -619,7 +619,6 @@ In addition, a few others are declared as "compiler features" alone:
 
 	ineffectual
 	engineering notation
-	telemetry recordings
 	index figure thumbnails
 
 Of course, `Use ineffectual.` does nothing (it exists purely to be a default value
