@@ -1,6 +1,6 @@
 # (IE-0017) Apps and extensions
 
-* Proposal: [IE-0017](0017-TITLE.md)
+* Proposal: [IE-0017](0017-apps-and-extensions.md)
 * Discussion PR link: [#17](https://github.com/ganelson/inform-evolution/pull/17)
 * Authors: AUTHOR
 * Language feature name: --

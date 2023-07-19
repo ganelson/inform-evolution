@@ -70,11 +70,11 @@ None.
 The markup syntax is simple enough that it seems easiest to describe it in full,
 and just note where something is new.
 
-1. Trailing space is ignored. Any leading space is converted to an indentation depth,
+(1) Trailing space is ignored. Any leading space is converted to an indentation depth,
 in units of one tab equals four spaces, rounding down. Thus if a line begins with
 a tab, or begins with four spaces, it is considered indented by one tab stop.
 
-2. Unindented lines in certain formats are headings:
+(2) Unindented lines in certain formats are headings:
 
 	Chapter - Title
 	Chapter: Title
@@ -100,7 +100,7 @@ page, which is the only page.) In addition, each example generates its own
 HTML page. An extension with 6 documentation chapters and 11 examples therefore
 produces a miniature website of 18 HTML pages.
 
-3. Indented lines are code examples.
+(3) Indented lines are code examples.
 
 NEW: These are now syntax-coloured. Of course, different displayed pieces of
 code can have different meanings, and will not always be Inform source text.
@@ -135,14 +135,13 @@ changes the colouring language:
 `Inform 6`; `transcript`; and just plain `text`, where no syntax is coloured
 at all.
 
-4. If the opening line of a code example is marked with a `*: `, then `inbuild`
+(4) If the opening line of a code example is marked with a `*: `, then `inbuild`
 places a paste button there, which if clicked in the Inform app will paste
 the content of the code into the Source panel.
 
 NEW: If the next code example is marked `**: `, then this is considered a continuation
 of the code to be pasted. For example:
 
-	```
 	Try this:
 	
 		*: "The Heat-Death of the Universe"
@@ -150,26 +149,27 @@ of the code to be pasted. For example:
 	An overly dramatic title, but never mind.
 	
 		**. The Wyndham Theatre is a room.
-	```
 
 causes the paste button to appear just once, but to have content merging the
 two code samples together. (There can be any number of such, but they have to
 be consecutive.)
 
-5. NEW: An unindented line which begins `{defn}` or `{defn TAG}` begins a
+(5) NEW: An unindented line which begins `{defn}` or `{defn TAG}` begins a
 phrase description, which continues until a line which reads just `{end}`.
 These use the exact same syntax followed by the `Writing with Inform` source,
 so e.g.:
 
 	```
 	{defn ph_nearestwholenumber}(real number) to the nearest whole number ... number
-	This phrase performs signed addition on the given values, whose kinds must agree, and produces the result. Examples:
+	This phrase performs signed addition on the given values, whose kinds must
+	agree, and produces the result. Examples:
 	
 		1.4 to the nearest whole number = 1
 		1.6 to the nearest whole number = 2
 		-1.6 to the nearest whole number = -2
 	
-	We probably ought to bear in mind that the limited range of "number" means that the nearest whole number might not be all that near. For example:
+	We probably ought to bear in mind that the limited range of "number" means
+	that the nearest whole number might not be all that near. For example:
 	
 		6 x 10^23 to the nearest whole number = 2147483647
 	
@@ -177,7 +177,7 @@ so e.g.:
 	{end}
 	```
 
-The TAG is in theory for use in the Index to correlate phrases with their
+The `TAG` is in theory for use in the Index to correlate phrases with their
 documentation, but for now this does nothing with extension documentation.
 
 Phrase descriptions cannot be nested, and cannot contain headings.
