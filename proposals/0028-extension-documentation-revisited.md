@@ -122,7 +122,7 @@ changes the colouring language:
 
 	This example shows output rather than source code:
 	
-		(transcript)
+		{transcript}
 		> GET PYRAMID
 		The Great Pyramid of Giza is slightly oversized for your knapsack.
 	
