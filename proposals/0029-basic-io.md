@@ -5,7 +5,7 @@
 * Author: Dannii Willis
 * Language feature name: None
 * Status: Accepted
-* Related proposals: [IE-0017](0017-apps-and-extensions.m)
+* Related proposals: [IE-0017](0017-apps-and-extensions.md)
 
 ## Summary
 
@@ -14,7 +14,7 @@ Basic Screen Effects.
 
 ## Motivation
 
-As part of [IE-0017](0017-apps-and-extensions.m) the former built-in extensions
+As part of [IE-0017](0017-apps-and-extensions.md) the former built-in extensions
 have been removed. Most of them will be available in the Public Library, but
 [Basic Screen Effects](https://github.com/ganelson/inform/blob/r10.1/inform7/Internal/Extensions/Emily%20Short/Basic%20Screen%20Effects.i7x)
 is so close to essential that it was decided it would be better to just incorporate
