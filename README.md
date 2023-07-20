@@ -60,5 +60,4 @@ _(IE-0011) New data structures_ (still drafting: see pull request)              
 [(IE-0026) Units and number bases](proposals/0026-units-and-number-bases.md)                             | 13 July 2023    | In progress                | [PR#26](https://github.com/ganelson/inform-evolution/pull/26)
 [(IE-0027) Sorting with custom comparison phrases](proposals/0027-sorting-with-phrases.md)               | 20 July 2023    | In progress                | [PR#27](https://github.com/ganelson/inform-evolution/pull/27)
 [(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023    | In progress                | [PR#28](https://github.com/ganelson/inform-evolution/pull/28) 
-
-[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023    | Accepted                   | [PR#29](https://github.com/ganelson/inform-evolution/pull/29) 
+[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023    | Accepted                   | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
