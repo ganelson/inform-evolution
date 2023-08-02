@@ -248,6 +248,19 @@ Again, fall back on the above page if no such file exists.
 
 (In principle, `inbuild` could now choose to generate `file:` links rather than `inform:` ones, but such links would break if the user moved the project around in the file system, so let's keep the `inform:` logic for the moment, but simply move it to the materials area.)
 
+##### New install and uninstall Javascript calls
+
+The Extensions index page now sometimes includes buttons to install an extension (if it is used by a project but currently lives in the legacy area), or to uninstall an extension (if it is installed in a project but not currently used by it). These are displayed using arrow emoji, and are included in the key.
+
+They are hyperlinked to Javascript function calls as follows:
+
+	javascript:project().install("/Users/gnelson/Library/Inform/Extensions/Juhana%20Leinonen/Bulky%20Items.i7x")
+	javascript:project().uninstall("/Users/gnelson/work/Inform/Whatever.materials/Extensions/Juhana%20Leinonen/Svelte%20Items.i7xd")
+
+In response to `install(...)`, the app should behave as if the user had selected the menu item to install this extension.
+
+In response to `uninstall(...)`, the app should perform the exact same action, but with the inbuild option being `-uninstall` rather than `-install`, all other command-line switches being the same.
+
 ### Legacy issues
 
 As noted above, many users will have projects which want to use extensions they have stored only in their external areas. We need to find a graceful way to help users transition to the new arrangement.
