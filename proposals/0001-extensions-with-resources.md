@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
-* Related proposals: [IE-0016](0016-language-extensions-reform.md), [IE-0017](0017-apps-and-extensions.md)
+* Related proposals: [IE-0016](0016-language-extensions-reform.md), [IE-0017](0017-apps-and-extensions.md), [IE-0029](0029-extension-examples-and-testing.md)
 * Implementation: In progress
 
 ## Summary
@@ -74,9 +74,6 @@ two extensions installed which each unwittingly have a kit called, say, `SignalK
 (ii) Making it easy for kit authors to provide documentation to users, since
 this can just be the documentation on the wrapper extension.
 
-Traditional single-file extensions can still be read, for backwards-compatibility,
-but the directory format will be preferred in future.
-
 ## Components affected
 
 - [ ] No change to the natural-language syntax.
@@ -102,6 +99,40 @@ non-existent resource.
 This can be deactivated using the new command-line switch `-no-resource-checking`,
 which is a convenience for the Inform test suite.
 
+## Migration
+
+We basically want all users to make use of directory extensions rather than
+single-file ones from here on, and we are only still supporting single-file
+extensions for backwards compatibility. To that end:
+
+(a) The Public Library will download directory-format extensions.
+
+(b) The `inbuild` build manager has a new option, |-modernise|, to convert a single-file
+extension losslessly into a directory-format one. (The reverse is not possible
+and we do not provide a converter back the other way.) 
+
+So, then, `inbuild -modernise E`, where E is an extension filename for an
+old-school extension in a single file, now makes a directory-based version of
+it. This is placed in the same directory as E (an error is thrown if it already
+exists there) and, for the moment, the original E is not deleted or moved. So:
+
+	$ inbuild -modernise stuff/Napkins.i7x
+	Napkins by Tay Bullware: migrated to directory 'Napkins-v7.i7xd'
+	$ ls stuff
+	Napkins.i7x     Napkins-v7.i7xd
+
+`Napkins-v7.i7xd` contains a JSON metadata file with the correct contents; a
+`Source` subdirectory, with the source code written to `Source/Napkins.i7x`;
+and, if the original provided any documentation, a `Documentation` subdirectory.
+Within that:
+* Any examples are separated out into individual files, in a Documentation/Examples directory;
+* Examples are filenamed corresponding to the original title, with punctuation and
+whitespace removed, and with camel-casing applied, so that the filename will make
+a good intest test case name;
+* Examples use the new header format (see below).
+* Indentation in the documentation is converted to use tabs rather than runs of
+four spaces, and the old-style paste marker is converted to the new one.
+
 ## Example
 
 Here is an example of what a directory might look like, for version 1.3 of
@@ -116,8 +147,6 @@ the hypothetical extension `Red Fire Hydrants by Emily Short`:
 			Examples
 				Alpha.txt
 				Zulu.txt
-			Images
-				diagram.jpg
 		Materials
 			Inter
 				RedFireHydrantsKit
@@ -476,53 +505,17 @@ If it does contain other matter, this is irreparable, and a problem is thrown.
 `Documentation.txt`, and can only contain the following (unhidden) subdirectories:
 
 * `Examples`, which is optional.
-* `Images`, which is optional.
+* `Tests`, which is optional.
 
 If it does contain other matter, this is irreparable, and a problem is thrown.
 
+## Documentation, examples and tests
+
+As noted above, the `Documentation` subdirectory is optional, though its use
+is strongly recommended. See [IE-0029](0029-extension-examples-and-testing.md).
+
 ## Not yet implemented
-
-### Documentation
-
-The `Documentation` subdirectory is optional, and provides an alternative to
-writing documentation in the source text of an extension. It is an error for an
-extension to provide documentation in both forms. This optional form is much richer,
-allowing for larger manuals with multiple chapters and sections, examples, and
-indexing.
-
-If provided, it must contain `Documentation.txt`, an indoc-format manual for
-the extension. This is optionally allowed to use Examples and Images, in their own
-subdirectories of `Documentation`. (There is no indoc configuration file; inbuild
-will manage the finicky business of configuring indoc to compile this documentation.)
-
-In v10.1.0, the documentation-compiler `indoc` is not included in the Inform apps,
-but it now will be.
-
-When inbuild wants to generate documentation from an extension providing this
-directory, it will use `indoc` instead. (If running inside the apps, where the tools
-may not be able to run each other directly for sandboxing reasons on the local
-operating system, it will print out the necessary commands in some way so that the
-app can then run `indoc` on its behalf.)
-
-At present, inbuild generates documentation on an extension every time it is
-used. For large `Documentation`-style manuals that could prove slow, so inbuild may
-cease to generate documentation every time, and instead do so only if the source or
-the full Inform build version has changed since the last time.
 
 ### Multiple source files
 
 The `Source` directory may contain further files in line with [IE-0003](0003-multiple-source-files.md); to be decided.
-
-### Conversion
-
-`inbuild` will have an option, say `-convert-extension`, which takes a single-file
-`.i7x` extension (i.e. what exists now), perhaps incorrectly identified or with
-an otherwise dubious filename, and makes an equivalent and correctly-named
-directory. (Inbuild is already able to identify extensions properly regardless
-of their filenaming.)
-
-The Inform apps will be able to use this when they install extensions which the
-user has downloaded from somewhere. At present, the UI apps all have their own
-essentially duplicated code for working out how and where to install a new
-extension: we really want to move that into inbuild, saving the UI apps from
-having to know about any of this.

@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Language feature name: --
 * Status: Draft
-* Related proposals: [IE-0001](0001-extensions-with-resources.md), [IE-0017](0017-apps-and-extensions.md)
+* Related proposals: [IE-0001](0001-extensions-with-resources.md), [IE-0017](0017-apps-and-extensions.md), [IE-0029](0029-extension-examples-and-testing.md)
 * Implementation: In progress
 
 ## Summary
@@ -92,6 +92,9 @@ chapter appears, and an example ceases at the next heading of whatever kind.
 `inbuild` is very flexible: authors can have no headings at all, or can use
 just sections, or just chapters, or just examples, for instance.
 
+Example headings remain for the sake of backwards compatibility, but examples
+should now really be broken out into stand-alone text files. See [IE-0029](0029-extension-examples-and-testing.md).
+
 NEW: `inbuild` now generates one HTML page for each chapter, along
 with a title page for the extension. (If the extension contains matter before
 the first chapter heading, this is considered introductory and appears on the
@@ -148,7 +151,7 @@ of the code to be pasted. For example:
 	
 	An overly dramatic title, but never mind.
 	
-		**. The Wyndham Theatre is a room.
+		**: The Wyndham Theatre is a room.
 
 causes the paste button to appear just once, but to have content merging the
 two code samples together. (There can be any number of such, but they have to
