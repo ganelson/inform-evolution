@@ -238,9 +238,31 @@ is, it shows what source text has been extracted from the example or test file.
 `-show-i7` prints out what the `inform7` compiler printed to the console when
 it compiled the source text.
 
+`-show-log` prints out the debugging log recorded by the `inform7` compiler
+as it ran. You can also affect what goes into the debugging log by putting
+the name of a "debugging log aspect" into the global intest variable `$$LOG`.
+For example, `-set 'LOG=implications' -show-log AccessAllAreas` runs the
+test `AccessAllAreas` and prints out the debugging log with implications
+tracing included. For a list of valid values of `$$LOG`, see the foot of the
+debugging log, which always shows the possible aspects used and not used.
+Be warned that this can sometimes produce a lot of output: `-set 'LOG=predicate-calculus'`,
+for example, is not for the faint-hearted.
+
 `-show-i6` prints out what the `inform6` compiler subsequently printed to the
 console when it constructed the final story file. This only works if the test
 makes a Z-machine or Glulx story file.
+
+`-show-inter` prints out the textual form of the intermediate ("inter")
+representation of the program. This produces a lot of output, so only use this
+option when indirecting the output somewhere.
+
+`-show-inform6` prints out the Inform 6 source code output by the `inform7`
+compiler. This only works if the test compiles via `inform6`, and it produces a
+lot of output, so only use this option when indirecting the output somewhere.
+
+`-show-c` prints out the C source code output by the `inform7` compiler. This
+only works if the test compiles via C, and it produces a lot of output, so
+only use this option when indirecting the output somewhere.
 
 `-show-cc` prints out what the C compiler subsequently printed to the
 console when it constructed the final executable. This only works if the test
@@ -298,37 +320,43 @@ using the normal Inform programming language. `Language: Basic` says that it
 is a Basic Inform example, that is, uses the pared-down version of the language
 with all interactive fiction features removed.
 
-(6) `For: Z-Machine` or `For: Glulx` or `For: C` or `For: Untestable`.
+(6) `CompatibleWith: Description`.
+This can be used to mark an example as being compatible only with certain
+platforms. Most examples work on any platform, so the default `CompatibleWith: all`
+is fine.
+
+(7) `For: Z-Machine` or `For: Glulx` or `For: C` or `For: Untestable`.
 Which platform the code should be compiled to when this example/test is
-tested. Most examples work on any platform, so the default `For: Glulx`
-is fine. Extension examples do not currently support `For: C`; Inform
-documentation examples do, though at present none make use of this.
-Note that this is not a statement of compatibility, only an indication
-to `intest` of the author's preference when testing the example.
+tested. The default is `For: Glulx` provided that Glulx is compatible with
+the `CompatibleWith` description, and `For: Z-Machine` if it is not.
+If an even finer distinction is needed, `For:` can be set equal to any
+format text which Inform recognises: in fact, `For: Glulx` is a synonym
+for `For: inform6/32`.
+
 `For: Untestable` says that an example doesn't really contain code which
 can usefully be tested, and that Intest can therefore ignore this example;
 test cases are not allowed to say this, since a test case which cannot be
 tested is a contradiction in terms.
 
-(7) `CompileOnly: Yes` or `CompileOnly: No` (the default is `No`).
+(8) `CompileOnly: Yes` or `CompileOnly: No` (the default is `No`).
 This can specify that a test should be compiled through the `inform7` compiler
 but then taken no further. The test is considered a success if no error messages
 are issued, and if the right console output is produced by the compiler.
 Extension tests just might need to set this if an example is too complex to
 test fully, for example if it involves complicated screen effects.
 
-(8) `TestCompilerInternals: Yes` or `TestCompilerInternals: No` (the default is `No`).
+(9) `TestCompilerInternals: Yes` or `TestCompilerInternals: No` (the default is `No`).
 This is only used for unit tests internal to the `inform7` compiler. Switching
 this on makes it possible to use the otherwise forbidden `Test ... (internal) with ...`
 in source text, which makes the compiler reveal its innermost thoughts.
 Extension tests will not need this.
 
-(9) `TestReleaseMetadata: Yes` or `TestReleaseMetadata: No` (the default is `No`).
+(10) `TestReleaseMetadata: Yes` or `TestReleaseMetadata: No` (the default is `No`).
 This is only used for testing the Inform compiler, and specifically verifying
 the blurb and iFiction files it outputs on a release run. Extension tests will
 not need this.
 
-(10) `GenerateIndex: Yes` or `GenerateIndex: No` (the default is `No`).
+(11) `GenerateIndex: Yes` or `GenerateIndex: No` (the default is `No`).
 Tests of an example or a test case are carried out in a throwaway Inform project,
 so that there is usually no point rebuilding the Index at the end of compilation --
 nobody will ever see it. But if the point of the test is exactly to check that
@@ -336,7 +364,7 @@ the Index has been written correctly, then of course we do need to generate it,
 and it's for those test cases that this option exists.
 Extension tests will not need this.
 
-(11) `GenerateDiagnostics: Yes` or `GenerateDiagnostics: No` (the default is `No`).
+(12) `GenerateDiagnostics: Yes` or `GenerateDiagnostics: No` (the default is `No`).
 Used only by one Inform compiler test case, and only to output certain files
 which show diagrams of internal data structures for use in the technical
 documentation on the website. Extension tests will not need this.
