@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Language feature name: None
 * Status: Draft
-* Related proposals: [IE-0016](0016-language-extensions-reform.md), [IE-0017](0017-apps-and-extensions.md), [IE-0029](0029-extension-examples-and-testing.md)
+* Related proposals: [IE-0016](0016-language-extensions-reform.md), [IE-0017](0017-apps-and-extensions.md), [IE-0030](0030-extension-examples-and-testing.md)
 * Implementation: In progress
 
 ## Summary

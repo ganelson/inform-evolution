@@ -1,7 +1,7 @@
-# (IE-0029) Extension examples and testing
+# (IE-0030) Extension examples and testing
 
-* Proposal: [IE-0029](0029-extension-examples-and-testing.md)
-* Discussion PR link: [#29](https://github.com/ganelson/inform-evolution/pull/29)
+* Proposal: [IE-0030](0030-extension-examples-and-testing.md)
+* Discussion PR link: [#30](https://github.com/ganelson/inform-evolution/pull/30)
 * Authors: Graham Nelson
 * Language feature name: --
 * Status: Draft

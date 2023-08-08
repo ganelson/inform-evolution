@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Language feature name: --
 * Status: Draft
-* Related proposals: [IE-0001](0001-extensions-with-resources.md), [IE-0017](0017-apps-and-extensions.md), [IE-0029](0029-extension-examples-and-testing.md)
+* Related proposals: [IE-0001](0001-extensions-with-resources.md), [IE-0017](0017-apps-and-extensions.md), [IE-0030](0030-extension-examples-and-testing.md)
 * Implementation: In progress
 
 ## Summary
@@ -93,7 +93,7 @@ chapter appears, and an example ceases at the next heading of whatever kind.
 just sections, or just chapters, or just examples, for instance.
 
 Example headings remain for the sake of backwards compatibility, but examples
-should now really be broken out into stand-alone text files. See [IE-0029](0029-extension-examples-and-testing.md).
+should now really be broken out into stand-alone text files. See [IE-0030](0030-extension-examples-and-testing.md).
 
 NEW: `inbuild` now generates one HTML page for each chapter, along
 with a title page for the extension. (If the extension contains matter before
