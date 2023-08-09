@@ -10,8 +10,9 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
-[(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023   | [PR#30](https://github.com/ganelson/inform-evolution/pull/30) 
-[(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023    | [PR#28](https://github.com/ganelson/inform-evolution/pull/28) 
+[(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023   | [PR#30](https://github.com/ganelson/inform-evolution/pull/30)
+IE-0029 Basic IO                                                                                         | 19 July 2023    | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
+[(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023    | [PR#28](https://github.com/ganelson/inform-evolution/pull/28)
 [(IE-0017) Apps and extensions](proposals/0017-apps-and-extensions.md)                                   | 15 April 2023   | [PR#17](https://github.com/ganelson/inform-evolution/pull/17)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023 | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
 [(IE-0012) Glk foundations](proposals/0012-glk-foundations.md)                                           | 23 Sept 2022    | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
@@ -23,7 +24,6 @@ Proposal                                                                        
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
 [(IE-0031) BANISH debugging command](proposals/0031-banish.md)                                           | 9 August 2023   | [PR#31](https://github.com/ganelson/inform-evolution/pull/31) 
-[(IE-0029) Extension examples and testing](proposals/0029-extension-examples-and-testing.md)             | 7 August 2023   | [PR#29](https://github.com/ganelson/inform-evolution/pull/29) 
 [(IE-0027) Sorting with custom comparison phrases](proposals/0027-sorting-with-phrases.md)               | 20 July 2023    | [PR#27](https://github.com/ganelson/inform-evolution/pull/27)
 [(IE-0026) Units and number bases](proposals/0026-units-and-number-bases.md)                             | 13 July 2023    | [PR#26](https://github.com/ganelson/inform-evolution/pull/26)
 [(IE-0025) Kit-enumerated kinds](proposals/0025-kit-enumerated-kinds.md)                                 | 24 June 2023    | [PR#25](https://github.com/ganelson/inform-evolution/pull/25)
