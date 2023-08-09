@@ -22,6 +22,7 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
+[(IE-0031) BANISH debugging command](proposals/0031-banish.md)                                           | 9 August 2023   | [PR#31](https://github.com/ganelson/inform-evolution/pull/31) 
 [(IE-0029) Extension examples and testing](proposals/0029-extension-examples-and-testing.md)             | 7 August 2023   | [PR#28](https://github.com/ganelson/inform-evolution/pull/29) 
 [(IE-0027) Sorting with custom comparison phrases](proposals/0027-sorting-with-phrases.md)               | 20 July 2023    | [PR#27](https://github.com/ganelson/inform-evolution/pull/27)
 [(IE-0026) Units and number bases](proposals/0026-units-and-number-bases.md)                             | 13 July 2023    | [PR#26](https://github.com/ganelson/inform-evolution/pull/26)
