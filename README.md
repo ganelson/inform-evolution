@@ -11,7 +11,6 @@ The core repository for the language itself is
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
 [(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023   | [PR#30](https://github.com/ganelson/inform-evolution/pull/30)
-IE-0029 Basic IO                                                                                         | 19 July 2023    | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
 [(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023    | [PR#28](https://github.com/ganelson/inform-evolution/pull/28)
 [(IE-0017) Apps and extensions](proposals/0017-apps-and-extensions.md)                                   | 15 April 2023   | [PR#17](https://github.com/ganelson/inform-evolution/pull/17)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023 | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
@@ -47,9 +46,10 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
+_(IE-0029) Basic IO_ (still drafting: see pull request)                                                   | 19 July 2023    | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
+_(IE-0011) New data structures_ (still drafting: see pull request)                                        | --              | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022    | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022     | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)
-_(IE-0011) New data structures_ (still drafting: see pull request)                                       | --              | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
 
 ## Notes
 
