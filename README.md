@@ -10,6 +10,7 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
+[(IE-0032) Run-time problem reform](proposals/0032-run-time-problem-reform)                              | 26 August 2023  | [PR#32](https://github.com/ganelson/inform-evolution/pull/32)
 [(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023   | [PR#30](https://github.com/ganelson/inform-evolution/pull/30)
 [(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023    | [PR#28](https://github.com/ganelson/inform-evolution/pull/28)
 [(IE-0017) Apps and extensions](proposals/0017-apps-and-extensions.md)                                   | 15 April 2023   | [PR#17](https://github.com/ganelson/inform-evolution/pull/17)
