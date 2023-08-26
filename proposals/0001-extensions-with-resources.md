@@ -3,9 +3,8 @@
 * Proposal: [IE-0001](0001-extensions-with-resources.md)
 * Discussion PR link: [#1](https://github.com/ganelson/inform-evolution/pull/1)
 * Authors: Graham Nelson
-* Language feature name: None
-* Status: Draft
-* Related proposals: [IE-0016](0016-language-extensions-reform.md), [IE-0017](0017-apps-and-extensions.md), [IE-0030](0030-extension-examples-and-testing.md)
+* Status: Accepted
+* Related proposals: [IE-0016](0016-language-extensions-reform.md), [IE-0017](0017-apps-and-extensions.md), [IE-0030](0030-extension-examples-and-testing.md), [IE-0032](0032-run-time-problem-reform.md)
 * Implementation: In progress
 
 ## Summary
@@ -143,10 +142,15 @@ the hypothetical extension `Red Fire Hydrants by Emily Short`:
 		Source
 			Red Fire Hydrants.i7x
 		Documentation
-			Documentation.txt
+			Documentation.md
 			Examples
-				Alpha.txt
-				Zulu.txt
+				Alpha.md
+				Alpha--I.txt
+				Zulu.md
+				Zulu--I.txt
+			Tests
+				Water.txt
+				Water--I.txt
 		Materials
 			Inter
 				RedFireHydrantsKit
@@ -482,6 +486,7 @@ If it does contain other files, this is irreparable, and a problem is thrown.
 * `Source`, which it must contain (see above).
 * `Materials`, which is optional.
 * `Documentation`, which is optional.
+* `RTPs`, which is optional.
 
 If it does contain other subdirectories, this is irreparable, and a problem is thrown.
 
@@ -502,12 +507,16 @@ only contain the following (unhidden) subdirectories:
 If it does contain other matter, this is irreparable, and a problem is thrown.
 
 (5) The Documentation subdirectory must contain exactly one (unhidden) file, called
-`Documentation.txt`, and can only contain the following (unhidden) subdirectories:
+`Documentation.md`, and can only contain the following (unhidden) subdirectories:
 
 * `Examples`, which is optional.
 * `Tests`, which is optional.
 
 If it does contain other matter, this is irreparable, and a problem is thrown.
+
+(6) The RTPs subdirectory must only contain Markdown files giving the text of
+explantory details about run-time problems issued by the extension.
+See [IE-0032](0032-run-time-problem-reform.md).
 
 ## Documentation, examples and tests
 

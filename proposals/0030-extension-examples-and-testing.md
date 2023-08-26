@@ -3,8 +3,7 @@
 * Proposal: [IE-0030](0030-extension-examples-and-testing.md)
 * Discussion PR link: [#30](https://github.com/ganelson/inform-evolution/pull/30)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0028](0028-extension-documentation-revisited.md), [IE-0001](0001-extensions-with-resources.md)
 * Implementation: None as yet
 
@@ -56,14 +55,14 @@ examples are in a further subdirectory. For example:
 	Locksmith-v15.i7xd
 		...
 		Documentation
-			Documentation.txt
+			Documentation.md
 				Examples
-					Watchtower.txt
-					Tobacco.txt
-					Rekeying.txt
-					Latches.txt
+					Watchtower.md
+					Tobacco.md
+					Rekeying.md
+					Latches.md
 
-The file `Documentation.txt` is plain text marked up in various ways: see
+The file `Documentation.md` is plain text marked up in Markdown format: see
 [IE-0028](0028-extension-documentation-revisited.md). The example files use
 the same format, except that they begin with headers describing them. The
 header consists of lines which must all be in the form

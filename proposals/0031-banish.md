@@ -3,8 +3,7 @@
 * Proposal: [IE-0031](0031-banish.md)
 * Discussion PR link: [#31](https://github.com/ganelson/inform-evolution/pull/31)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: --
 * Implementation: Implemented but unreleased
 

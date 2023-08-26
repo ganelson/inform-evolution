@@ -3,8 +3,7 @@
 * Proposal: [IE-0006](0006-i6-syntax-annotations.md)
 * Discussion PR link: [#6](https://github.com/ganelson/inform-evolution/pull/6)
 * Authors: Graham Nelson, David Kinder, and Andrew Plotkin
-* Language feature name: None
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0013](0013-annotations-for-kit-linking.md) and
 [Corresponding I6 proposal](https://github.com/DavidKinder/Inform6/issues/189).
 * Implementation: Implemented but unreleased

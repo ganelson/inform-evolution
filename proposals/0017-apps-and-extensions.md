@@ -2,9 +2,8 @@
 
 * Proposal: [IE-0017](0017-apps-and-extensions.md)
 * Discussion PR link: [#17](https://github.com/ganelson/inform-evolution/pull/17)
-* Authors: AUTHOR
-* Language feature name: --
-* Status: Draft
+* Authors: Graham Nelson
+* Status: Accepted
 * Related proposals: [IE-0001](0001-extensions-with-resources.md)
 * Implementation: In progress
 

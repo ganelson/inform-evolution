@@ -3,8 +3,7 @@
 * Proposal: [IE-0007](0007-double-precision-reals.md)
 * Discussion PR link: [#7](https://github.com/ganelson/inform-evolution/pull/7)
 * Authors: Andrew Plotkin and Graham Nelson
-* Language feature name: None
-* Status: Draft
+* Status: Accepted
 * Related proposals: None
 * Implementation: None
 

@@ -3,7 +3,6 @@
 * Proposal: [IE-0009](0009-dialogue-sections.md)
 * Discussion PR link: [#9](https://github.com/ganelson/inform-evolution/pull/9)
 * Authors: Emily Short and Graham Nelson
-* Language feature name: `dialogue`
 * Status: Accepted
 * Related proposals: [IE-0010](0010-concepts.md)
 * Implementation: Implemented but unreleased

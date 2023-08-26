@@ -3,8 +3,7 @@
 * Proposal: [IE-0028](0028-extension-documentation-revisited.md)
 * Discussion PR link: [#28](https://github.com/ganelson/inform-evolution/pull/28)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0001](0001-extensions-with-resources.md), [IE-0017](0017-apps-and-extensions.md), [IE-0030](0030-extension-examples-and-testing.md)
 * Implementation: In progress
 
@@ -28,8 +27,8 @@ a sort of tear-off line of syntax at the bottom of the extension file. Thus:
 	
 	This is a neat extension. It...
 
-Documentation can now instead be provided as a stand-alone file for
-directory-stored extensions: see [IE-0001](0001-extensions-with-resources.md).
+Documentation can now instead be provided as a stand-alone file, `Documentation.md`,
+for directory-stored extensions: see [IE-0001](0001-extensions-with-resources.md).
 But the not-very-elegant tear-off syntax remains legal for single-file extensions.
 
 However, this proposal is not about where the marked-up source for the documentation
@@ -67,123 +66,178 @@ None.
 
 ## Markup syntax
 
-The markup syntax is simple enough that it seems easiest to describe it in full,
-and just note where something is new.
+Extension documentation is marked up with the widely-used Markdown markup notation.
+Numerous slightly varying dialects of Markdown exist, and Inform extensions use
+"Inform-flavoured Markdown". This is as standard as we can make it, and includes:
+* All CommonMark features, i.e.: emphasis, strong emphasis, backticked code snippets,
+links, images, web autolinks, email autolinks, block quotes, ordered lists,
+unordered lists, thematic breaks, indented code samples, fenced code samples
+with optional info strings, ATX headings (i.e. using `#` characters), setext
+underlined headings (i.e. using a second line of `----` characters), backslashed
+escapes, and HTML entities; *except that*
+* For security reasons, raw HTML blocks are not passed through as HTML,
+and similarly raw HTML tags are not allowed. So `this is <b>bold</b>`
+does not place the word "bold" in boldface, and instead passes the angle-bracket
+notations through into the resulting text.
+* All GitHub-flavored Markdown's extensions to CommonMark: strikethrough, tables,
+task list items and extended autolinks.
+* A further extension so that Example, Chapter and Section headings, as used in
+past versions of Inform extension documentation, continue to be understood.
 
-(1) Trailing space is ignored. Any leading space is converted to an indentation depth,
-in units of one tab equals four spaces, rounding down. Thus if a line begins with
-a tab, or begins with four spaces, it is considered indented by one tab stop.
+There are many guides to Markdown in existence already, but these examples
+give the general idea:
 
-(2) Unindented lines in certain formats are headings:
+	# Introduction
 
-	Chapter - Title
-	Chapter: Title
-	Section - Title
-	Section: Title
-	Example: *** Title
-	Example - *** Title
+	## Purpose
 
-In the case of example headings, any number from 1 to 4 asterisks can appear.
-There is no distinction between the use of a hyphen or colon.
+	The "Philately" extension provides ways to manage stamp collections.
+	Contact <stampbuff@gmail.com> with any bug reports.
 
-A chapter contains all material beneath it up to the next chapter heading, or
-to the end of the file. A section ceases if either another section or a new
-chapter appears, and an example ceases at the next heading of whatever kind.
-`inbuild` is very flexible: authors can have no headings at all, or can use
-just sections, or just chapters, or just examples, for instance.
+	## Collecting
 
-Example headings remain for the sake of backwards compatibility, but examples
-should now really be broken out into stand-alone text files. See [IE-0030](0030-extension-examples-and-testing.md).
+	A [rare stamp](chapter3.html) marked with a curly H, resembling the
+	mathematical symbol &HilbertSpace;, recently ~~went on sale~~ was sold for **$712.30**.
+	(_All prices here are estimates._ See https://www.stanleygibbons.com.)
+	We would define this in Inform with `The Harding Memorial 1923 Issue is a stamp.`
+	Or, for example:
 
-NEW: `inbuild` now generates one HTML page for each chapter, along
-with a title page for the extension. (If the extension contains matter before
-the first chapter heading, this is considered introductory and appears on the
-title page: if there are no chapter headings, everything appears on the title
-page, which is the only page.) In addition, each example generates its own
-HTML page. An extension with 6 documentation chapters and 11 examples therefore
-produces a miniature website of 18 HTML pages.
+		The Harding Memorial 1923 Issue is a stamp. The price of the Harding
+		Memorial is $712.30.
 
-(3) Indented lines are code examples.
+	Roger S. Brody notes:
 
-NEW: These are now syntax-coloured. Of course, different displayed pieces of
-code can have different meanings, and will not always be Inform source text.
-`inbuild` therefore has a concept of the current "language" being coloured;
-by default, this is Inform. Once set, it remains until the end of the current
-section, chapter, example or definition, whichever comes first.
+	> Some Harding rotary press-printed stamps were perforated gauge 11 x 11
+	> on the flat-plate equipment instead of the normal 10 x 10 rotary
+	> perforating machine, producing an important twentieth century rarity.
 
-Whereas a typical code example looks like this:
+	In British news, recent sales include:
 
-	This is a regular example.
+	| Stamp                                                 | Price   |
+	| :---------------------------------------------------- | ------: |
+	| GB 1883 SG183 10s Ultramarine                         | €614.72 |
+	| GB 1862 SG77 3d Pale carmine-rose (Wmk. Emblems) Pl.2 | €234.18 |
+
+	Note however that:
+
+	1) Prices depend on condition and circumstances.
+	2) Victorian issues vary widely in circulation. My collection includes:
+	   - [ ] none of the 500 orange-red 1d Mauritius Post Office stamps (1847)
+	   - [x] one of the roughly 21 billion Penny Red stamps (1841-79)
+
+	Moreover:
+
+	~~~ Inform6
+		[ DisplayStamp st;
+			...
+		];
+	~~~
+
+### The headings extension
+
+As noted above, Chapter and Section headings can be achieved using the standard
+Markdown notation `#` and `##`, or by "setext underlining", or in the traditional
+Inform extension notation. The following are all equivalent:
+
+	# Perforations
 	
-		Example line 1 here, indented.
-		And line 2 here.
+	Perforations
+	============
 	
-	The running text resumes.
+	Chapter: Perforations
 
-...it is now also legal to give a special first line of the example which
-changes the colouring language:
+And similarly:
 
-	This example shows output rather than source code:
+	## Embossing
 	
-		{transcript}
-		> GET PYRAMID
-		The Great Pyramid of Giza is slightly oversized for your knapsack.
+	Embossing
+	---------
 	
-	And once again the running text resumes, but the next will continue:
+	Section: Embossing
+
+However, note that (unlike CommonMark) Inform-flavoured Markdown does not allow
+level 1 (Chapter) or level 2 (Section) headings to be used inside block quotes
+or list items.
+
+Single-file extensions sometimes contain examples in their documentation. The
+notation for these is also recognised:
+
+	Example: ** Definitely Unhinged
+
+(Example headings remain for the sake of backwards compatibility, but examples
+should now really be broken out into stand-alone text files.
+See [IE-0030](0030-extension-examples-and-testing.md).)
+
+### Phrase details boxes
+
+A blockquote in which the opening line reads `phrase: ...` is set out as a
+"specification-of-a-phrase" box, matching the same convention used in the
+main Writing with Inform documentation for Inform. For example:
+
+	>	phrase: {ph_setpronouns} set pronouns from (object)
+	>	This phrase adjusts the meaning of pronouns like IT, HIM, HER and THEM in
+	>   the command parser as if the object mentioned has become the subject of
+	>   conversation. Example: `set pronouns from` here -
+	>
+	>		set pronouns from the key;
+	>		set pronouns from Bunny;
+	>
+	>	might change IT to mean the silver key and HIM to mean Harry "Bunny" Manders,
+	>   while leaving HER and THEM unaltered.
+
+Note that block quotes can contain multiple paragraphs, code samples (as in this
+example), and even lists.
+
+### Syntax colouring
+
+Code samples are syntax-coloured, and Inform uses four different colouring schemes:
+
+* `inform` or `inform7` produces Inform source text formatting.
+* `inform6` (one word) produces Inform 6 formatting.
+* `transcript` treats the material as a transcript of story file play.
+* `plain` applied no colouring or special formatting.
+
+A fenced code block can optionally choose a colouring with the first word of
+its info string (which is read case insensitively):
+
+	~~~ Inform6
+		[ DisplayStamp st;
+			...
+		];
+	~~~
+
+If it makes no such choice, or is an indented code block with no info string,
+then (a) if it contains a line beginning `>` then it is coloured as `transcript`,
+and otherwise (b) it is coloured as `inform`.
+
+A backticked code snippet is coloured as `inform` unless it uses two or more
+backticks to mark it, in which case `plain`. Thus:
+
+	Here we see `a sample of Inform source text`, and here some more
+	computery gibberish: ``malloc(1024)``.
+
+### Paste buttons
+
+As in past versions of Inform, a code sample marked `{*}` has a "paste me into
+the app" button attached in place of these symbols. For example:
+
+	To set the scene:
 	
-		> CLIMB PYRAMID
-		How easy that is to type.
-
-`inbuild` currently recognises four "languages": `Inform`, the default;
-`Inform 6`; `transcript`; and just plain `text`, where no syntax is coloured
-at all.
-
-(4) If the opening line of a code example is marked with a `*: `, then `inbuild`
-places a paste button there, which if clicked in the Inform app will paste
-the content of the code into the Source panel.
-
-NEW: If the next code example is marked `**: `, then this is considered a continuation
-of the code to be pasted. For example:
-
-	Try this:
+		{*}	"Definitely Unhinged"
 	
-		*: "The Heat-Death of the Universe"
-	
-	An overly dramatic title, but never mind.
-	
-		**: The Wyndham Theatre is a room.
+		Include Philately by Stanley Gibbons.
 
-causes the paste button to appear just once, but to have content merging the
-two code samples together. (There can be any number of such, but they have to
-be consecutive.)
+		The British Museum Stamps Room is a room. The cabinet is a closed openable
+		container in the Stamps Room.
 
-(5) NEW: An unindented line which begins `{defn}` or `{defn TAG}` begins a
-phrase description, which continues until a line which reads just `{end}`.
-These use the exact same syntax followed by the `Writing with Inform` source,
-so e.g.:
+	And so on:
+	
+		{**}The Saxony 1856 is a stamp in the cabinet. "A forgery by Jean de Spirati!
+		Priceless."
 
-	```
-	{defn ph_nearestwholenumber}(real number) to the nearest whole number ... number
-	This phrase performs signed addition on the given values, whose kinds must
-	agree, and produces the result. Examples:
-	
-		1.4 to the nearest whole number = 1
-		1.6 to the nearest whole number = 2
-		-1.6 to the nearest whole number = -2
-	
-	We probably ought to bear in mind that the limited range of "number" means
-	that the nearest whole number might not be all that near. For example:
-	
-		6 x 10^23 to the nearest whole number = 2147483647
-	
-	because 2147483647 is the highest value a "number" can have.
-	{end}
-	```
-
-The `TAG` is in theory for use in the Index to correlate phrases with their
-documentation, but for now this does nothing with extension documentation.
-
-Phrase descriptions cannot be nested, and cannot contain headings.
+Here the `{**}` notation means that the sample continues the previous one, and
+that a single paste button in the `{*}` position collects all of this text
+together into a single run.
 
 ## Generating documentation outside of Inform
 

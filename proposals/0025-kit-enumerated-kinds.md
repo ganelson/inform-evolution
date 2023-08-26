@@ -3,8 +3,7 @@
 * Proposal: [IE-0025](0025-kit-enumerated-kinds.md)
 * Discussion PR link: [#25](https://github.com/ganelson/inform-evolution/pull/25)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Implemented but unreleased
+* Status: Accepted
 * Related proposals: --
 * Implementation: Implemented but unreleased
 

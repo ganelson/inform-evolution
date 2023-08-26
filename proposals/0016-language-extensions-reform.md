@@ -3,8 +3,7 @@
 * Proposal: [IE-0016](0016-language-extensions-reform.md)
 * Discussion PR link: [#16](https://github.com/ganelson/inform-evolution/pull/16)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0001](0001-extensions-with-resources.md)
 * Implementation: Implemented but unreleased
 

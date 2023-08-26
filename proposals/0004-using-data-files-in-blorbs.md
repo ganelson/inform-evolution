@@ -3,8 +3,7 @@
 * Proposal: [IE-0004](0004-using-data-files-in-blorbs.md)
 * Discussion PR link: [#4](https://github.com/ganelson/inform-evolution/pull/4)
 * Authors: Andrew Plotkin and Graham Nelson
-* Language feature name: None
-* Status: Draft
+* Status: Accepted
 * Related proposals: None
 * Implementation: In progress
 

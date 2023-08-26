@@ -3,8 +3,7 @@
 * Proposal: [IE-0015](0015-world-model-enforcement.md)
 * Discussion PR link: [#15](https://github.com/ganelson/inform-evolution/pull/15)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: --
 * Implementation: In progress
 

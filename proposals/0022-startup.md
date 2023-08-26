@@ -3,9 +3,9 @@
 * Proposal: [IE-0022](0022-startup.md)
 * Discussion PR link: [#22](https://github.com/ganelson/inform-evolution/pull/22)
 * Authors: Dannii Willis
-* Language feature name: None
-* Status: Implemented but unreleased
+* Status: Accepted
 * Related proposals: None
+* Implementation: Implemented but unreleased
 
 ## Summary
 

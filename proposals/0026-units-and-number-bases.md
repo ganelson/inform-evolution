@@ -3,8 +3,7 @@
 * Proposal: [IE-0026](0026-units-and-number-bases.md)
 * Discussion PR link: [#26](https://github.com/ganelson/inform-evolution/pull/26)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: --
 * Implementation: In progress
 

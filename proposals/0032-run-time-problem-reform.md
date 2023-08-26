@@ -3,7 +3,6 @@
 * Proposal: [IE-0032](0032-run-time-problem-reform.md)
 * Discussion PR link: [#32](https://github.com/ganelson/inform-evolution/pull/32)
 * Authors: Graham Nelson
-* Language feature name: --
 * Status: Draft
 * Related proposals: [IE-0001](0001-extensions-with-resources.md)
 * Implementation: Partially implemented

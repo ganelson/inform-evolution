@@ -3,8 +3,7 @@
 * Proposal: [IE-0002](0002-inform-project-gitignores.md)
 * Discussion PR link: [#2](https://github.com/ganelson/inform-evolution/pull/2)
 * Authors: Graham Nelson
-* Language feature name: None
-* Status: Draft
+* Status: Accepted
 * Related proposals: None
 * Implementation: Implemented but unreleased
 

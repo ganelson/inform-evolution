@@ -3,8 +3,7 @@
 * Proposal: [IE-0013](0013-annotations-for-kit-linking.md)
 * Discussion PR link: [#13](https://github.com/ganelson/inform-evolution/pull/13) 
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0006](0006-i6-syntax-annotations.md), [IE-0018](0018-use-options-and-kit-configuration.md), [IE-0024](0024-reorganisation-of-standard-kits.md)
 * Implementation: Partly implemented but unreleased
 
