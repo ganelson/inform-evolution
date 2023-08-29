@@ -79,7 +79,7 @@ In the current state of the Inform repository, this is the only RTP which is pri
 		
 	Test me with "jump".
 
-The `TOKEN` is a run of one or more whitespace characters: in practice it will always be alphanumeric and begin with a letter, and contain in particular no punctuation or spaces.
+The `TOKEN` is a run of one or more non-whitespace characters: in practice it will always be alphanumeric and begin with a letter, and contain in particular no punctuation or spaces. `TOKEN` will not be in the form `P` followed by a decimal number, so that apps (if they wish to support old-style RTP detection for working with retrospective builds of Inform) can tell the difference between an old-style RTP and a new one. (Alternatively, such apps can know of course which version of Inform they are running.)
 
 The `PATH` tells the app where to find the explanation of this message. It identifies a directory in which a whole pile of RTP explanation pages can be found: the one we want is then `PATH/TOKEN.html`. Note that `PATH` may contain internal white space (though it may not end with white space): it continues to the end of the line it is printed on. For example:
 
