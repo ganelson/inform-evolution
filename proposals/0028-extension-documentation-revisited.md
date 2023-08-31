@@ -210,11 +210,15 @@ If it makes no such choice, or is an indented code block with no info string,
 then (a) if it contains a line beginning `>` then it is coloured as `transcript`,
 and otherwise (b) it is coloured as `inform`.
 
-A backticked code snippet is coloured as `inform` unless it uses two or more
-backticks to mark it, in which case `plain`. Thus:
+A backticked code snippet is coloured as `inform` if it uses a single backtick
+each side; as `transcript` if it uses two; and as `plain` otherwise. Thus:
 
-	Here we see `a sample of Inform source text`, and here some more
-	computery gibberish: ``malloc(1024)``.
+	Here we see `a sample of Inform source text`, whereas ``EXAMINE SPEC`` is
+	a command, and this is computery gibberish: ```malloc(1024)```.
+
+It's important to use the double-backtick convention for transcript commands
+for accessibility reasons: screen-reading software for partially sighted users
+makes all caps material difficult to follow.
 
 ### Paste buttons
 
@@ -239,14 +243,41 @@ Here the `{**}` notation means that the sample continues the previous one, and
 that a single paste button in the `{*}` position collects all of this text
 together into a single run.
 
+### Links and cross-references
+
+The standard Markdown syntax `[Label]` or `[this is a link][Label]` makes a
+link where the destination is referred to by a label, rather than given explicitly.
+In traditional Markdown, that label can then be defined:
+
+	See [CommonMark] for more on this.
+	
+	[CommonMark]: https://commonmark.org "The CommonMark specification"
+
+And this would work fine in Inform's Markdown too, but it's not very helpful
+when what we want is to make an internal cross-reference. Suppose we want a
+link to Chapter 2 of the current document: we can't say what the URL for that
+is because we don't know exactly how Inbuild will choose to store the HTML.
+
+Because of that, the dictionary of labels for links is pre-populated by Inform
+so that it automatically contains the names of all Chapters and Sections in
+the current document, and also all Examples. So for example:
+
+	See [Perforations] and also [Embossing]. The example [The Red Mercury]
+	shows how to implement Austrian rarities.
+
+...would all work automatically provided that the extension documentation
+contains a chapter called "Perforations", a section called "Embossing" and
+an example "The Red Mercury".
+
 ## Generating documentation outside of Inform
 
 `inbuild` can work alone to generate little documentation websites from
 extensions:
 
-	$ inbuild -document EXTENSION -document-to PATH
+	$ inbuild -project P -document EXTENSION -document-to PATH
 
-where `EXTENSION` is the filename or directory name for the extension, and
+where `EXTENSION` is the filename or directory name for the extension, `P`
+is the project within whose context the documentation is being compiled, and
 `PATH` the directory to write the mini-website into, which must exist.
 
 Free-standing documentation in the above markup syntax can also be converted:
