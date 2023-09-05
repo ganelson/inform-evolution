@@ -5,7 +5,7 @@
 * Authors: Graham Nelson
 * Status: Draft
 * Related proposals: [IE-0001](0001-extensions-with-resources.md)
-* Implementation: Partially implemented
+* Implementation: All kit changes made, MacOS app changes made, other apps pending
 
 ## Summary
 
@@ -16,7 +16,7 @@ generates HTML for the apps to show when a user runs into an RTP.
 
 ## Motivation
 
-The process for issuing RTPs is currently very inflexible. Only `BasicInformKit`
+The process for issuing RTPs in v10 is very inflexible. Only `BasicInformKit`
 and `WorldModelKit` are able to issue them, and even that division into two
 piles is awkwardly done at present with linker tricks. New kits, such as
 `DialogueKit`, also need to issue RTPs, but currently can't. It's also long
@@ -39,7 +39,7 @@ this an ability only of kit code.
 
 None.
 
-## Review of the current situation
+## Review of the situation in v10
 
 At present, when the app runs a story file it is continuously monitoring the output to look for lines in the shape:
 
@@ -70,7 +70,7 @@ For example, the first line here should trigger the app:
 
 (The second and any subsequent lines are purely informational, and the app should not require them to be present.)
 
-In the current state of the Inform repository, this is the only RTP which is printed in the new form, for the sake of testing, but the rest will be converted shortly. The following source will trigger it, for testing purposes:
+The following source will trigger it, for testing purposes:
 
 	Lab is a room.
 
