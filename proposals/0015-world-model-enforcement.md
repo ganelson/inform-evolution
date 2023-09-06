@@ -3,7 +3,8 @@
 * Proposal: [IE-0015](0015-world-model-enforcement.md)
 * Discussion PR link: [#15](https://github.com/ganelson/inform-evolution/pull/15)
 * Authors: Graham Nelson
-* Status: Accepted
+* Language feature name: --
+* Status: Draft
 * Related proposals: --
 * Implementation: In progress
 
@@ -322,7 +323,7 @@ That is, `X encloses Y` if there is a sequence `H1`, `H2`, ..., `Hn` such that
 	* Any of the rooms in which a backdrop is found almost-hold it (unless it is `absent`),
 	whereas only the one most recently seen by the player actually holds it.
 * Since holding implies almost-holding, holding also implies enclosure. Thus
-`X holds Y` always implies that `X encloses Y`. 
+`X holds Y` always implies that `X encloses Y`.
 * `now X encloses Y` is never permitted.
 * `now X does not enclose Y` is never permitted.
 * Enclosure is transitive (unsurprisingly, since it's a transitive closure):
@@ -545,8 +546,8 @@ the "inserting" action to bypass the requirement on being a container:
 
 A bug (and it is genuinely that) in the example went on to handle this case like so:
 
-	Carry out inserting something into the machine: 
-		now the noun is nowhere; 
+	Carry out inserting something into the machine:
+		now the noun is nowhere;
 		now the player carries the new form of the noun.
 
 I'm pretty certain that the writer did not intend the `carry out` rulebook to
@@ -559,8 +560,8 @@ execute:
 But in fact it did, and this is where the `now` throws a runtime problem message.
 The example should have written (and now does write) this:
 
-	Carry out inserting something into the machine: 
-		now the noun is nowhere; 
+	Carry out inserting something into the machine:
+		now the noun is nowhere;
 		now the player carries the new form of the noun;
 		rule succeeds.
 
@@ -663,7 +664,7 @@ A new function `SetRegionalContainment` moves either a room or a region to a
 region. This enables, for example:
 
 	Nirvana is a region. Shangri-La is a region. Nirvana is in Shangri-La.
-	Seventh Heaven is a region. 
+	Seventh Heaven is a region.
 
 	Lebling Monument is a room. Lebling Monument is in Nirvana. A plaque
 	is in the Monument.
@@ -808,7 +809,7 @@ single location, where `B` most recently was.
 ### Improvements
 
 `TestVisibility(A, B)` now returns `false` in all cases where either `A` or `B`
-is not a thing. 
+is not a thing.
 
 ### New specification
 
@@ -878,7 +879,7 @@ one of `A` and `B` is a backdrop/door.
 ### Improvements
 
 `TestTouchability(A, B)` now returns `false` in all cases where either `A` or `B`
-is not a thing. 
+is not a thing.
 
 ### New specification
 
@@ -962,3 +963,227 @@ There continues to be a potential tell of concealed items in that they continue 
 count against carrying capacity. This is deemed to be the appropriate default
 behaviour; how or whether to deal with that situation is left to the individual
 author.
+
+## Implicit taking
+
+### Infelicities
+
+Six actions have specifications require carried things: wearing, giving it to, showing it to, throwing it at, locking it with, unlocking it with. For locking and unlocking, it's the second noun that must be carried; for the others, it's the first. The action-processing rulebook includes these rules, in this order:
+
+- the carrying requirements rule
+- the instead stage rule
+- the requested actions require persuasion rule
+- the carry out requested actions rule
+
+Because the carrying requirements rule precedes the Requested actions require persuasion rule, *any* request for an NPC to perform any of these actions inspire an implicit taking attempt, no matter how absurd and independent of whether persuasion will succeed. It's especially common for this to occur with "[ npc name ], give me [...]".
+
+By contrast, the putting it on, inserting it into, and eating actions are not specified to apply to a carried thing: they perform an implicit taking attempt during their check rules, or *may* perform one in the eating action's case. This gives rise to a small oddity: for the six rules specified to apply to a carried thing, it can be counted on during any Instead rules that the item is carried; for the others it cannot. (An unlikely but possible problem is that if an Instead rule for one of these actions caused the player to cease to carry the item but continued the action, the action's check rules wouldn't notice it was missing. The same continues to be true of Check rules, of course, but it would probably be harder for an author to do this accidentally there.)
+
+Beyond the requested action case, the primacy of the carrying requirements rule also meant that numerous actions for which a better response would be an error regarding absurdity instead attempted an implicit take, e.g., if the moon is a backdrop, `put moon in me` would attempt to take the moon and dryly reply: "That's hardly portable."
+
+### Improvements
+
+The implicit taking attempts for wearing, giving it to, showing it to, throwing it at, locking it with, and unlocking it with will be moved to check rules.
+
+Besides taking, there are numerous other precedents for implicit actions during check rules, so this is in no way strange.
+
+- try the actor trying inserting the transferred item, in check taking's use player's holdall to avoid exceeding carrying capacity rule
+- try the actor opening, in check going's can't go through closed doors rule
+- try the actor trying exiting and try the actor trying entering both, in check entering's implicitly pass through other barriers rule
+- try the actor trying taking off, in the check rules for all the actions that can remove something from one's inventory: check dropping, check putting it on, check inserting it into, check giving it to, check throwing it at, and check eating (for that all-important edible clothing case)
+
+Absurd "first taking the noun" messages should become a rarity both for the player's own actions and for things asked of NPCs.
+
+### New specification
+
+Wearing is an action applying to one thing.
+
+Giving it to is an action applying to two things.
+
+Showing it to is an action applying to one thing and one visible thing.
+
+Throwing it at is an action applying to one thing and one visible thing.
+
+Locking it with is an action applying to two things.
+
+Unlocking it with is an action applying to two things.
+
+### Impact
+
+Some existing Instead rules for the six changed actions might need to be revised now that it's no longer assured that the item is carried when the Instead rules begin.
+
+## Actions on other people or what belongs to them
+
+### Infelicities
+
+While many check rules block acting upon other people or their possessions, there are several omissions, and existing rules generally don't consider acting on *parts* of people.
+
+The player has license to pull, push, turn, touch, or rub Bob's nose. Some others don't check regarding other people at all: one can search, look under, or even taste Bob. Even when incorporation is checked for, rules may not check indirect incorporation. If you try to drop your nose, you're told "You can't drop part of yourself." But if a mole is part of your nose, and you dry to drop the mole,you're told "You haven't got that."
+
+By default, one can't give things to another person, but one can put things in or on whatever containers or supporters they enclose. Likewise, one can open, close, lock, unlock, or search their containers, or switch on or off their devices (or other things that can be switched on).
+
+### Improvements
+
+Information of recurring interest is whether a thing belongs to a person (and, if so, to whom). When writing a check rule to prevent acting on other people's things, the obvious approach is to check for whether the thing is enclosed by another person. This can easily produce inappropriate results if a person encloses another person, a thing one would expect if rideable animals from the Rideable Vehicles extension are in play or it's otherwise the case that the can't take other person rule isn't in play.
+
+Relations and phrases detailed below will facilitate checking what belongs to whom. Some existing check rules will be modified and other check rules added to use them.
+
+### New specifications
+
+#### Relations: amalgamation, embodiment, and retention
+
+Amalgamation is the transitive incorporation relation: X amalgamates Y if Y is a part of X, or Y is a part of something that's a part of X, and so on. Roughly speaking, it is to incorporation what enclosure is to holding (except that amalgamation really is simply transitive incorporation without any edge cases).
+
+Embodiment and Retention are the relations that do this for two different kinds of belonging to, one represented by amalgamation, and one by enclosure. It's possible for a thing to be enclosed by more than one person, even expected if an author is using rideable animals from the Rideable Vehicles extension. It's even technically possible for a person to be a part of another person. But a thing is embodied or retained either by nothing or by exactly one person: the one "closest to" the thing.
+
+[A person *embodies* a thing if they directly or indirectly incorporate that thing. It's not *impossible* for a person to be a part of another person, in which case the embodier is the person closest to the thing in question: a thing is embodied by either exactly one person or by nothing.
+
+Similarly, a person *retains* a thing if they enclose it... unless they enclose another person that encloses that thing. Again, if a thing isn't retained by nothing, there can be only one retainer and it's the person closest to it. (Roughly speaking, a thing's retainer is its owner.)]
+
+`to embody` and `to retain` are verbs meaning the respective relations, and there are `embodier of` and `retainer of` phrases. Additionally, there are these definitions:
+
+```
+Definition: a thing is a body part if I6 condition "Embodier(*1)" says so (it is embodied). [i.e., its embodier is not nothing]
+
+Definition: a thing is corporeal if it is a person or it is a body part.
+```
+and this phrase:
+```
+To decide what person is the custodian of (t - thing):
+	if t is a person, decide on t;
+        decide on the retainer of t;
+```
+
+`body part` is exclusive of the person object itself; `corporeal` and `custodian of` are inclusive of the person.
+
+## Acting upon parts
+
+### Infelicities in Inform 10.1
+
+While taking and dropping have check rules replying "That seems to be a part of [the incorporator]", other actions for which it wouldn't be sensible to act on a part (inserting it into, putting it on, throwing it at) do not. Meanwhile, one can *not* eat an edible part of an edible thing, which seems like a reasonable possibility.
+
+### Improvements
+
+Appropriate check rules for acting on parts will be added.
+
+## Self-directed action
+
+### Infelicities in Inform 10.1
+
+Numerous actions' check rules don't distinguish the actor being acted upon from other cases of acting on people giving rise to awkward, comedic, or even harsh responses.
+
+- any of turning, pushing, pulling, squeezing yourself: "You might not like that."
+- getting off yourself: "But you aren't on yourself at the moment."
+- giving yourself something you already carry: "You can't give [the noun] to yourself."
+- setting yourself `to ready for action`: "No, you can't set you to anything."
+- cutting yourself: "Cutting you up would achieve little."
+- asking someone `for` yourself: if persuasion succeeds, "[NPC] can't do that", otherwise "[NPC] has better things to do."
+- buying yourself: "Nothing is on sale."
+- if you `look inside` (i.e., search) yourself, "You find nothing of interest."
+- `consult` yourself `about self-worth` and "You discover nothing of interest in yourself."
+
+### Improvements
+
+Appropriate check rules for self-directed actions will be added.
+
+## Ceasing to use carried thing in the Standard Rules' action definitions
+
+### Infelicities in Inform 10.1
+
+An extremely common thing one might ask an NPC for is giving you something. If you ask an NPC for something they're not carrying, you *always* get the "([NPC] first taking the [noun])", no matter how absurd such an attempt is, and whether or not persuasion will succeed or fail. (The same applies to the other 5 actions with a carried thing requirement: throwing it at, wearing, unlocking it with, locking it with, but they come up less often.)
+
+If the player attempts something absurd with one of those actions (e.g., "wear moon"), there's also an implicit take with a "(first taking the [noun])" message.
+
+### Improvements
+
+These actions' specifications will now use touchable things instead of carried things; appropriate check rules will be added to attempt the implicit take at the appropriate place,
+
+Persuasion now precedes implicit taking, so there will be no more "first taking the (noun)" messages for people who would then refuse to give you the thing.
+
+## Check tangibility for all actions requiring touchable things
+
+### Infelicities in Inform 10.1
+
+Most authors would be surprised to learn that the Basic availibility rule embraces rooms or regions as touchable things. The taking action's "can only take things" check rule explicitly testing whether the noun is a thing, otherwise it outputs "You cannot carry [the noun]." The Standard Rules' `Understand` assertions never use `[thing]`, preferentially using `[something]`, thus applying to any *object* in scope. Thus, if an author has placed a room in scope, actions (other than taking) requiring a touchable noun will accept the room as a noun, resulting in several cases of absurd output and a few cases of no output at all.
+
+### Improvements
+
+The Can only take things rule will be removed, and an equivalent will be listed first in the accessibility rules, with the same "You must name something more substantial." error message gives for directions.
+
+Check taking's Can't take items out of play rule will be removed; the access through barriers rule will already report "That isn't available." for that case.
+
+## Issues regarding enterable containers and supporters
+
+### Infelicities
+
+As discussed variously in:
+
+[Hybrid container/supporter and darkness modeling](https://intfiction.org/t/hybrid-container-supporter-and-darkness-modeling-i7/45688)
+[More weirdness with enterable supporters that are part of things](https://intfiction.org/t/more-weirdness-with-enterable-supporters-that-are-part-of-things/45991)
+[An issue with the U-Stor-It example](https://intfiction.org/t/an-issue-with-the-u-stor-it-example/63869/)
+[I7-1959: (Mantis 1995) Enterable supporter part of something else creates "local ceiling" value not well-handled by Standard Rule](https://inform7.atlassian.net/browse/I7-1959)
+[I7-2063: (Mantis 2100) an actor pushing an enterable supporter with the player on it yields a spurious room heading](https://inform7.atlassian.net/browse/I7-2063)
+
+there are multiple bugs and issues surrounding enterable containers and supporters, especially when incorporation is also involved.
+
+This situation:
+
+```
+Park is a room.
+The picnic table is in the park.
+An enterable supporter called some attached benches is part of picnic table.
+```
+gives rise to:
+```
+>sit on benches
+You get onto the attached benches.
+
+>sit on benches
+(getting off the attached benches)
+(getting out of Park)
+But you aren't in anything at the moment.
+
+>
+```
+
+Given this not terribly strange setup:
+
+```
+The Lab is a room.
+The trunk is in lab.
+The trunk is a closed openable container.
+The lid is an enterable supporter.
+The lid is part of trunk.
+```
+
+standing on the lid plunges you into darkness.
+
+With this tree, branch, and treehouse:
+```
+The tree is in the Lab.
+A branch is part of the tree. It is an enterable supporter.
+A treehouse is part of the branch. It is an enterable container.
+```
+
+one can enter the treehouse... but only explicitly via the branch.
+
+```
+>enter treehouse
+(entering the tree)
+That's not something you can enter.
+
+>enter branch
+You get onto the branch.
+
+>enter treehouse
+You get into the treehouse.
+```
+
+### Improvements
+
+Otis the Dog has provided code that ameliorates these and other issues.
+
+The level of granularity in the World Model's consideration of the visibility and touchability ceilings is determined by CoreOfParentOfCoreOf, which is used by CommonAncestor.
+
+At the heart of Otis' revisions is to instead base the level of granularity on ParentOfCoreOf and to have the Access through barriers rule use a new CommonHolder routine based on ParentOfCoreOf in the same way that CommonAncestor uses CoreOfParentOfCoreOf. This sounds like an alarming change, but in practice thus far it works well.
+
