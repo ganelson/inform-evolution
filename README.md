@@ -10,9 +10,9 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
-[(IE-0033) Kit-set properties](proposals/0033-kit-set-properties.md)                                     | 20 September 2023 | [PR#33](https://github.com/ganelson/inform-evolution/pull/33)
 [(IE-0032) Run-time problem reform](proposals/0032-run-time-problem-reform.md)                           | 26 August 2023    | [PR#32](https://github.com/ganelson/inform-evolution/pull/32)
 [(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023     | [PR#30](https://github.com/ganelson/inform-evolution/pull/30)
+[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023    | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)             
 [(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023      | [PR#28](https://github.com/ganelson/inform-evolution/pull/28)
 [(IE-0017) Apps and extensions](proposals/0017-apps-and-extensions.md)                                   | 15 April 2023     | [PR#17](https://github.com/ganelson/inform-evolution/pull/17)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023   | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
