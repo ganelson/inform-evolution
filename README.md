@@ -49,7 +49,7 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
-_(IE-0011) New data structures_ (still drafting: see pull request)                                        | --              | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
+_(IE-0011) New data structures_ (still drafting: see pull request)                                       | --              | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022    | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022     | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)
 
