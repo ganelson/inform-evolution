@@ -3,8 +3,7 @@
 * Proposal: [IE-0005](0005-removing-translates-into-unicode.md)
 * Discussion PR link: [#5](https://github.com/ganelson/inform-evolution/pull/5)
 * Authors: Graham Nelson
-* Language feature name: None
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0019](0019-unicode-command-parser.md)
 * Implementation: Implemented but unreleased
 

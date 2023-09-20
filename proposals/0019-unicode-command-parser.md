@@ -3,7 +3,6 @@
 * Proposal: [IE-0019](0019-unicode-command-parser.md)
 * Discussion PR link: [#19](https://github.com/ganelson/inform-evolution/pull/19)
 * Authors: Andrew Plotkin
-* Language feature name: --
 * Status: Accepted
 * Related proposals: [IE-0005](0005-removing-translates-into-unicode.md)
 * Implementation: Implemented but unreleased

@@ -3,8 +3,7 @@
 * Proposal: [IE-0023](0023-match-locations.md)
 * Discussion PR link: [#23](https://github.com/ganelson/inform-evolution/pull/23)
 * Author: Zed Lopez
-* Language feature name: None
-* Status: Accepted in principle
+* Status: Accepted
 * Related proposals: None
 * Implementation: Implemented but unreleased
 

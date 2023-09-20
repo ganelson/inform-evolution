@@ -3,8 +3,7 @@
 * Proposal: [IE-0014](0014-inter-names-for-rulebooks.md)
 * Discussion PR link: [#14](https://github.com/ganelson/inform-evolution/pull/14)  
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0013](0013-annotations-for-kit-linking.md)
 * Implementation: Implemented but unreleased
 

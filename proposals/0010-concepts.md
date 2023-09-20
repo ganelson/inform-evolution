@@ -3,8 +3,7 @@
 * Proposal: [IE-0010](0010-concepts.md)
 * Discussion PR link: [#10](https://github.com/ganelson/inform-evolution/pull/10)
 * Authors: Emily Short and Graham Nelson
-* Language feature name: `concepts`
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0009](0009-dialogue-sections.md)
 * Implementation: Implemented but unreleased
 

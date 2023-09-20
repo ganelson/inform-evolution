@@ -3,8 +3,7 @@
 * Proposal: [IE-0024](0024-reorganisation-of-standard-kits.md)
 * Discussion PR link: [#24](https://github.com/ganelson/inform-evolution/pull/24)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0013](0013-annotations-for-kit-linking.md)
 * Implementation: Implemented but unreleased
 

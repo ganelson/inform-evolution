@@ -3,8 +3,7 @@
 * Proposal: [IE-0003](0003-multiple-source-files.md)
 * Discussion PR link: [#3](https://github.com/ganelson/inform-evolution/pull/3)
 * Authors: Graham Nelson
-* Language feature name: None
-* Status: Draft
+* Status: Accepted
 * Related proposals: None
 * Implementation: Implemented but unreleased
 

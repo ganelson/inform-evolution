@@ -3,7 +3,6 @@
 * Proposal: [IE-00xx](00xx-TITLE.md)
 * Discussion PR link: [#xx](https://github.com/ganelson/inform-evolution/pull/xx)
 * Authors: AUTHOR
-* Language feature name: --
 * Status: Draft
 * Related proposals: --
 * Implementation: None as yet

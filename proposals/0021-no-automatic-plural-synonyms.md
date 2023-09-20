@@ -3,8 +3,7 @@
 * Proposal: [IE-0021](0021-no-automatic-plural-synonyms.md)
 * Discussion PR link: [#21](https://github.com/ganelson/inform-evolution/pull/21)
 * Authors: Zed Lopez
-* Language feature name: --
-* Status: Accepted in principle
+* Status: Accepted
 * Related proposals: --
 * Implementation: Implemented but unreleased
 

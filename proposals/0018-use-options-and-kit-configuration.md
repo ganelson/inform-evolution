@@ -3,8 +3,7 @@
 * Proposal: [IE-0018](0018-use-options-and-kit-configuration.md)
 * Discussion PR link: [#18](https://github.com/ganelson/inform-evolution/pull/18)
 * Authors: Graham Nelson
-* Language feature name: --
-* Status: Draft
+* Status: Accepted
 * Related proposals: [IE-0013](0013-annotations-for-kit-linking.md)
 * Implementation: Implemented but unreleased
 

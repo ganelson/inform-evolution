@@ -4,7 +4,7 @@
 * Discussion PR link: [#27](https://github.com/ganelson/inform-evolution/pull/27)
 * Author: Dannii Willis
 * Language feature name: None
-* Status: In progress
+* Status: Implemented but unreleased
 * Related proposals: None
 
 ## Summary
