@@ -4,7 +4,7 @@
 * Discussion PR link: [#25](https://github.com/ganelson/inform-evolution/pull/25)
 * Authors: Graham Nelson
 * Status: Accepted
-* Related proposals: --
+* Related proposals: [IE-0033](0033-kit-set-properties.md)
 * Implementation: Implemented but unreleased
 
 ## Summary
