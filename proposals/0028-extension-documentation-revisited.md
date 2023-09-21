@@ -273,6 +273,32 @@ the current document, and also all Examples. So for example:
 contains a chapter called "Perforations", a section called "Embossing" and
 an example "The Red Mercury".
 
+### Images
+
+Extension documentation should not use externally hosted images, i.e., images
+on some server which requires an Internet access to fetch. Instead, they
+should use only their own private images, and in the following way:
+
+(i) Image files should be stored in the `Images` subdirectory of the
+documentation directory.
+
+(ii) Images should be displayed using the usual Markdown `![...]` notation,
+but using the _leafname alone_ as the image label. Thus, if `InvertedJenny.jpg`
+is one of the image files in the `Images` subdirectory, it can be displayed thus:
+
+	Only 100 of the following have ever existed:
+	
+	![1918 24c US stamp of a Curtiss JN-4 plane but printed upside-down][InvertedJenny.jpg]
+
+In fact, to display just the image, it would be enough to write:
+
+	Only 100 of the following have ever existed:
+	
+	![InvertedJenny.jpg]
+
+but the full form is highly recommended since it provides alt-text for display
+by screen-readers for partially sighted users.
+
 ### Indexing
 
 An extension to Markdown provides for traditional TeX-style indexing markers:
