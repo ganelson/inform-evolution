@@ -107,15 +107,14 @@ Just as Inform documentation examples use the same file format as extension
 examples, Inform's test suite uses test cases to verify that the compiler is
 working which have the same file format as extension tests.
 
-## How to test an extension
+## Testing an extension at the command line
 
-At present, the only way to use the new testing facilities is with the
-command-line tool `intest`. A full manual for this can be seen [here](https://ganelson.github.io/intest/intest/index.html),
+One way to use the new testing facilities is with the command-line tool `intest`.
+A full manual for this can be seen [here](https://ganelson.github.io/intest/intest/index.html),
 but this is a lot to take in and it would need to be read alongside the
 testing script used for Inform testing ([which is here, but not simple to follow](https://github.com/ganelson/inform/blob/master/inform7/Internal/Delia/Main.delia)).
 So the following guide is meant to give a quick guide to testing an extension
-from the command line. (At some point, we expect these facilities to be
-available in the GUI apps too.)
+from the command line. (See below for testing in the apps.)
 
 To run a testing command from the command line, type something like:
 
@@ -278,6 +277,92 @@ see below, and prints out the iFiction file output by `inform7`.
 Testing an Inform project involves quite a lot of hidden work. If the above isn't
 revelatory enough, add `-verbose` before the testing command, but be prepared for
 a lot of output.
+
+## Testing an extension inside the GUI apps
+
+The front page of an extension's documentation contains a set of links, in
+table form, which are buttons for running some of the above testing actions.
+This will look nicer later, but something like:
+
+![Table of testing links](./images/IE0030-in1.png)
+
+These buttons carry out the actions `-test X`, `-bless X` and so on, where
+`X` is either `all` or a test case name. For example, clicking *test* in the *all at once*
+row might produce:
+
+![Intest report page](./images/IE0030-in2.png)
+
+How is this done? The answer is that the extension documentation contains
+links which make Javascript function calls, similar to those used to install
+or uninstall extensions, and following the same basic conventions. The app
+must trap such function calls and act on them.
+
+In particular, the app needs to respond to this function:
+
+	javascript:project().test("PATH", "COMMAND", "CASE")
+
+For example:
+
+	javascript:project().test("/Users/gnelson/dev/Testy.materials/Extensions/Graham Nelson/Whatever-v3.i7xd", "-test", "MansfieldPark")
+
+This tells the app to call intest like so:
+
+	intest PATH -internal INTERNAL -results FILE -set 'I7COMPILER = ...' -set 'I6COMPILER = ...' -set 'GINTERPRETER = ...' -set 'ZINTERPRETER = ...' -workspace WORKSPACE COMMAND CASE
+
+There's a lot to unpack here, so working through this command from left to right:
+
+- `intest` is one of the executables inside the app, like `inform7` and so on,
+but if we have the advanced setting ticked to `Use external Inform Core
+directory`, then we have to assume that `intest` is an external directory
+alongside `inform` (i.e. that these two repositories were cloned alongside each
+other with the same parent directory) and then use `intest/Tangled/intest`.
+
+- `PATH` is encoded exactly as it was for the `install()` command. Whatever the
+app did to translate that into a directory name, it can do the same here. It
+will indeed be a directory name, since it will be the location of a
+directory-format extension.
+
+- `-internal INTERNAL` should be handled exactly as it is when calling `inbuild`
+or `inform7` from the app. Note again that the location given depends on whether
+`Use external Inform Core directory` is ticked, just as it does when calling
+those other tools.
+
+- `-results FILE` is intended to be just like using the same option used if the
+app is asking `inbuild` to install or uninstall something. It's a location for a
+scratch HTML file to be written to, and can be anywhere the app thinks sensible.
+
+- The four settings give the locations of four executables: `inform7`,
+`inform6`, `glulxe` and `dumb-frotz`. The app should normally point to its own
+internal copies. (Up to now, the app hasn't contained (the testing version of)
+`glulxe` or `dumb-frotz`: it will now have to.) If the `Use external Inform Core
+directory` option is ticked, then give these as:
+
+	inform/inform7/Tangled/inform7
+	inform/inform6/Tangled/inform6
+	inform/inform6/Tests/Assistants/dumb-glulx/glulxe/glulxe
+	inform/inform6/Tests/Assistants/dumb-frotz/dumb-frotz
+
+- `-workspace WORKSPACE` should give a directory which `intest` can use as a
+playground, creating and destroying as many files or directories as it likes
+inside. When the command begins, `WORKSPACE` must exist, but it doesn't matter
+what it contains. When the command finished, assume nothing about what is then
+still in `WORKSPACE`.
+
+- The `COMMAND` will be a simple dashed switch, like `-test`. You needn't worry
+about escaping any characters here.
+
+- The `CASE` will be an `intest` wildcard like `all` or else a case name, and
+those are also character-safe, in that they have no spaces and no punctuation
+except for internal hyphens.
+
+`intest` will take some time to run, and will produce (a little) output to
+`stdout` and/or `stderr`, so it should ideally run in the `Console` pane of the
+app, like `inform7` or `inform6`. By default, if running multiple tests, it will
+run this concurrently on multiple processor cores, but if that's a problem for
+the app then it can use `intest` command-line switches to turn that off.
+
+When it completes the tests, the app should display the `FILE` page in the
+`Results` pane of the app.
 
 ## Optional header lines
 
