@@ -337,10 +337,10 @@ internal copies. (Up to now, the app hasn't contained (the testing version of)
 `glulxe` or `dumb-frotz`: it will now have to.) If the `Use external Inform Core
 directory` option is ticked, then give these as:
 
-	inform/inform7/Tangled/inform7
-	inform/inform6/Tangled/inform6
-	inform/inform6/Tests/Assistants/dumb-glulx/glulxe/glulxe
-	inform/inform6/Tests/Assistants/dumb-frotz/dumb-frotz
+      inform/inform7/Tangled/inform7
+      inform/inform6/Tangled/inform6
+      inform/inform6/Tests/Assistants/dumb-glulx/glulxe/glulxe
+      inform/inform6/Tests/Assistants/dumb-frotz/dumb-frotz
 
 - `-workspace WORKSPACE` should give a directory which `intest` can use as a
 playground, creating and destroying as many files or directories as it likes
