@@ -184,7 +184,11 @@ A typical results page might look like this:
 
 	[Install]
 
-The `[Install]` button would be a friendly green colour. If clicked, this would send a signal back to the app - either by an onclick Javascript call trapped by the app, or by using a link to some special `inform://...` URL (yet to be decided) - to tell the app that the user wants to go ahead.
+The `[Install]` button is a friendly green colour, and is a link to the Javascript call:
+
+	javascript:project().confirmAction()
+
+This is a signal to the app that the user wants to go ahead.
 
 If `inbuild` finds a damaged or dubious extension, it will say why and not offer an install button; if it finds an extension which the user might not want to install after all - a duplicate of one already there, for example - a warning will be shown and a red button reading `Install Anyway` would be shown.
 
@@ -247,18 +251,21 @@ Again, fall back on the above page if no such file exists.
 
 (In principle, `inbuild` could now choose to generate `file:` links rather than `inform:` ones, but such links would break if the user moved the project around in the file system, so let's keep the `inform:` logic for the moment, but simply move it to the materials area.)
 
-##### New install and uninstall Javascript calls
+##### New install, uninstall and modernise Javascript calls
 
-The Extensions index page now sometimes includes buttons to install an extension (if it is used by a project but currently lives in the legacy area), or to uninstall an extension (if it is installed in a project but not currently used by it). These are displayed using arrow emoji, and are included in the key.
+The Extensions index page now sometimes includes buttons to install an extension (if it is used by a project but currently lives in the legacy area), or to uninstall an extension (if it is installed in a project but not currently used by it), or to modernise it (if it is both stored in the materials folder and is currently in the old single file format).
 
 They are hyperlinked to Javascript function calls as follows:
 
 	javascript:project().install("/Users/gnelson/Library/Inform/Extensions/Juhana%20Leinonen/Bulky%20Items.i7x")
 	javascript:project().uninstall("/Users/gnelson/work/Inform/Whatever.materials/Extensions/Juhana%20Leinonen/Svelte%20Items.i7xd")
+	javascript:project().modernise("/Users/gnelson/work/Inform/Whatever.materials/Extensions/Juhana%20Leinonen/Antique%20Items.i7x")
 
 In response to `install(...)`, the app should behave as if the user had selected the menu item to install this extension.
 
 In response to `uninstall(...)`, the app should perform the exact same action, but with the inbuild option being `-uninstall` rather than `-install`, all other command-line switches being the same.
+
+In response to `modernise(...)`, the app should perform the exact same action, but with the inbuild option being `-run-moderniser` rather than `-install`, all other command-line switches being the same. *Note:* not `-modernise`, which is intended for command-line users and not for the apps. The moderniser has the same two-stage pattern with confirmation that the installer and uninstaller have, so the app code necessary should only be a small variation on those.
 
 ### Legacy issues
 
