@@ -129,3 +129,6 @@ Considerations:
 5. People may find the behaviour of the Glulx `@random` opcode more useful than
     the I6 `random` function, so we should also provide a function that mimics
     the `@random` opcode, but using the new RNG.
+
+6. The Inform-to-C mode should also be checked and updated so that its `random`
+    and `@random` are reliable.
