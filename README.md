@@ -10,6 +10,7 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
+[(IE-0034) A new Glulx random algorithm](proposals/0034-glulx-random.md)                                 | 29 October 2023   | [PR#34](https://github.com/ganelson/inform-evolution/pull/34)
 [(IE-0033) Kit-set properties](proposals/0033-kit-set-properties.md)                                     | 20 September 2023 | [PR#33](https://github.com/ganelson/inform-evolution/pull/33)
 [(IE-0032) Run-time problem reform](proposals/0032-run-time-problem-reform.md)                           | 26 August 2023    | [PR#32](https://github.com/ganelson/inform-evolution/pull/32)
 [(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023     | [PR#30](https://github.com/ganelson/inform-evolution/pull/30)
