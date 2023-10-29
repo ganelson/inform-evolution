@@ -9,7 +9,7 @@
 ## Summary
 
 Existing Glulx interpreters can have flawed random implementations, so move the
-implementation of Inform's `random`` function inside Architecture32Kit so that
+implementation of Inform's `random` function inside Architecture32Kit so that
 we can ensure it is reliable.
 
 ## Motivation
