@@ -15,13 +15,13 @@ we can ensure it is reliable.
 ## Motivation
 
 In September 2023 it was revealed in [a forum discussion](https://intfiction.org/t/lack-of-randomness-sometimes-when-compiling-for-glulx/64533)
-that some Glulx interpters have very flawed random number generators. In particular,
-when requesting a random number between 1 and N, if N is a power of 2, then there
-will only be N distinct sequences. Even worse, the initial numbers of those sequences
-are often the same, the example code showing that when requesting a random number
-between 1 and 4, the first number will always be a 3. This could have dire
-consequences: if a murder mystery game picked randomly between 4 suspects, in these
-interpreters it would always pick the third suspect.
+that some Glulx interpreters have very flawed random number generators. In
+particular, when requesting a random number between 1 and N, if N is a power of
+2, then there will only be N distinct sequences. Even worse, the initial numbers
+of those sequences are often the same, the example code showing that when
+requesting a random number between 1 and 4, the first number will always be a 3.
+This could have dire consequences: if a murder mystery game picked randomly
+between 4 suspects, in these interpreters it would always pick the third suspect.
 
 The affected interpreters include Glulxe in Windows, and Git in all OSes. These
 interpreters have since been patched to use much more reliable RNGs, but it can
@@ -65,9 +65,9 @@ we will do to fix this problem, replacing it with a function in Architecture32Ki
 
 Considerations:
 
-1. Ideally we want a RNG that produces high quality random numbers, has decently
+1. Ideally we want an RNG that produces high quality random numbers, has decently
     high performance, and does not use excessive amounts of memory. The [Xorshift](https://en.wikipedia.org/wiki/Xorshift)
-    family of RNGs fit these criteria. Glulxe and Git switched to the
+    family of RNGs fits these criteria. Glulxe and Git switched to the
     [xoshiro128** algorithm](https://prng.di.unimi.it/), so we might as well
     use it too.
 
@@ -78,8 +78,8 @@ Considerations:
     it with `@random`. Even though the interpreter's RNG may be flawed, one call
     with a high enough range is probably much safer than calling it with a range
     of only 4 or 8. It has not yet been determined whether a full 32-bit `@random`
-    call is safe in affected interpeters, or instead whether it should make a
-    anged call using a high prime number, or if any priming is necessary.
+    call is safe in affected interpreters, or instead whether it should make a
+    ranged call using a high prime number, or if any priming is necessary.
 
 3. We need to replace the Inform 6 `random` function rather than introducing a
     new random function so that all randomness, even in extensions, uses the new
@@ -110,7 +110,7 @@ Considerations:
     Inform 7 should consistently reject the multiple-argument form of `random`
     at all times.
 
-4. There is a further compilication: the Glulx I6 implementation of `random`
+4. There is a further complication: the Glulx I6 implementation of `random`
     does not match the behaviour described in the DM4. Instead of negative or
     zero values seeding the interpreter's RNG, it is passed directly to [the Glulx
     `@random` opcode](https://www.eblong.com/zarf/glulx/Glulx-Spec.html#opcodes_rand),
