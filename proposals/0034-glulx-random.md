@@ -81,7 +81,12 @@ Considerations:
     call is safe in affected interpreters, or instead whether it should make a
     ranged call using a high prime number, or if any priming is necessary.
 
-3. We need to replace the Inform 6 `random` function rather than introducing a
+3. Unless the new RNG is in predictable mode, it will need to be reseeded from
+    `@random` after restoring or undoing. This means an extra variable will be
+    needed to record whether the RNG is in 'random' or 'predictable' mode, as
+    the RNG's own state would otherwise be indistinguishable.
+
+4. We need to replace the Inform 6 `random` function rather than introducing a
     new random function so that all randomness, even in extensions, uses the new
     algorithm.
     
@@ -110,7 +115,7 @@ Considerations:
     Inform 7 should consistently reject the multiple-argument form of `random`
     at all times.
 
-4. There is a further complication: the Glulx I6 implementation of `random`
+5. There is a further complication: the Glulx I6 implementation of `random`
     does not match the behaviour described in the DM4. Instead of negative or
     zero values seeding the interpreter's RNG, it is passed directly to [the Glulx
     `@random` opcode](https://www.eblong.com/zarf/glulx/Glulx-Spec.html#opcodes_rand),
@@ -126,9 +131,9 @@ Considerations:
     between -8 and 1, so we don't need to be concerned with preserving the I6
     behaviour of `random` in Glulx; instead we should make it conform to the DM4.
 
-5. People may find the behaviour of the Glulx `@random` opcode more useful than
+6. People may find the behaviour of the Glulx `@random` opcode more useful than
     the I6 `random` function, so we should also provide a function that mimics
     the `@random` opcode, but using the new RNG.
 
-6. The Inform-to-C mode should also be checked and updated so that its `random`
+7. The Inform-to-C mode should also be checked and updated so that its `random`
     and `@random` are reliable.
