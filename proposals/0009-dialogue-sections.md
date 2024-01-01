@@ -278,15 +278,27 @@ An example of using `if dialogue about X intervenes` would be a rule like so:
 	Before examining a thing (called T):
 		if dialogue about T intervenes, stop the action.
 
-When the director is active, beats are also performed:
+When the director is active, beats are also performed if there is a lull in
+conversation (in that no other dialogue has been performed this turn), and if
+the director can find a suitable beat to perform. "Suitable" means that:
 
-- if there is a lull in conversation (in that no other dialogue has been
-performed this turn), and if the director can find a beat to perform which
-is both available and relevant, and either has not been performed before
-or is recurring.
+- the beat either has not been performed before or is recurring, and
+- all required speakers for the beat are within earshot.
+
+The director will if possible try to find a suitable beat for which any "if" and
+"unless" conditions, or sequencing conditions, have been met. It will not
+choose a beat for which the player is the first speaker unless that beat
+is marked as `involuntary`.
+
+If the director fails to find such a beat, it will next try to find a suitable
+beat which is marked as `spontaneous`, and will perform that. This is considered
+a complete change of subject, so if the director has to do this then it will
+also empty the list of live conversational subjects.
+
+Failing both attempts, the director will give up.
 
 A new rule in the turn sequence rulebook, `dialogue direction rule`,
-handles this.
+handles all of this.
 
 The director sometimes has to manage quite a complex situation, especially
 if dialogue beats are causing each other to be performed. The new debugging
@@ -382,8 +394,24 @@ which the source text declares them.
 - `recurring` or `non-recurring`. Can the director choose this beat more
 than once in the same play-through? (Note that this same property has the
 same name, and a similar meaning, for scenes and lines.) By default, no.
-- `spontaneous` or `unspontaneous`. Can the director bring this up out of
-nowhere to fill a gap in the conversation? By default, no.
+- `voluntary` or `involuntary`. This affects only beats for which the
+player is the first speaker, and only when the director is in active mode.
+Can such a beat be triggered just because it seems relevant? A voluntary
+beat can only be started in this way if the person playing the story typed
+some appropriate command. By default, beats are voluntary.
+- `spontaneous` or `unspontaneous`. Only has an effect when the director
+is in active mode. Can the director bring this beat up out of nowhere to
+fill a gap in the conversation, even though it has no relevance at the
+moment? By default, no.
+
+Note that a recurring beat does not automatically make the lines (or choices)
+within it recurring: in fact, the default is that they will not be. If that
+convention annoys you, the following rule will reverse it:
+
+	When play begins:
+		repeat with L running through dialogue lines:
+			if L is in a recurring dialogue beat:
+				now L is recurring.
 
 Being properties, these can be changed during play using `now`:
 
@@ -1220,7 +1248,10 @@ In the second sort, there's a run of action-matching options, like so:
 With this second sort, there's no offer as such: the player can type a command
 in traditional command-parsing form, and then we see what she has done and
 react accordingly. An `-- otherwise` clause matches only if none of the others
-do, and is optional.
+do, and is optional. It is a shorthand for `-- before doing something` if the
+previous choices included a `-- before ...`, or for `-- instead of doing something`
+if the previous choices included an `-- instead of` but no `-- before ...`,
+or for `-- after doing something` if all the previous choices were `-- after ...`.
 
 In each case the `(DETAILS)` are optional, and consist of one or more clauses.
 As with beats and lines, these can be divided by full stops or semicolons.
