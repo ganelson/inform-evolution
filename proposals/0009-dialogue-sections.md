@@ -283,10 +283,12 @@ conversation (in that no other dialogue has been performed this turn), and if
 the director can find a suitable beat to perform. "Suitable" means that:
 
 - the beat either has not been performed before or is recurring, and
-- all required speakers for the beat are within earshot.
+- all required speakers for the beat are within earshot, and
+- any `if`/`unless` conditions are met, and
+- any sequencing conditions are met.
 
-The director will if possible try to find a suitable beat for which any "if" and
-"unless" conditions, or sequencing conditions, have been met. It will not
+The director will if possible try to find a suitable beat which is also relevant
+to the currently live conversational subjects, except that it will not
 choose a beat for which the player is the first speaker unless that beat
 is marked as `involuntary`.
 
