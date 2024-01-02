@@ -1218,7 +1218,7 @@ of performance" below), but will pause at points where a decision from the
 player is called for.
 
 Decisions consist of a run of one or more choices written `-- ...`. There
-are two forms of choice: textual and action-based.
+are three forms of choice: textual, action-based and automatic.
 
 	-- (DETAILS) "TEXT"
 
@@ -1257,6 +1257,57 @@ or for `-- after doing something` if all the previous choices were `-- after ...
 
 In each case the `(DETAILS)` are optional, and consist of one or more clauses.
 As with beats and lines, these can be divided by full stops or semicolons.
+
+The third sort of choice is "automatic", which means that the dialogue system
+chooses an option automatically, i.e., without consulting the player in any way.
+For example:
+
+	-- step through
+
+		Liza: "One."
+
+	-- or
+
+		Liza: "Two."
+	
+	-- or
+
+		Liza: "Three."
+
+In an automatic choice, the first choice explains how to make the decision, and
+the rest must all be just `-- or`. In this case, what `step through` means is
+that the first time this choice is encountered, the first option is chosen (so
+Liza says "One."); the second time, the second option; the third time, the third
+option; and on the fourth and subsequent times, nothing is done.
+
+An alternative is:
+
+	-- cycle through
+
+		Liza (recurring): "One."
+
+	-- or
+
+		Liza (recurring): "Two."
+	
+	-- or
+
+		Liza (recurring): "Three."
+
+This is like `step through` except that the fourth time, we go back to Liza
+saying "One.", and the fifth time she says "Two.", and so on, round and round.
+Note that the choices in an automatic choice are always recurring, but that
+any dialogue within them is not. This is why we have to mark Liza's lines as
+`recurring` here.
+
+There are altogether five of these automatic mechanisms:
+
+- `step through`: each in turn, but only once through, then do nothing
+- `step through and stop`: each in turn, but repeat the last one indefinitely
+- `cycle through`: each in turn, going back to the start after the last
+- `shuffle through`: a random permutation, and then another random
+permutation when that completes, and so on
+- `choose randomly`: make an entirely random choice every time
 
 ### The if and unless clauses for a choice
 
