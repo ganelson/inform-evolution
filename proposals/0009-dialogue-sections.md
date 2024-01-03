@@ -140,6 +140,12 @@ This annotation throws a problem if used on other levels of heading, such as
 chapters. Since sections are the lowest-level headings in Inform source text,
 it follows that a dialogue section cannot be interrupted by a subheading.
 
+Dialogue sections can be marked with the name of a scene, in this case `Haunting`,
+to say that everything in the section can only be performed when that scene is
+happening:
+
+	Section 2 - On the Battlements (dialog during Haunting)
+
 Dialogue sections are not allowed to contain any of the usual ingredients of
 Inform source text (assertion sentences, rules, tables, equations). Instead
 they must contain only the following ingredients, used over and over, each one
