@@ -1543,6 +1543,24 @@ amounts to a complicated sub-scene which is only needed in some situations.
 
 		Narration: "Goodness, back at that wardrobe you only dimly remember."
 
+`B` does not need to be a literal beat name: it can also be the name of a
+variable, as in `the redirected beat` in the following example:
+
+	The redirected beat is a dialogue beat that varies. The redirected beat is
+	the Queensryche beat.
+
+	Section 1 - Specific chat (dialogue)
+
+	(This is the starting beat.)
+
+	Example Friend: "Shall we listen to some music?"
+
+	-> perform the redirected beat
+
+	(This is the Queensryche beat.)
+
+	Example Friend: "I so like Queensryche, even without the diacritic."
+
 ### Flow to a stop
 
 `-> stop` causes the current beat to finish right here, and is convenient
