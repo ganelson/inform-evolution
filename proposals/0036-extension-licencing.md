@@ -29,13 +29,13 @@ The existing Inform documentation is both vague and cavalier about presuming tha
 
 ## Impact on existing projects
 
-None.
+None, unless they have for some reason defined a `COPYRIGHT` command already.
 
 ## Source text changes
 
 The following new special meaning is provided for assertion sentences:
 
-	The licence/license/copyright/origin/rights history for this extension/story is <quoted-text>.
+	The licence/license/copyright/origin URL/rights history for this extension/story is <quoted-text>.
 
 `licence` = `license`, so this can make four textual settings.
 
@@ -45,7 +45,7 @@ The following new special meaning is provided for assertion sentences:
 
        story licence
        story copyright
-       story origin
+       story origin URL
        story rights history
 
    These then appear on the Library Card in the Index. (To think about: should they appear in the iFiction record?)
@@ -57,17 +57,17 @@ The following new special meaning is provided for assertion sentences:
        origin = ""
        rights history = ""
 
-4) Any licence text is accepted.
+4) The licence text must be _either_ `Unspecified` _or_ one of the machine-readable licence codes listed at: [https://spdx.org/licenses/](https://spdx.org/licenses/)
 
 5) The copyright text must have the form `<name> DDDD` or `<name> DDDD-EEEE`, where DDDD >= 1980 and EEEE > DDDD, and must not contain a `©` symbol or the substring `(c)` or `(C)`.
 
-6) The origin text, if given, must be a URL beginning `http://` or `https://`.
+6) The origin URL text, if given, must be a URL beginning `http://` or `https://`.
 
 7) The rights history can be any text.
 
 For example:
 
-	The licence for this extension is "CC-BY 4.0".
+	The licence for this extension is "CC-BY-4.0".
 	The copyright for this extension is "Emily Short 2006-2024".
 	The origin for this extension is "https://www.emshort.com/inform".
 	The rights history for this extension is "Adapted by permission from sample code by Adam Cadre in 2006."
@@ -108,12 +108,11 @@ The Inform documentation will give guidance on what is good practice - in partic
 
 The Public Library will only accept extensions whose licences are on a white-listed set, though, and we should probably say what that set is in the documentation. I propose the following whitelist as a starting point:
 
-- CC0
-- CC-BY 4.0
-- The Unlicense
-- BSD 0-Clause
-- MIT No Attribution
-- Artistic License 2.0
+- `CC0-1.0`, i.e., CC0
+- `CC-BY-4.0`
+- `Unlicense`, i.e., The Unlicense
+- `MIT-0`, i.e., MIT No Attribution
+- `Artistic-2.0`, i.e., Artistic License 2.0
 
 I suggest that documentation encourage people to use the least restrictive licence possible, but make the point that the Public Library will, as a matter of policy, not accept an extension where the curators feel that something unethical has been done. Although a licence might allow the author's name to be removed, for example, or for an extension to be hijacked to make some political point (e.g. about gender), we would choose not to host the result on the PL, even though it was legal as a derivative work by the terms of the licence.
 
@@ -124,3 +123,13 @@ As now, the text output by the `VERSION` command will be the place where the con
 For example:
 
 	Hypothetical Extension by Emily Short v2.3.12 is included here under the terms of CC-BY 4.0. Adapted by permission from sample code by Adam Cadre in 2006. See: https://www.emshort.com/inform
+	...
+	For information about and links to full text of licenses, see: https://spdx.org/licenses/
+
+The command verb `COPYRIGHT` will now be aliased to `VERSION`.
+
+## Releasing changes
+
+All releases will now generate a file LICENSES.txt which essentially consists of the `VERSION` output.
+
+If the release is along with a website, this will be linked in the website.
