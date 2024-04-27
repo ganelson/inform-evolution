@@ -1118,11 +1118,11 @@ Check taking's Can't take items out of play rule will be removed; the access thr
 
 As discussed variously in:
 
-[Hybrid container/supporter and darkness modeling](https://intfiction.org/t/hybrid-container-supporter-and-darkness-modeling-i7/45688)
-[More weirdness with enterable supporters that are part of things](https://intfiction.org/t/more-weirdness-with-enterable-supporters-that-are-part-of-things/45991)
-[An issue with the U-Stor-It example](https://intfiction.org/t/an-issue-with-the-u-stor-it-example/63869/)
-[I7-1959: (Mantis 1995) Enterable supporter part of something else creates "local ceiling" value not well-handled by Standard Rule](https://inform7.atlassian.net/browse/I7-1959)
-[I7-2063: (Mantis 2100) an actor pushing an enterable supporter with the player on it yields a spurious room heading](https://inform7.atlassian.net/browse/I7-2063)
+- [Hybrid container/supporter and darkness modeling](https://intfiction.org/t/hybrid-container-supporter-and-darkness-modeling-i7/45688)
+- [More weirdness with enterable supporters that are part of things](https://intfiction.org/t/more-weirdness-with-enterable-supporters-that-are-part-of-things/45991)
+- [An issue with the U-Stor-It example](https://intfiction.org/t/an-issue-with-the-u-stor-it-example/63869/)
+- [I7-1959: (Mantis 1995) Enterable supporter part of something else creates "local ceiling" value not well-handled by Standard Rule](https://inform7.atlassian.net/browse/I7-1959)
+- [I7-2063: (Mantis 2100) an actor pushing an enterable supporter with the player on it yields a spurious room heading](https://inform7.atlassian.net/browse/I7-2063)
 
 there are multiple bugs and issues surrounding enterable containers and supporters, especially when incorporation is also involved.
 
@@ -1187,3 +1187,113 @@ The level of granularity in the World Model's consideration of the visibility an
 
 At the heart of Otis' revisions is to instead base the level of granularity on ParentOfCoreOf and to have the Access through barriers rule use a new CommonHolder routine based on ParentOfCoreOf in the same way that CommonAncestor uses CoreOfParentOfCoreOf. This sounds like an alarming change, but in practice thus far it works well.
 
+## ListWriter revisions
+
+### Conjunctions
+
+#### Infelicities in Inform 10.1
+
+1. The List Writer Internal Rule Response C, " and " is both the thing that is placed before the last element of the list *and* what’s used in some combinations of parenthetical traits for inventory items. So if an author had set it to " or " for whatever good reason, the player's inventory might end up saying, e.g.,
+
+```
+You are carrying:
+
+box (providing light and being worn, or open but empty)
+```
+
+#### Improvements
+
+To make these separate cases, a new List Writer Internal Rule Response Z, which is also initially " and " has been created for the traits of items in inventory case; rule response C will continue to be the conjunction prior to the final element when writing a list of more than one element. (This is Inform's first rule response Z.)
+
+### Indicating open/closed/empty in inventory/room description details
+
+#### Infelicities in Inform 10.1
+
+The determination of when to indicate what is idiosyncratic.
+
+These are the existing WriteAfterEntry results for empty (or at least not holding anything that isn't concealed) containers, varying on transparency, openability, and openness. In these lists, † will indicate containers that are both closed and not openable, a probably undesirable and irrelevant combination.
+
+In inventory:
+
+-  transparent open openable container (open but empty)
+-  transparent closed openable container (closed)
+-  transparent open not openable container (empty)
+-  transparent closed not openable container (empty) †
+-  opaque open openable container. (open but empty)
+-  opaque open not openable container [ no comment ]
+-  opaque closed openable container (closed)
+-  opaque closed not openable container [ no comment ] †
+
+In room description details:
+
+-  transparent open openable container (empty)
+-  transparent closed openable container (closed and empty)
+-  transparent open not openable container (empty)
+-  transparent closed not openable container (closed and empty) †
+-  opaque open openable container (empty)
+-  opaque open not openable container (empty)
+-  opaque closed openable container (closed)
+-  opaque closed not openable container (closed) †
+
+In every case of a closed container, "closed" is mentioned, except, in inventory, for the (pathological) closed/not-openable cases.
+
+In inventory open is mentioned for openable containers, but not not those that are always open. This seems to be intentional on the grounds that if it can't change, it's not relevant to specify it. We never hear about openness in room description details.
+
+In room description details, "empty" is noted in every case it could be perceived, i.e., all but the closed/opaque case. But in inventory, it's omitted in two cases where it would be perceptible: transparent/closed/openable and opaque/open/not-openable.
+
+#### Improvements
+
+To make reporting more consistent, in both inventory and room description details:
+
+- *all* perceptibly empty containers (i.e., other than closed/opaque) will be marked "empty"
+- *all* openable containers will be marked *open* or *closed*
+
+### Comma/rule response reform
+
+#### Infelicities in Inform 10.1
+
+For some combinations of traits, the existing output is wrong or sounds stilted. The worst are:
+
+Without the serial comma option active:
+
+- providing light and being worn and closed and locked
+
+With the serial comma option active:
+
+- being worn, and closed
+- being worn, and open
+- providing light, and closed
+- providing light, and open
+
+#### Improvements
+
+"open but empty", in particular, remains a special case, but otherwise things are consistently joined by the expected rules:
+
+- if there's more than one thing, "and" precedes the final term
+- if the serial comma option is active and there are more than *two* things, a comma precedes the "and" before the final term
+- if there are more than two terms, there's a comma between each term except, if the serial comma option is not active, the last two terms
+
+Some representative examples of the new output:
+
+Without the serial comma option active:
+
+- being worn and open but empty
+- being worn, closed and locked
+- providing light and open but empty
+- providing light, being worn and open
+- providing light, being worn and open but empty
+- providing light, being worn, closed and locked
+
+With the serial comma option active:
+
+- being worn and closed
+- being worn and open
+- providing light and closed
+- providing light and open
+- providing light and open but empty
+- providing light, being worn, and open
+- providing light, being worn, and open but empty
+- providing light, being worn, closed, and locked
+- providing light, closed, and locked
+
+A complicating factor is that the existing List Writer Internal rule responses don't include simply "locked": it only occurs in combination with others. But it *did* have "closed" at *both* E and O, so the redundant "closed" at O has been replaced with "locked". Since it's now the case that the only combination that needs its own rule response is the exceptional "open but empty", several are no longer used: G, H, I, J, K, and P.
