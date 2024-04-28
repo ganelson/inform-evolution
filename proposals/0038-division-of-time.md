@@ -26,9 +26,9 @@ that `showme 10 minutes plus 5 minutes` produces `time: 12:15 am`, for
 example.
 
 Almost all declarations of properties or phrases which involve `time`
-understand this as _either_ a time of day _or_ a time period, and so the
-fact that existing Inform allows these to be confused just leads to
-potentially strange situations. For example,
+are written by somebody who has in mind _either_ a time of day _or_ a time
+period, and so the fact that existing Inform allows these to be confused
+just leads to potentially strange situations. For example,
 
 	To decide which time is the time since (sc - scene) began: ...
 
@@ -120,7 +120,7 @@ the kind continues to work as it should.
 
 For the new kind, `interval` or `duration` were both possibilities, but
 these are relatively common words to be redefining, and they both have other
-interpretations (such as the interval at the theatre). `diurnality` was less
+interpretations (such as the interval at the theatre). `diuturnity` was less
 likely to cause name-clashes, but also less familiar to authors born after
 1450.
 

@@ -26,7 +26,7 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
-[(IE-0038) Division of time](proposals/0038-division-of-time.md)                                         | 28 April 2024   | [PR#37](https://github.com/ganelson/inform-evolution/pull/38)
+[(IE-0038) Division of time](proposals/0038-division-of-time.md)                                         | 28 April 2024   | [PR#38](https://github.com/ganelson/inform-evolution/pull/38)
 [(IE-0037) Relative kinds](proposals/0037-relative-kinds.md)                                             | 28 April 2024   | [PR#37](https://github.com/ganelson/inform-evolution/pull/37)
 [(IE-0035) Ambiguously plural property](proposals/0035-ambiguously-plural-property.md)                   | 18 March 2024   | [PR#35](https://github.com/ganelson/inform-evolution/pull/35)
 [(IE-0031) BANISH debugging command](proposals/0031-banish.md)                                           | 9 August 2023   | [PR#31](https://github.com/ganelson/inform-evolution/pull/31)
