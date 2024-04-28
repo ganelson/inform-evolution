@@ -81,7 +81,7 @@ Tokens.i6t: `DECIMAL_TOKEN()`, `FLOAT_TOKEN()`.
 
 Time.i6t: `TIME_TOKEN()`.
 
-Actions.i6t: `DA_Topic()`.
+Actions.i6t: `UNDERSTANDING_TY_Say()`.
 
 Tests.i6t: `TestKeyboardPrimitive()`.
 
