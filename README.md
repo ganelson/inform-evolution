@@ -10,8 +10,6 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
-[(IE-0036) Extension licencing](proposals/0036-extension-licencing.md)                                   | 4 April 2024      | [PR#36](https://github.com/ganelson/inform-evolution/pull/36)
-[(IE-0017) Apps and extensions](proposals/0017-apps-and-extensions.md)                                   | 15 April 2023     | [PR#17](https://github.com/ganelson/inform-evolution/pull/17)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023   | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
 [(IE-0012) Glk foundations](proposals/0012-glk-foundations.md)                                           | 23 Sept 2022      | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
 
@@ -21,6 +19,7 @@ Proposal                                                                        
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
 [(IE-0038) Division of time](proposals/0038-division-of-time.md)                                         | 28 April 2024   | [PR#38](https://github.com/ganelson/inform-evolution/pull/38)
 [(IE-0037) Relative kinds](proposals/0037-relative-kinds.md)                                             | 28 April 2024   | [PR#37](https://github.com/ganelson/inform-evolution/pull/37)
+[(IE-0036) Extension licencing](proposals/0036-extension-licencing.md)                                   | 4 April 2024      | [PR#36](https://github.com/ganelson/inform-evolution/pull/36)
 [(IE-0035) Ambiguously plural property](proposals/0035-ambiguously-plural-property.md)                   | 18 March 2024   | [PR#35](https://github.com/ganelson/inform-evolution/pull/35)
 [(IE-0033) Kit-set properties](proposals/0033-kit-set-properties.md)                                     | 20 September 2023 | [PR#33](https://github.com/ganelson/inform-evolution/pull/33)
 [(IE-0032) Run-time problem reform](proposals/0032-run-time-problem-reform.md)                           | 26 August 2023    | [PR#32](https://github.com/ganelson/inform-evolution/pull/32)
@@ -36,6 +35,7 @@ Proposal                                                                        
 [(IE-0021) No automatic plural synonyms use option](proposals/0021-no-automatic-plural-synonyms.md)      | 7 June 2023     | [PR#21](https://github.com/ganelson/inform-evolution/pull/21)
 [(IE-0019) Unicode command parser](proposals/0019-unicode-command-parser.md)                             | 15 May 2023     | [PR#19](https://github.com/ganelson/inform-evolution/pull/19)
 [(IE-0018) Use options and kit configuration](proposals/0018-use-options-and-kit-configuration.md)       | 2 May 2023      | [PR#18](https://github.com/ganelson/inform-evolution/pull/18)
+[(IE-0017) Apps and extensions](proposals/0017-apps-and-extensions.md)                                   | 15 April 2023     | [PR#17](https://github.com/ganelson/inform-evolution/pull/17)
 [(IE-0016) Language extensions reform](proposals/0016-language-extensions-reform.md)                     | 5 February 2023 | [PR#16](https://github.com/ganelson/inform-evolution/pull/16)
 [(IE-0014) Inter names for rulebooks](proposals/0014-inter-names-for-rulebooks.md)                       | 23 October 2022 | [PR#14](https://github.com/ganelson/inform-evolution/pull/14)
 [(IE-0013) Annotations for kit linking](proposals/0013-annotations-for-kit-linking.md)                   | 10 October 2022 | [PR#13](https://github.com/ganelson/inform-evolution/pull/13)
