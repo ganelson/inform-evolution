@@ -69,8 +69,10 @@ Inside the kit's `kinds` directory, the following is `Testy.neptune`:
 		instance: chartreusey lavender = MAUVE_COL  =  101
 	}
 
-At least one instance must be provided, and they must be given in strictly
-increasing value order. Values are actually optional. This alternative:
+At least one instance must be provided. Values are actually optional; any
+instances without values will be numbered after those with values.
+
+This alternative:
 
 		instance: green = GREEN_COL
 		instance: taupe = TAUPE_COL
@@ -82,7 +84,7 @@ would create `green` and `taupe` with values 1 and 2. This:
 		instance: grey = GREY_COL = 20
 		instance: pink = PINK_COL
 
-creates the values as 10, 11, 20, 21.
+creates the values as 10, 21, 20, 22.
 
 Values can alternatively be given in Inform 6 hexadecimal or binary notation:
 
