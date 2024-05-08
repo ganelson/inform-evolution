@@ -106,6 +106,8 @@ under this proposal `is accessible to Inter as` is used for meaning (1), and
 	The printed name property is defined by Inter as "short_name".
 	The initialise memory rule is defined by Inter as "INITIALISE_MEMORY_R".
 	The understand token a time period is defined by Inter as "RELATIVE_TIME_TOKEN".
+	The Table of Fizzy Drinks is accessible to Inter as "TABLE_FIZZ".
+	The niceness column table column is accessible to Inter as "NICENESS_COLUMN".
 
 The Inform examples, built-in extensions and test cases have all had their
 usages of `translates into Inter as` replaced with the appropriate syntax in
