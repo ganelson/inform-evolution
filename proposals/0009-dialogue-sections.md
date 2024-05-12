@@ -220,21 +220,21 @@ It certainly allows scope for nested choices. For example:
 
 	-- "Pretend everything is fine"
 	
-		Marcellus: "It's just Scotch mist, blown east from old Aberdeen."
-		
-		Bernardo: "Nay, sire, it's magical!"
-		
-		-- (if the shortbread is carried) "Assuage his night terrors"
-		
-			Marcellus (before Bernardo eating the shortbread): "Here, take this old Highlands cure."
+	Marcellus: "It's just Scotch mist, blown east from old Aberdeen."
+	
+	Bernardo: "Nay, sire, it's magical!"
+	
+	-- (if the shortbread is carried) "Assuage his night terrors"
+	
+		Marcellus (before Bernardo eating the shortbread): "Here, take this old Highlands cure."
 
-			Bernardo (now Bernardo is not scared): "Hoots mon, that's better."
+		Bernardo (now Bernardo is not scared): "Hoots mon, that's better."
 
-		-- "Reprimand Bernardo"
+	-- "Reprimand Bernardo"
 
-			Marcellus: "I don't care if it's haunted, guard the Battlements."
-		
-		Polonius (now Polonius is in the Battlements): "I never come up here."
+		Marcellus: "I don't care if it's haunted, guard the Battlements."
+	
+	Polonius (now Polonius is in the Battlements): "I never come up here."
 
 Polonius's line of dialogue is interesting as an example here: this is where
 the beat continues after going through either one of the two previous choices.
@@ -981,6 +981,12 @@ be accessed using the phrase `list of speakers required by (B - dialogue beat)`
 The original draft of this proposal had a more complicated algorithm for
 determining the required speaker list, but it seems better for the author
 to have to write explicitly what's wanted in any case of possible doubt.
+
+### The fully recurring clause for a cue
+
+If a cue describes itself as `fully recurring`, then it is not only given
+the `recurring` property — just as if it had said `recurring` — but passes
+that property down to all of the lines and choices within it.
 
 ### Supplying properties as clauses for a cue
 

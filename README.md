@@ -10,6 +10,7 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
+[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023      | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023   | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
 [(IE-0012) Glk foundations](proposals/0012-glk-foundations.md)                                           | 23 Sept 2022      | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
 
@@ -51,7 +52,6 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
-[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023      | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
 _(IE-0011) New data structures_ (still drafting: see pull request)                                       | --              | [PR#11](https://github.com/ganelson/inform-evolution/pull/11)
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022    | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022     | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)
