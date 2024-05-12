@@ -126,7 +126,12 @@ and then two question marks, as would otherwise have happened:
 Note that Smiling Cat Face With Heart-Shaped Eyes is Unicode 0x1f63b, so is
 not representable in 16 bits.
 
-9. Unicode characters beyond 0x20000 can, at the user's own risk, be written
+9. The alternative notations `unicode U+xxxx`, giving the number in hexadecimal,
+and `unicode "C"`, quoting the character directly in double-quotes, are also
+now permitted. Thus `unicode U+1F63B`, `unicode 128571` and `unicode "😻"` are
+all synonymous with `unicode Smiling Cat Face With Heart-Shaped Eyes`.
+
+10. Unicode characters beyond 0x20000 can, at the user's own risk, be written
 numerically. In practice, they really aren't very useful, because hardly
 any fonts provide any of their characters.
 
