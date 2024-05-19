@@ -139,7 +139,6 @@ like this:
 					...
 			Languages
 				French
-					flag.png
 					Index.txt
 					language_metadata.json
 					Syntax.preform
@@ -262,7 +261,8 @@ The `about.txt` file must be removed. For the JSON replacement, follow this mode
     		"supports": [ "played", "written", "indexed" ],
 			"translated-name": "Français",
 			"iso-639-1-code": "fr",
-			"translated-syntax-cue": "en français"
+			"translated-syntax-cue": "en français",
+			"flag": "🇫🇷"
 		}
 	}
 
@@ -292,3 +292,8 @@ and that the "cue" `en français` would make Inform look for a suitable language
 bundle, and then set the language of syntax and play both to that language.
 That now seems too confusing, and is difficult for `inbuild` to deal with
 efficiently. So for the moment, at least, `"translated-syntax-cue"` is not used.
+
+(5) `"flag"` is optional. If given, it should be a Unicode representation of an
+appropriate national flag (i.e., an Emoji Flag Sequence made up of two adjacent
+Regional Indicators). Languages of course are not the same thing as countries,
+but it's just for the sake of a visual shorthand.
