@@ -4,7 +4,7 @@
 * Discussion PR link: [#9](https://github.com/ganelson/inform-evolution/pull/9)
 * Authors: Emily Short and Graham Nelson
 * Status: Accepted
-* Related proposals: [IE-0010](0010-concepts.md)
+* Related proposals: [IE-0010](0010-concepts.md), [IE-0039](0039-roomless-source-texts.md)
 * Implementation: Implemented but unreleased
 
 ## Summary
