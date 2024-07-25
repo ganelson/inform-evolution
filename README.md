@@ -10,7 +10,6 @@ The core repository for the language itself is
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
-[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023      | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
 [(IE-0015) World model enforcement](proposals/0015-world-model-enforcement.md)                           | 16 January 2023   | [PR#15](https://github.com/ganelson/inform-evolution/pull/15)
 
 ## Implemented and waiting to be released
@@ -26,6 +25,7 @@ Proposal                                                                        
 [(IE-0032) Run-time problem reform](proposals/0032-run-time-problem-reform.md)                           | 26 August 2023  | [PR#32](https://github.com/ganelson/inform-evolution/pull/32)
 [(IE-0031) BANISH debugging command](proposals/0031-banish.md)                                           | 9 August 2023   | [PR#31](https://github.com/ganelson/inform-evolution/pull/31)
 [(IE-0030) Extension examples and testing](proposals/0030-extension-examples-and-testing.md)             | 7 August 2023   | [PR#30](https://github.com/ganelson/inform-evolution/pull/30)
+[(IE-0029) Basic IO](proposals/0029-basic-io.md)                                                         | 20 July 2023      | [PR#29](https://github.com/ganelson/inform-evolution/pull/29)
 [(IE-0028) Extension documentation revisited](proposals/0028-extension-documentation-revisited.md)       | 19 July 2023    | [PR#28](https://github.com/ganelson/inform-evolution/pull/28)
 [(IE-0027) Sorting with custom comparison phrases](proposals/0027-sorting-with-phrases.md)               | 20 July 2023    | [PR#27](https://github.com/ganelson/inform-evolution/pull/27)
 [(IE-0026) Units and number bases](proposals/0026-units-and-number-bases.md)                             | 13 July 2023    | [PR#26](https://github.com/ganelson/inform-evolution/pull/26)
@@ -40,6 +40,7 @@ Proposal                                                                        
 [(IE-0016) Language extensions reform](proposals/0016-language-extensions-reform.md)                     | 5 February 2023 | [PR#16](https://github.com/ganelson/inform-evolution/pull/16)
 [(IE-0014) Inter names for rulebooks](proposals/0014-inter-names-for-rulebooks.md)                       | 23 October 2022 | [PR#14](https://github.com/ganelson/inform-evolution/pull/14)
 [(IE-0013) Annotations for kit linking](proposals/0013-annotations-for-kit-linking.md)                   | 10 October 2022 | [PR#13](https://github.com/ganelson/inform-evolution/pull/13)
+[(IE-0012) Glk foundations](proposals/0012-glk-foundations.md)                                           | 23 Sept 2022    | [PR#12](https://github.com/ganelson/inform-evolution/pull/12)
 [(IE-0010) Concepts](proposals/0010-concepts.md)                                                         | 21 July 2022    | [PR#10](https://github.com/ganelson/inform-evolution/pull/10)
 [(IE-0009) Dialogue sections](proposals/0009-dialogue-sections.md)                                       | 21 July 2022    | [PR#9](https://github.com/ganelson/inform-evolution/pull/9)
 [(IE-0006) New annotations for I6 syntax](proposals/0006-i6-syntax-annotations.md)                       | 16 June 2022    | [PR#6](https://github.com/ganelson/inform-evolution/pull/6)
@@ -56,12 +57,6 @@ _(IE-0011) New data structures_ (still drafting: see pull request)              
 [(IE-0008) Faster memory allocation](proposals/0008-faster-memory-allocation.md)                         | 13 July 2022    | [PR#8](https://github.com/ganelson/inform-evolution/pull/8)
 [(IE-0007) Double-precision real numbers](proposals/0007-double-precision-reals.md)                      | 3 July 2022     | [PR#7](https://github.com/ganelson/inform-evolution/pull/7)
 [(IE-0004) Access to data files embedded in blorbs](proposals/0004-using-data-files-in-blorbs.md)        | 5 May 2022      | [PR#4](https://github.com/ganelson/inform-evolution/pull/4)
-
-## Withdrawn or evolved
-
-Proposal                                                                                                 | Began           | Comments
--------------------------------------------------------------------------------------------------------- | --------------- | --------
-[(IE-0012) Glk foundations](proposals/0012-glk-foundations.md)                                           | 23 Sept 2022    | This evolved into [(IE-0029) Basic IO](proposals/0029-basic-io.md)
 
 ## Notes
 

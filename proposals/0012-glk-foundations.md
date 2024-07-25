@@ -4,7 +4,7 @@
 * Reference link: [#12](https://github.com/ganelson/inform-evolution/pull/12)
 * Authors: Dannii Willis
 * Language feature name: None
-* Status: In progress
+* Status: Implemented but unreleased
 * Related proposals: None
 * Implementation: None
 
