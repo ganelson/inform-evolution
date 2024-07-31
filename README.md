@@ -16,6 +16,7 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
+[(IE-0040) Version number kind](0040-version-number-kind.md)                               				 | 31 July 2024    | [PR#40](https://github.com/ganelson/inform-evolution/pull/40)
 [(IE-0039) Roomless source texts](proposals/0039-roomless-source-texts.md)                               | 21 May 2024     | [PR#39](https://github.com/ganelson/inform-evolution/pull/39)
 [(IE-0038) Division of time](proposals/0038-division-of-time.md)                                         | 28 April 2024   | [PR#38](https://github.com/ganelson/inform-evolution/pull/38)
 [(IE-0037) Relative kinds](proposals/0037-relative-kinds.md)                                             | 28 April 2024   | [PR#37](https://github.com/ganelson/inform-evolution/pull/37)
