@@ -9,7 +9,7 @@
 
 ## Summary
 
-Adds a `version number` kind, whose constant values can be written `v16`, `v2.4`
+Adds a `version number` kind, whose constant values can be written `v16.0`, `v2.4`
 or `v2.3.12`.
 
 ## Motivation
@@ -73,17 +73,19 @@ overlaps with `vN`, `vN.M` or `vN.M.L`, may have namespace clashes.
 On 32-bit architectures (i.e., Glulx, C, C#) only, a new kind `version number`
 exists. Constants are written as in these examples:
 
-	v10
+	v10.0
 	v4.3
 	v6.71.2129
+
+Note that literal version numbers must be written with at least one dot, so
+that `v2` is not a legal literal: `v2.0` must be written instead. (This is to
+reduce confusion with variables innocently named `v2` or similar.)
 
 The values must be literal decimal numbers in the range `0` to `999999999` (nine nines).
 The following are all true:
 
-	v0 is v0.0
-	v0 is v0.0.0
-	v10 is v10.0
-	v10 is v10.0.0
+	v0.0 is v0.0.0
+	v10.0 is v10.0.0
 	v4.3 is v4.3.0
 
 Three phrases can be used to extract the numbers:
@@ -96,8 +98,8 @@ So for example `minor version of 4.56.2` evaluates to `56` (a `number`).
 
 Version numbers are sorted lexicographically: major first, then minor, then patch. Thus:
 
-	v4 is greater than v3
-	v3 is greater than v2.99
+	v4.0 is greater than v3.0
+	v3.0 is greater than v2.99
 	v2.3 is greater than v2.2.17
 
 For example, if we declare:
