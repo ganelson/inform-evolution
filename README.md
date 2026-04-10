@@ -16,6 +16,7 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began           | Comments
 -------------------------------------------------------------------------------------------------------- | --------------- | --------
+[(IE-0042) Release along with separated resources](0042-release-separated-resources.md)                  | 10 April 2026   | [PR#42](https://github.com/ganelson/inform-evolution/pull/42)
 [(IE-0041) Very first and very last rules](proposals/0041-very-first-rules.md)                     	     | 10 November 2024 | [PR#41](https://github.com/ganelson/inform-evolution/pull/41)
 [(IE-0040) Version number kind](proposals/0040-version-number-kind.md)                     				 | 31 July 2024    | [PR#40](https://github.com/ganelson/inform-evolution/pull/40)
 [(IE-0039) Roomless source texts](proposals/0039-roomless-source-texts.md)                               | 21 May 2024     | [PR#39](https://github.com/ganelson/inform-evolution/pull/39)

@@ -210,7 +210,7 @@ causes the constant `DRIFTING_LILYPADS_CFGF` to be defined whether or not the
 project ever says `Use drifting lilypads.`. If it does, the value of the constant
 is 1, and if it doesn't, the value is 0. As a result, code trying to find out
 should now test `if (DRIFTING_LILYPADS_CFGF) ...`, or `#iftrue DRIFTING_LILYPADS_CFGF == 1;`,
-not `#ifdef DRIFTING_LILYPADS_CFGF;` -- which would always be true.
+not `#ifdef DRIFTING_LILYPADS_CFGF;` — which would always be true.
 
 Similarly, a configuration value is always created, and by default has whatever
 numerical value was given in the first relevant declaration. Thus:
