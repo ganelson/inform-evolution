@@ -11,12 +11,8 @@
 
 This change deprecates the `translates into Inter as...` sentence syntax,
 in favour of two different syntaxes which offer a wider range of functionality.
-In particular, this allows kits to access rulebooks and activities created in
-extensions.
-
-This is an incomplete draft, but what is described below is implemented on
-the `master` branch of the repository. These features are not in any release
-branch as yet.
+While this proposal began with rulebook names (and hence its title), the scope
+is now wider and includes names of many other constructs.
 
 ## Motivation
 
@@ -68,7 +64,9 @@ Attempts to write `GlkKit` and `DialogueKit` both ran into this issue, so
 it is not entirely theoretical.
 
 This proposal therefore also extends the range of language constructs to
-which these sentences can apply.
+which these sentences can apply. The intention is for it to replace use
+of the syntax `(+`, ..., `+)` as a way to bridge between I7 source text
+and Inter code: a later release of Inform will abolish `(+`, ..., `+)`.
 
 ## Components affected
 
@@ -112,6 +110,34 @@ under this proposal `is accessible to Inter as` is used for meaning (1), and
 The Inform examples, built-in extensions and test cases have all had their
 usages of `translates into Inter as` replaced with the appropriate syntax in
 each case.
+
+The list of constructs which can be `accessible to Inter as` is:
+
+`NAME action`			| for an action name
+`NAME activity`			| for an activity
+`NAME kind`				| for a kind of object, or a kind of value
+`NAME object`			| for an object
+`NAME phrase`			| for a `To ...` phrase with a `(this is NAME)` name
+`NAME property`			| for a property
+`NAME rules/rulebook`	| for a rulebook
+`table NAME`			| for a table with a name beginning "table"
+`NAME table column`		| for a table column
+`NAME value`			| for one of the enumerated values of a kind of value
+
+Note that elaborate kind constructions such as `list of numbers kind` cannot
+be made accessible to Inter: only so-called "base kinds".
+
+The list of constructs which can be `defined by Inter as` is:
+
+`NAME property`			| for a property
+`NAME rule`				| for a rule with a name ending in the word "rule"
+`NAME variable`			| for a global variable
+`understand token NAME`	| so e.g. `understand token horse showground` for `[horse showground]`
+
+Note that properties are the only constructs which can go in both directions,
+i.e., either defined in I7 source text and made accessible to Inter with some
+identifier name, or else defined in Inter and accessible to I7 with some
+source text name.
 
 ## Rulebook and activity naming
 
