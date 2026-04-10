@@ -1,4 +1,4 @@
-# (IE-0042) Release along with separated resources
+# (IE-0042) Release along with separated resources 
 
 * Proposal: [IE-0042](0042-release-separated-resources.md)
 * Discussion PR link: [#42](https://github.com/ganelson/inform-evolution/pull/42)
