@@ -163,6 +163,3 @@ now produces:
 	"whether or not yellow is warmer than blue" = truth state: true
 	"whether or not yellow is warmer than 5000 angstroms" = truth state: true
 	"list of warm colors" = list of colors: {red, orange, yellow}
-	"topmost from warm colors" = color: red
-	"cyclically random person" = thing: yourself
-	"whether or not someone is older than the player" = truth state: false
