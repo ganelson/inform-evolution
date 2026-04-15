@@ -1,4 +1,4 @@
-# (IE-0043) Improved comparatives and superlatives
+# (IE-0043) Improved comparatives and superlatives 
 
 * Proposal: [IE-0043](0043-improved-comparatives-and-superlatives.md)
 * Discussion PR link: [#43](https://github.com/ganelson/inform-evolution/pull/43)
