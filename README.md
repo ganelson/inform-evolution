@@ -16,6 +16,7 @@ Proposal                                                                        
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
+[(IE-0045) Text substitutions with text literals](proposals/0045-text-substitutions-with-text-literals.md)   | 2 May 2026    | [PR#45](https://github.com/ganelson/inform-evolution/pull/45)
 [(IE-0043) Improved comparatives and superlatives](proposals/0043-improved-comparatives-and-superlatives.md) | 10 April 2026 | [PR#43](https://github.com/ganelson/inform-evolution/pull/43)
 [(IE-0042) Release along with separated resources](proposals/0042-release-separated-resources.md)        | 10 April 2026     | [PR#42](https://github.com/ganelson/inform-evolution/pull/42)
 [(IE-0041) Very first and very last rules](proposals/0041-very-first-rules.md)                     	     | 10 November 2024  | [PR#41](https://github.com/ganelson/inform-evolution/pull/41)
