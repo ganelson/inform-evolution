@@ -132,7 +132,7 @@ a substitution inside a regular text:
 	                             [praise for _________________]       substitution
 	                                         `hammer-throwing`        backticked text
 
-In principal, this nesting can go arbitrarily deep, always alternating substitution
+In principle, this nesting can go arbitrarily deep, always alternating substitution
 brackets and backticks. This, for example:
 
 	"[intone `[intone `[intone `[intone `[intone `[intone `[intone `X`]`]`]`]`]`]`]"
@@ -244,7 +244,7 @@ slightly incorrectly coloured:
 
 In the past it was guaranteed that the substitution beginning `[` would
 end at the next `]`: now, as in this example, it does not necessarily do so,
-and so this text should ideally be syntax-coloured slighly differently.
+and so this text should ideally be syntax-coloured slightly differently.
 
 Suppose we use three colours: `m` for normal material, `t` for text, `s`
 for a substitution within text. Then for example:
