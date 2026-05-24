@@ -6,7 +6,7 @@ scale, have since 30 July 2022 been proposed and tracked in this repository.
 The core repository for the language itself is
 [ganelson/inform](https://github.com/ganelson/inform).
 
-## In progress
+## In progress 
 
 Proposal                                                                                                 | Began             | Comments
 -------------------------------------------------------------------------------------------------------- | ----------------- | --------
