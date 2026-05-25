@@ -48,8 +48,11 @@ some people were renaming their files to have `.aiff` suffixes, then renaming th
 back again after the release.
 
 We want to make all this more straightforward. This proposal therefore includes
-_minimal_ support for `.mp3` files, but only in `separated resources` mode,
-where no Glulx support is needed.
+support for `.mp3` files in `separated resources` mode, and also allows them
+to be embedded in blorb files, anticipating a new feature of Blorb planned by
+Andrew Plotkin. Because the latter feature is new, Inform issues a warning if
+asked to do this, but should work as and when interpreters are able to deal
+with embedded `.mp3` files.
 
 ## Details
 
@@ -204,18 +207,19 @@ These are as follows:
 
 ### How `.mp3` files are handled
 
-Support here is limited. Essentially, until and unless the Glulx format adopts MP3,
-all that Inform is doing is to provide a facilitated workaround. Because of that,
-any Release involving `.mp3` files produces a warning notice: but it does not, as
-it previously would have done, halt with an error. Note that:
+This is new in the current proposal: previous builds have not supported `.mp3` at all.
 
 - `.mp3` files appear in a resource map with the format `MP3`, and are copied
 	into the `Release/Sounds` directory if the release is along with `separated resources`,
 	just like other sounds. 
 
-- `.mp3` files are encoded in a blorb as data chunks of type `BINA`, that is,
-	as if they were binary data files. Obviously, they will not be playable,
-	but at least this masquerade ensures that the Blorb is legal.
+- `.mp3` files are encoded in a blorb as sound chunks of type `MP3 `, that is,
+    the characters M, P, 3, and a space. In the Blorb specification as it stands
+    in May 2026, this is still illegal, but the plan is for it to be allowed
+    shortly, and Inform is anticipating that. Since existing interpreters may
+    not be able to deal with such chunks, Inblorb issues a warning at release
+    time if embedding them. (This warning message can go once the feature is
+    reasonably well-supported.)
 
 ### The `[SUPPORTSRESOURCEMAP]` placeholder
 
